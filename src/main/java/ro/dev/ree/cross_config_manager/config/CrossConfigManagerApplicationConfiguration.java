@@ -1,15 +1,15 @@
-package ro.logis.config_manager.config;
+package ro.dev.ree.cross_config_manager.config;
 
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.springframework.stereotype.Component;
-import ro.logis.config_manager.ConfigManagerRwtEntryPoint;
+import ro.dev.ree.cross_config_manager.CrossConfigManagerRwtEntryPoint;
 
 import java.util.HashMap;
 
 @Component
-public class ConfigManagerApplicationConfiguration implements ApplicationConfiguration {
+public class CrossConfigManagerApplicationConfiguration implements ApplicationConfiguration {
 
     @Override
     public void configure(Application application) {
@@ -25,6 +25,6 @@ public class ConfigManagerApplicationConfiguration implements ApplicationConfigu
 
         // Using a static reference to the EntryPoint class here. Could also be an EntryPointFactory that works
         // with injected EntryPoint components at application startup.
-        application.addEntryPoint("/hello", ConfigManagerRwtEntryPoint.class, properties);
+        application.addEntryPoint("/hello", CrossConfigManagerRwtEntryPoint.class, properties);
     }
 }

@@ -1,4 +1,4 @@
-package ro.logis.config_manager.config;
+package ro.dev.ree.cross_config_manager.config;
 
 
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
@@ -12,13 +12,13 @@ import javax.servlet.ServletContext;
 
 
 @Component
-public class ConfigManagerRwtContextInitializer implements ServletContextInitializer {
+public class CrossConfigManagerRwtContextInitializer implements ServletContextInitializer {
 
     private final ApplicationConfiguration applicationConfiguration;
     private ApplicationRunner applicationRunner;
 
     @Autowired
-    public ConfigManagerRwtContextInitializer(ApplicationConfiguration applicationConfiguration) {
+    public CrossConfigManagerRwtContextInitializer(ApplicationConfiguration applicationConfiguration) {
         this.applicationConfiguration = applicationConfiguration;
     }
 

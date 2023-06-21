@@ -1,11 +1,11 @@
-package ro.logis.config_manager;
+package ro.dev.ree.cross_config_manager;
 
 import org.eclipse.rap.rwt.application.AbstractEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public class ConfigManagerRwtEntryPoint extends AbstractEntryPoint {
+public class CrossConfigManagerRwtEntryPoint extends AbstractEntryPoint {
 
     @Override
     protected void createContents(Composite parent) {
