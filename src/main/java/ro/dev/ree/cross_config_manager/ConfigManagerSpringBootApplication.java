@@ -8,15 +8,15 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @SpringBootApplication
 @EnableMongoRepositories(value = "ro.dev.ree.cross_config_manager.model")
-public class CrossConfigManagerSpringBootApplication extends SpringBootServletInitializer {
+public class ConfigManagerSpringBootApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        SpringApplication.run(CrossConfigManagerSpringBootApplication.class, args);
+        SpringApplication.run(ConfigManagerSpringBootApplication.class, args);
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(CrossConfigManagerSpringBootApplication.class);
+        return application.sources(ConfigManagerSpringBootApplication.class);
     }
 
 

@@ -12,13 +12,13 @@ import javax.servlet.ServletContext;
 
 
 @Component
-public class CrossConfigManagerRwtContextInitializer implements ServletContextInitializer {
+public class ConfigManagerRwtContextInitializer implements ServletContextInitializer {
 
     private final ApplicationConfiguration applicationConfiguration;
     private ApplicationRunner applicationRunner;
 
     @Autowired
-    public CrossConfigManagerRwtContextInitializer(ApplicationConfiguration applicationConfiguration) {
+    public ConfigManagerRwtContextInitializer(ApplicationConfiguration applicationConfiguration) {
         this.applicationConfiguration = applicationConfiguration;
     }
 

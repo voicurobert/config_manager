@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
 
-public class CrossConfigManagerRwtEntryPoint extends AbstractEntryPoint {
+public class ConfigManagerRwtEntryPoint extends AbstractEntryPoint {
 
 
     public NodeTypeService nodeTypeService = ConfigManagerContextProvider.getBean(NodeTypeService.class);
