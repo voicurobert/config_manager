@@ -16,7 +16,7 @@ public class CrossConfigManagerApplicationConfiguration implements ApplicationCo
         // SWT_COMPATIBILITY mode is required for using blocking Dialog API. Required when using JFace.
         application.setOperationMode(Application.OperationMode.SWT_COMPATIBILITY);
 
-        // Register entrypoints, resources, themes, service handlers etc....
+        // Register entry points, resources, themes, service handlers etc....
         var properties = new HashMap<String, String>();
         properties.put(WebClient.PAGE_TITLE, "RWT on Spring Boot");
 
