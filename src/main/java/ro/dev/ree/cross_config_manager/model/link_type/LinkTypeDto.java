@@ -1,5 +1,4 @@
-package ro.dev.ree.cross_config_manager.model.node_type;
-
+package ro.dev.ree.cross_config_manager.model.link_type;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NodeTypeDto {
+public class LinkTypeDto {
 
     private String configId;
 
@@ -26,11 +25,7 @@ public class NodeTypeDto {
 
     private String typeClassPath;
 
-    private String rootType;
-
     private String system;
 
-    private String multiparentAllowed;
-
-    private String uniquenessType;
+    private String unique;
 }

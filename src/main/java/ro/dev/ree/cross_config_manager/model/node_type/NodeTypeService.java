@@ -17,4 +17,5 @@ public class NodeTypeService {
         BeanUtils.copyProperties(nodeTypeDto, nodeType);
         repository.save(nodeType);
     }
+
 }

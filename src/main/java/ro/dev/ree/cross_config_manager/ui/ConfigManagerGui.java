@@ -5,14 +5,17 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
+import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
+import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeService;
+import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
 
 public class ConfigManagerGui {
 
     public NodeTypeService nodeTypeService = ConfigManagerContextProvider.getBean(NodeTypeService.class);
+    public LinkTypeService linkTypeService = ConfigManagerContextProvider.getBean(LinkTypeService.class);
 
     public void createContents(Composite parent) {
         SashForm sashForm = new SashForm(parent, 256);
@@ -31,8 +34,18 @@ public class ConfigManagerGui {
         newConfigButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ConfigMainView configMainView = new ConfigMainView();
-                configMainView.createContents(parent);
+                ConfigNewConfigView configNewConfigView = new ConfigNewConfigView();
+                configNewConfigView.createContents(parent);
+
+                NodeTypeDto nodeTypeDto = new NodeTypeDto();
+                nodeTypeDto.setDiscriminator("test");
+                nodeTypeDto.setConfigId("123");
+                nodeTypeService.save(nodeTypeDto);
+
+                LinkTypeDto linkTypeDto = new LinkTypeDto();
+                linkTypeDto.setDiscriminator("test");
+                linkTypeDto.setConfigId("123");
+                linkTypeService.save(linkTypeDto);
 
                 parent.layout(true, true);
             }
@@ -46,8 +59,38 @@ public class ConfigManagerGui {
         Button loadConfigButton = new Button(parent, SWT.PUSH);
         loadConfigButton.setText("Load config");
 
+        loadConfigButton.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                ConfigLoadConfigView configLoadConfigView = new ConfigLoadConfigView();
+                configLoadConfigView.createContents(parent);
+
+                parent.layout(true, true);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+
+            }
+        });
+
         Button viewConfigsButton = new Button(parent, SWT.PUSH);
         viewConfigsButton.setText("View configs");
+
+        viewConfigsButton.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                ConfigViewConfigsView configViewConfigsView = new ConfigViewConfigsView();
+                configViewConfigsView.createContents(parent);
+
+                parent.layout(true, true);
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+
+            }
+        });
 
 //        var menu = new Menu(parent);
 //        parent.setMenu(menu);
@@ -66,13 +109,9 @@ public class ConfigManagerGui {
 //
 //        menu.setVisible(true);
 
-//        NodeTypeDto nodeTypeDto = new NodeTypeDto();
-//        nodeTypeDto.setDiscriminator("test");
-//        nodeTypeDto.setConfigId("123");
-//        nodeTypeService.save(nodeTypeDto);
 
-        //var label = new Label(parent, SWT.NONE);
-        //label.setText("I'm an RWT standalone app running on Spring Boot. Pretty neat!");
+//        var label = new Label(parent, SWT.NONE);
+//        label.setText("I'm an RWT standalone app running on Spring Boot. Pretty neat!");
     }
 
 }

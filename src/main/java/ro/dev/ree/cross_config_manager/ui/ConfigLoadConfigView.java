@@ -5,8 +5,9 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
-public class ConfigMainView {
+public class ConfigLoadConfigView {
 
     public void createContents(Composite parent) {
         SashForm sashForm = new SashForm(parent, 256);
@@ -19,7 +20,10 @@ public class ConfigMainView {
 
         sashForm.setLayout(mainLayout);
 
-        Button newConfigButton = new Button(parent, SWT.PUSH);
-        newConfigButton.setText("New config222");
+//        Button newConfigButton = new Button(parent, SWT.PUSH);
+//        newConfigButton.setText("Load config222");
+
+        var label = new Label(parent, SWT.NONE);
+        label.setText("Load a config file");
     }
 }
