@@ -11,7 +11,7 @@ public class ConfigManagerRwtServletConfiguration {
     @Bean
     public ServletRegistrationBean<RWTServlet> rwtServlet() {
         var bean = new ServletRegistrationBean<>(new RWTServlet());
-        bean.addUrlMappings("/hello");
+        bean.addUrlMappings("/ui");
         return bean;
     }
 }

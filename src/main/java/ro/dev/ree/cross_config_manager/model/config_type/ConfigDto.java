@@ -1,4 +1,4 @@
-package ro.dev.ree.cross_config_manager.model.config;
+package ro.dev.ree.cross_config_manager.model.config_type;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,5 +13,5 @@ public class ConfigDto {
 
     private String configId;
 
-    private String discriminator;
+    private String name;
 }

@@ -1,15 +1,16 @@
 package ro.dev.ree.cross_config_manager.ui;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
-import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeService;
-import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
 
 public class ConfigManagerGui {
@@ -17,16 +18,59 @@ public class ConfigManagerGui {
     public NodeTypeService nodeTypeService = ConfigManagerContextProvider.getBean(NodeTypeService.class);
     public LinkTypeService linkTypeService = ConfigManagerContextProvider.getBean(LinkTypeService.class);
 
-    public void createContents(Composite parent) {
-        SashForm sashForm = new SashForm(parent, 256);
+    public void createContents2(Composite parent) {
         var mainLayout = new RowLayout();
         mainLayout.type = SWT.VERTICAL;
         mainLayout.center = true;
-        mainLayout.justify = true;
         mainLayout.fill = true;
+        mainLayout.spacing = 10;
+
+        parent.setLayout(mainLayout);
+
+        int width = 150;
+        int height = 40;
+
+        Button newConfigButton = new Button(parent, SWT.PUSH);
+        newConfigButton.setLayoutData(new RowData(width, height));
+        newConfigButton.setText("New config");
+
+        newConfigButton.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                newConfigButtonClicked();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+
+            }
+        });
 
 
-        sashForm.setLayout(mainLayout);
+        Button loadConfigButton = new Button(parent, SWT.PUSH);
+        loadConfigButton.setLayoutData(new RowData(width, height));
+        loadConfigButton.setText("Load config");
+
+
+        Button viewConfigsButton = new Button(parent, SWT.PUSH);
+        viewConfigsButton.setLayoutData(new RowData(width, height));
+        viewConfigsButton.setText("View configs");
+
+
+        mainLayout.marginLeft = (Display.getCurrent().getBounds().width / 2) - 50;
+        mainLayout.marginTop = (Display.getCurrent().getBounds().height / 2) - height * 3;
+    }
+
+    public void newConfigButtonClicked() {
+        NewConfigGui newConfigGui = new NewConfigGui();
+        newConfigGui.open();
+    }
+
+    public void createContents(Composite parent) {
+        var mainLayout = new GridLayout();
+        mainLayout.numColumns = 3;
+
+        parent.setLayout(mainLayout);
 
         Button newConfigButton = new Button(parent, SWT.PUSH);
         newConfigButton.setText("New config");
@@ -34,20 +78,19 @@ public class ConfigManagerGui {
         newConfigButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ConfigNewConfigView configNewConfigView = new ConfigNewConfigView();
-                configNewConfigView.createContents(parent);
+                NewConfigGui newConfigGui = new NewConfigGui();
+                newConfigGui.open();
+                //configNewConfigView.createContents(parent);
 
-                NodeTypeDto nodeTypeDto = new NodeTypeDto();
-                nodeTypeDto.setDiscriminator("test");
-                nodeTypeDto.setConfigId("123");
-                nodeTypeService.save(nodeTypeDto);
-
-                LinkTypeDto linkTypeDto = new LinkTypeDto();
-                linkTypeDto.setDiscriminator("test");
-                linkTypeDto.setConfigId("123");
-                linkTypeService.save(linkTypeDto);
-
-                parent.layout(true, true);
+//                NodeTypeDto nodeTypeDto = new NodeTypeDto();
+//                nodeTypeDto.setDiscriminator("test");
+//                nodeTypeDto.setConfigId("123");
+//                nodeTypeService.save(nodeTypeDto);
+//
+//                LinkTypeDto linkTypeDto = new LinkTypeDto();
+//                linkTypeDto.setDiscriminator("test");
+//                linkTypeDto.setConfigId("123");
+//                linkTypeService.save(linkTypeDto);
             }
 
             @Override
@@ -62,8 +105,8 @@ public class ConfigManagerGui {
         loadConfigButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ConfigLoadConfigView configLoadConfigView = new ConfigLoadConfigView();
-                configLoadConfigView.createContents(parent);
+                LoadConfigGui loadConfigGui = new LoadConfigGui();
+                loadConfigGui.createContents(parent);
 
                 parent.layout(true, true);
             }
@@ -80,8 +123,8 @@ public class ConfigManagerGui {
         viewConfigsButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ConfigViewConfigsView configViewConfigsView = new ConfigViewConfigsView();
-                configViewConfigsView.createContents(parent);
+                ConfigListViewGui configListViewGui = new ConfigListViewGui();
+                configListViewGui.createContents(parent);
 
                 parent.layout(true, true);
             }

@@ -9,6 +9,6 @@ public class ConfigManagerRwtEntryPoint extends AbstractEntryPoint {
     @Override
     protected void createContents(Composite parent) {
         var configManagerGui = new ConfigManagerGui();
-        configManagerGui.createContents(parent);
+        configManagerGui.createContents2(parent);
     }
 }

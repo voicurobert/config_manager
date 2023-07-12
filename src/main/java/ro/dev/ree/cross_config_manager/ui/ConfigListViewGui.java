@@ -3,11 +3,10 @@ package ro.dev.ree.cross_config_manager.ui;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public class ConfigViewConfigsView {
+public class ConfigListViewGui {
 
     public void createContents(Composite parent) {
         SashForm sashForm = new SashForm(parent, 256);

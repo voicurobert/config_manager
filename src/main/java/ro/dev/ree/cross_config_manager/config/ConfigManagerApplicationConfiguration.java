@@ -18,13 +18,13 @@ public class ConfigManagerApplicationConfiguration implements ApplicationConfigu
 
         // Register entry points, resources, themes, service handlers etc....
         var properties = new HashMap<String, String>();
-        properties.put(WebClient.PAGE_TITLE, "RWT on Spring Boot");
+        properties.put(WebClient.PAGE_TITLE, "CROSS Config Manager");
 
         // RWT themes can be used as well.
         //application.addStyleSheet(RWT.DEFAULT_THEME_ID, "themes/customRwtTheme.css");
 
         // Using a static reference to the EntryPoint class here. Could also be an EntryPointFactory that works
         // with injected EntryPoint components at application startup.
-        application.addEntryPoint("/hello", ConfigManagerRwtEntryPoint.class, properties);
+        application.addEntryPoint("/ui", ConfigManagerRwtEntryPoint.class, properties);
     }
 }
