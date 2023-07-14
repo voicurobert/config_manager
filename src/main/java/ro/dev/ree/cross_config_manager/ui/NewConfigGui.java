@@ -22,13 +22,16 @@ public class NewConfigGui {
         mainLayout.center = true;
         mainLayout.justify = true;
         mainLayout.fill = true;
-
+        mainLayout.spacing = 10;
 
         shell.setLayout(mainLayout);
 
-        Button newConfigButton = new Button(shell, SWT.PUSH);
-        newConfigButton.setText("New config222");
-        newConfigButton.addSelectionListener(new SelectionListener() {
+        int width = 150;
+        int height = 40;
+
+        Button backToMainButton = new Button(shell, SWT.PUSH);
+        backToMainButton.setText("Back to main menu");
+        backToMainButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 shell.dispose();
@@ -39,26 +42,28 @@ public class NewConfigGui {
 
             }
         });
+        mainLayout.marginLeft = (Display.getCurrent().getBounds().width / 2) - 50;
+        mainLayout.marginTop = (Display.getCurrent().getBounds().height / 2) - height * 3;
 
         shell.open();
     }
 
-    public void createContents(Composite parent) {
-        SashForm sashForm = new SashForm(parent, 256);
-        var mainLayout = new RowLayout();
-        mainLayout.type = SWT.VERTICAL;
-        mainLayout.center = true;
-        mainLayout.justify = true;
-        mainLayout.fill = true;
-
-
-        parent.setLayout(mainLayout);
-
-//        Button newConfigButton = new Button(parent, SWT.PUSH);
-//        newConfigButton.setText("New config222");
-        var label = new Label(parent, SWT.NONE);
-        label.setText("Add a new config");
-    }
+//    public void createContents(Composite parent) {
+//        SashForm sashForm = new SashForm(parent, 256);
+//        var mainLayout = new RowLayout();
+//        mainLayout.type = SWT.VERTICAL;
+//        mainLayout.center = true;
+//        mainLayout.justify = true;
+//        mainLayout.fill = true;
+//
+//
+//        parent.setLayout(mainLayout);
+//
+////        Button newConfigButton = new Button(parent, SWT.PUSH);
+////        newConfigButton.setText("New config222");
+//        var label = new Label(parent, SWT.NONE);
+//        label.setText("Add a new config");
+//    }
 
 
 }
