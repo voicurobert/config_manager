@@ -1,7 +1,9 @@
 package ro.dev.ree.cross_config_manager.model.class_type;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ClassTypeService {
 
     private final ClassTypeRepository repository;
@@ -17,7 +19,7 @@ public class ClassTypeService {
 
     }
 
-    public void update(ClassTypeDto classTypeDto) {
+    public void update(ClassType classTypeDto) {
         ClassType configType = new ClassType();
         BeanUtils.copyProperties(classTypeDto, configType);
         repository.save(configType);

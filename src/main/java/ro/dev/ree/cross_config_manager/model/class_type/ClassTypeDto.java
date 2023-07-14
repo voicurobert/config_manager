@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClassTypeDto {
+    private String id;
     private String configId;
 
     private String name;
