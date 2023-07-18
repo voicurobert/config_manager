@@ -1,23 +1,53 @@
 package ro.dev.ree.cross_config_manager.ui;
 
-import org.eclipse.rap.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import ro.dev.ree.cross_config_manager.ui.utils.Drawable;
 
 public class ConfigViewGui {
-    private Shell shell;
+    private final Shell shell;
+
     public ConfigViewGui() {
         shell = new Shell(Display.getCurrent(), SWT.NO_TRIM);
+        shell.setLayout(new FillLayout());
+        shell.setMaximized(true);
     }
 
     public void open() {
+        ScrolledComposite sc = new ScrolledComposite(shell, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        Composite c = new Composite(sc, SWT.NONE);
+        sc.setContent(c);
+
+        c.setLayout(new GridLayout(1, true));
+        c.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
+        sc.setAlwaysShowScrollBars(true);
+
+        Label title = new Label(c, SWT.CENTER);
+        title.setText("CROSS Config - ");
+        title.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
+
+        ConfigManagerComposites composites = new ConfigManagerComposites();
+        for (Drawable composite : composites.getComposites()) {
+            composite.createContents(c);
+        }
+
+        sc.setExpandHorizontal(true);
+        sc.setExpandVertical(true);
+        sc.setMinSize(c.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
+        shell.open();
+    }
+
+    public void openOld() {
         var shellLayout = new GridLayout();
-        shellLayout.marginHeight=20;
-        shellLayout.marginWidth=20;
+        shellLayout.marginHeight = 20;
+        shellLayout.marginWidth = 20;
         shell.setLayout(shellLayout);
         shell.setFullScreen(true);
         shell.setMaximized(true);
@@ -54,11 +84,11 @@ public class ConfigViewGui {
 //        mainParent6.setText("Link Type Node Type Rules Collection");
 
         // Create Tables
-        Table nodeTypeTable = new Table (contentComposite, SWT.BORDER | SWT.CENTER);
+        Table nodeTypeTable = new Table(contentComposite, SWT.BORDER | SWT.CENTER);
         nodeTypeTable.setLayoutData(new GridData(SWT.DEFAULT, SWT.DEFAULT));
         nodeTypeTable.setToolTipText("NodeTypeTable");
 
-        Table linkTypeTable = new Table (contentComposite,  SWT.BORDER | SWT.CENTER);
+        Table linkTypeTable = new Table(contentComposite, SWT.BORDER | SWT.CENTER);
         linkTypeTable.setLayoutData(new GridData(SWT.DEFAULT, SWT.DEFAULT));
         linkTypeTable.setToolTipText("LinkTypeTable");
 
@@ -99,16 +129,16 @@ public class ConfigViewGui {
         linkTypeNodeTypeRulesTree.setLinesVisible(true);
 
         // Create table columns with headers
-        String[] nodeTypeHeaders = {"IdNT","ConfigId", "Discriminator", "Name", "AppIcon", "MapIcon",
+        String[] nodeTypeHeaders = {"IdNT", "ConfigId", "Discriminator", "Name", "AppIcon", "MapIcon",
                 "CapacityFull", "CapacityUnitName", "TypeClassPath",
-                "RootType", "System","MultiparentAllowed", "UniquenessType"};
+                "RootType", "System", "MultiparentAllowed", "UniquenessType"};
         for (String header : nodeTypeHeaders) {
             TableColumn column = new TableColumn(nodeTypeTable, SWT.NONE);
             column.setText(header);
         }
 
         // Create table columns with headers
-        String[] linkTypeHeaders = {"IdLT","ConfigId", "Discriminator", "Name", "AppIcon", "MapIcon",
+        String[] linkTypeHeaders = {"IdLT", "ConfigId", "Discriminator", "Name", "AppIcon", "MapIcon",
                 "CapacityFull", "CapacityUnitName", "TypeClassPath",
                 "System", "Unique"};
         for (String header : linkTypeHeaders) {
@@ -149,44 +179,44 @@ public class ConfigViewGui {
 
         // Create table rows with data
         String[][] nodeTypeData = {
-                {"idnt1","configId", "discriminator", "name", "appIcon", "mapIcon",
+                {"idnt1", "configId", "discriminator", "name", "appIcon", "mapIcon",
                         "capacityFull", "capacityUnitName", "typeClassPath",
-                        "rootType", "system","multiparentAllowed", "uniquenessType"},
-                {"idnt2","configId", "discriminator", "name", "appIcon", "mapIcon",
+                        "rootType", "system", "multiparentAllowed", "uniquenessType"},
+                {"idnt2", "configId", "discriminator", "name", "appIcon", "mapIcon",
                         "capacityFull", "capacityUnitName", "typeClassPath",
-                        "rootType", "system","multiparentAllowed", "uniquenessType"},
-                {"idnt3","configId", "discriminator", "name", "appIcon", "mapIcon",
+                        "rootType", "system", "multiparentAllowed", "uniquenessType"},
+                {"idnt3", "configId", "discriminator", "name", "appIcon", "mapIcon",
                         "capacityFull", "capacityUnitName", "typeClassPath",
-                        "rootType", "system","multiparentAllowed", "uniquenessType"},
-                {"idnt4","configId", "discriminator", "name", "appIcon", "mapIcon",
+                        "rootType", "system", "multiparentAllowed", "uniquenessType"},
+                {"idnt4", "configId", "discriminator", "name", "appIcon", "mapIcon",
                         "capacityFull", "capacityUnitName", "typeClassPath",
-                        "rootType", "system","multiparentAllowed", "uniquenessType"},
-                {"idnt5","configId", "discriminator", "name", "appIcon", "mapIcon",
+                        "rootType", "system", "multiparentAllowed", "uniquenessType"},
+                {"idnt5", "configId", "discriminator", "name", "appIcon", "mapIcon",
                         "capacityFull", "capacityUnitName", "typeClassPath",
-                        "rootType", "system","multiparentAllowed", "uniquenessType"},
-                {"idnt6","configId", "discriminator", "name", "appIcon", "mapIcon",
+                        "rootType", "system", "multiparentAllowed", "uniquenessType"},
+                {"idnt6", "configId", "discriminator", "name", "appIcon", "mapIcon",
                         "capacityFull", "capacityUnitName", "typeClassPath",
-                        "rootType", "system","multiparentAllowed", "uniquenessType"}
+                        "rootType", "system", "multiparentAllowed", "uniquenessType"}
         };
 
         // Create table rows with data
         String[][] linkTypeData = {
-                {"idlt1","configId", "discriminator", "name", "appIcon", "mapIcon",
+                {"idlt1", "configId", "discriminator", "name", "appIcon", "mapIcon",
                         "capacityFull", "capacityUnitName", "typeClassPath",
                         "system", "unique"},
-                {"idlt2","configId", "discriminator", "name", "appIcon", "mapIcon",
+                {"idlt2", "configId", "discriminator", "name", "appIcon", "mapIcon",
                         "capacityFull", "capacityUnitName", "typeClassPath",
                         "system", "unique"},
-                {"idlt3","configId", "discriminator", "name", "appIcon", "mapIcon",
+                {"idlt3", "configId", "discriminator", "name", "appIcon", "mapIcon",
                         "capacityFull", "capacityUnitName", "typeClassPath",
                         "system", "unique"},
-                {"idlt4","configId", "discriminator", "name", "appIcon", "mapIcon",
+                {"idlt4", "configId", "discriminator", "name", "appIcon", "mapIcon",
                         "capacityFull", "capacityUnitName", "typeClassPath",
                         "system", "unique"},
-                {"idlt5","configId", "discriminator", "name", "appIcon", "mapIcon",
+                {"idlt5", "configId", "discriminator", "name", "appIcon", "mapIcon",
                         "capacityFull", "capacityUnitName", "typeClassPath",
                         "system", "unique"},
-                {"idlt6","configId", "discriminator", "name", "appIcon", "mapIcon",
+                {"idlt6", "configId", "discriminator", "name", "appIcon", "mapIcon",
                         "capacityFull", "capacityUnitName", "typeClassPath",
                         "system", "unique"}
         };
@@ -220,84 +250,84 @@ public class ConfigViewGui {
 
         // Create parent nodes
         TreeItem ntrParent1 = new TreeItem(nodeTypeRulesTree, SWT.NONE);
-        ntrParent1.setText(new String[] {"idntr1", "configId", "child", "parent",
+        ntrParent1.setText(new String[]{"idntr1", "configId", "child", "parent",
                 "capacityCalculatorName", "mandatoryParent"});
 
         TreeItem ntrParent2 = new TreeItem(nodeTypeRulesTree, SWT.NONE);
-        ntrParent2.setText(new String[] {"idntr2", "configId", "child", "parent",
+        ntrParent2.setText(new String[]{"idntr2", "configId", "child", "parent",
                 "capacityCalculatorName", "mandatoryParent"});
 
         // Create child nodes under parent 1
         TreeItem ntrChild1 = new TreeItem(ntrParent1, SWT.NONE);
-        ntrChild1.setText(new String[] {"idntr3", "configId", "child", "parent",
+        ntrChild1.setText(new String[]{"idntr3", "configId", "child", "parent",
                 "capacityCalculatorName", "mandatoryParent"});
 
         TreeItem ntrChild2 = new TreeItem(ntrParent1, SWT.NONE);
-        ntrChild2.setText(new String[] {"idntr4", "configId", "child", "parent",
+        ntrChild2.setText(new String[]{"idntr4", "configId", "child", "parent",
                 "capacityCalculatorName", "mandatoryParent"});
 
         // Create child nodes under parent 2
         TreeItem ntrChild3 = new TreeItem(ntrParent2, SWT.NONE);
-        ntrChild3.setText(new String[] {"idntr5", "configId", "child", "parent",
+        ntrChild3.setText(new String[]{"idntr5", "configId", "child", "parent",
                 "capacityCalculatorName", "mandatoryParent"});
 
         TreeItem ntrChild4 = new TreeItem(ntrParent2, SWT.NONE);
-        ntrChild4.setText(new String[] {"idntr6", "configId", "child", "parent",
+        ntrChild4.setText(new String[]{"idntr6", "configId", "child", "parent",
                 "capacityCalculatorName", "mandatoryParent"});
 
 
         // Create parent nodes
         TreeItem ltrParent1 = new TreeItem(linkTypeRulesTree, SWT.NONE);
-        ltrParent1.setText(new String[] {"idltr1", "configId", "consumer", "provider",
+        ltrParent1.setText(new String[]{"idltr1", "configId", "consumer", "provider",
                 "routingPolicy", "capacityCalculatorName", "numberOfChannels"});
 
         TreeItem ltrParent2 = new TreeItem(linkTypeRulesTree, SWT.NONE);
-        ltrParent2.setText(new String[] {"idltr2", "configId", "consumer", "provider",
+        ltrParent2.setText(new String[]{"idltr2", "configId", "consumer", "provider",
                 "routingPolicy", "capacityCalculatorName", "numberOfChannels"});
 
         // Create child nodes under parent 1
         TreeItem ltrChild1 = new TreeItem(ltrParent1, SWT.NONE);
-        ltrChild1.setText(new String[] {"idltr3", "configId", "consumer", "provider",
+        ltrChild1.setText(new String[]{"idltr3", "configId", "consumer", "provider",
                 "routingPolicy", "capacityCalculatorName", "numberOfChannels"});
 
         TreeItem ltrChild2 = new TreeItem(ltrParent1, SWT.NONE);
-        ltrChild2.setText(new String[] {"idltr4", "configId", "consumer", "provider",
+        ltrChild2.setText(new String[]{"idltr4", "configId", "consumer", "provider",
                 "routingPolicy", "capacityCalculatorName", "numberOfChannels"});
 
         // Create child nodes under parent 2
         TreeItem ltrChild3 = new TreeItem(ltrParent2, SWT.NONE);
-        ltrChild3.setText(new String[] {"idltr5", "configId", "consumer", "provider",
+        ltrChild3.setText(new String[]{"idltr5", "configId", "consumer", "provider",
                 "routingPolicy", "capacityCalculatorName", "numberOfChannels"});
 
         TreeItem ltrChild4 = new TreeItem(ltrParent2, SWT.NONE);
-        ltrChild4.setText(new String[] {"idltr6", "configId", "consumer", "provider",
+        ltrChild4.setText(new String[]{"idltr6", "configId", "consumer", "provider",
                 "routingPolicy", "capacityCalculatorName", "numberOfChannels"});
 
         // Create parent nodes
         TreeItem ltNtrParent1 = new TreeItem(linkTypeNodeTypeRulesTree, SWT.NONE);
-        ltNtrParent1.setText(new String[] {"idltntr1", "configId", "linkType", "nodeType",
+        ltNtrParent1.setText(new String[]{"idltntr1", "configId", "linkType", "nodeType",
                 "quality"});
 
         TreeItem ltNtrParent2 = new TreeItem(linkTypeNodeTypeRulesTree, SWT.NONE);
-        ltNtrParent2.setText(new String[] {"idltntr2", "configId", "linkType", "nodeType",
+        ltNtrParent2.setText(new String[]{"idltntr2", "configId", "linkType", "nodeType",
                 "quality"});
 
         // Create child nodes under parent 1
         TreeItem ltNtrChild1 = new TreeItem(ltNtrParent1, SWT.NONE);
-        ltNtrChild1.setText(new String[] {"idltntr3", "configId", "linkType", "nodeType",
+        ltNtrChild1.setText(new String[]{"idltntr3", "configId", "linkType", "nodeType",
                 "quality"});
 
         TreeItem ltNtrChild2 = new TreeItem(ltNtrParent1, SWT.NONE);
-        ltNtrChild2.setText(new String[] {"idltntr4", "configId", "linkType", "nodeType",
+        ltNtrChild2.setText(new String[]{"idltntr4", "configId", "linkType", "nodeType",
                 "quality"});
 
         // Create child nodes under parent 2
         TreeItem ltNtrChild3 = new TreeItem(ltNtrParent2, SWT.NONE);
-        ltNtrChild3.setText(new String[] {"idltntr5", "configId", "linkType", "nodeType",
+        ltNtrChild3.setText(new String[]{"idltntr5", "configId", "linkType", "nodeType",
                 "quality"});
 
         TreeItem ltNtrChild4 = new TreeItem(ltNtrParent2, SWT.NONE);
-        ltNtrChild4.setText(new String[] {"idltntr6", "configId", "linkType", "nodeType",
+        ltNtrChild4.setText(new String[]{"idltntr6", "configId", "linkType", "nodeType",
                 "quality"});
 
 

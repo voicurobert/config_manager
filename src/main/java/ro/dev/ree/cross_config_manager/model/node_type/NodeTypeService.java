@@ -3,6 +3,9 @@ package ro.dev.ree.cross_config_manager.model.node_type;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class NodeTypeService {
 
@@ -18,4 +21,15 @@ public class NodeTypeService {
         repository.save(nodeType);
     }
 
+
+    public List<NodeTypeDto> findAllByConfigId(String configId) {
+        return repository.findAll().stream().
+                filter(nodeType -> nodeType.getConfigId().equals(configId)).
+                map(nodeType -> {
+                    NodeTypeDto dto = new NodeTypeDto();
+                    BeanUtils.copyProperties(dto, nodeType);
+                    return dto;
+                }).
+                collect(Collectors.toList());
+    }
 }
