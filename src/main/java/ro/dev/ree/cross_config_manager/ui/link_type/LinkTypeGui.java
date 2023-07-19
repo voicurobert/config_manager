@@ -25,6 +25,7 @@ public class LinkTypeGui extends TableComposite {
         createCheckbox(parent);
 
         Table table = (Table) super.createContents(parent);
+        table.setToolTipText("LinkTypeTable");
 
         String[][] linkTypeData = {
                 {"idlt1", "configId", "discriminator", "name", "appIcon", "mapIcon",

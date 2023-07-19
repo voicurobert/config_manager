@@ -14,11 +14,14 @@ import java.util.List;
 
 public class NodeTypeGui extends TableComposite {
 
+    // De facut cu service la toate
     private final NodeTypeService nodeTypeService = ConfigManagerContextProvider.getBean(NodeTypeService.class);
 
     @Override
     public String[] columns() {
-        return new String[]{"Index", "Discriminator", "Name", "CapacityFull", "CapacityUnitName", "TypeClassPath", "RootType", "System", "MultiParent Allowed", "UniquenessType"};
+        return new String[]{"IdNT","ConfigId", "Discriminator", "Name", "AppIcon", "MapIcon",
+                "CapacityFull", "CapacityUnitName", "TypeClassPath",
+                "RootType", "System","MultiparentAllowed", "UniquenessType"};
     }
 
     @Override
@@ -28,9 +31,11 @@ public class NodeTypeGui extends TableComposite {
 
     @Override
     public Composite createContents(Composite parent) {
+
         createCheckbox(parent);
 
         Table table = (Table) super.createContents(parent);
+        table.setToolTipText("NodeTypeTable");
 
         List<NodeTypeDto> allByConfigId = nodeTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigId());
 
