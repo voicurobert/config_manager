@@ -24,12 +24,12 @@ public class ClassTypeService implements ServiceRepository {
 
     @Override
     public RecordDto insert(RecordDto recordDto) {
-        ClassType configType = new ClassType();
+        ClassType classType = new ClassType();
 
         ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
-        BeanUtils.copyProperties(classTypeDto, configType);
+        BeanUtils.copyProperties(classTypeDto, classType);
 
-        ClassType insert = repository.insert(configType);
+        ClassType insert = repository.insert(classType);
         classTypeDto.setId(insert.getId());
 
         return classTypeDto;
@@ -37,12 +37,12 @@ public class ClassTypeService implements ServiceRepository {
 
     @Override
     public RecordDto update(RecordDto recordDto) {
-        ClassType configType = new ClassType();
+        ClassType classType = new ClassType();
 
         ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
-        BeanUtils.copyProperties(classTypeDto, configType);
+        BeanUtils.copyProperties(classTypeDto, classType);
 
-        ClassType insert = repository.save(configType);
+        ClassType insert = repository.save(classType);
         classTypeDto.setId(insert.getId());
 
         return classTypeDto;
@@ -51,10 +51,10 @@ public class ClassTypeService implements ServiceRepository {
     @Override
     public void delete(RecordDto recordDto) {
         ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
-        ClassType configType = new ClassType();
-        BeanUtils.copyProperties(classTypeDto, configType);
+        ClassType classType = new ClassType();
+        BeanUtils.copyProperties(classTypeDto, classType);
 
-        repository.delete(configType);
+        repository.delete(classType);
     }
 
     @Override

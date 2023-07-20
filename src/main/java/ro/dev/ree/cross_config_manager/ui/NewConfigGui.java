@@ -54,8 +54,8 @@ public class NewConfigGui {
         Composite buttonComposite = new Composite(shell, SWT.NONE);
         buttonComposite.setLayout(secondLayout);
         Label secondLblText = new Label(shell, SWT.NONE);
+        secondLblText.setLayoutData(new RowData(375, SWT.DEFAULT));
 
-        
         Button cancelButton = new Button(buttonComposite, SWT.PUSH);
         cancelButton.setLayoutData(new RowData(width, height));
         cancelButton.setText("Back");
@@ -80,6 +80,7 @@ public class NewConfigGui {
 
                 if (text.getText().equals("")) {
                     secondLblText.setText("You have to set the config name in order to save it!");
+
                 } else {
                     ConfigDto configDto = new ConfigDto();
                     configDto.setName(text.getText());
