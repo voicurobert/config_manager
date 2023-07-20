@@ -3,6 +3,9 @@ package ro.dev.ree.cross_config_manager.model.class_type;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ClassTypeService {
 
@@ -29,5 +32,16 @@ public class ClassTypeService {
         ClassType configType = new ClassType();
         BeanUtils.copyProperties(classTypeDto, configType);
         repository.delete(configType);
+    }
+
+    public List<ClassTypeDto> findAllByConfigId(String configId) {
+        return repository.findAll().stream().
+                filter(classType -> classType.getConfigId().equals(configId)).
+                map(classType -> {
+                    ClassTypeDto dto = new ClassTypeDto();
+                    BeanUtils.copyProperties(dto, classType);
+                    return dto;
+                }).
+                collect(Collectors.toList());
     }
 }

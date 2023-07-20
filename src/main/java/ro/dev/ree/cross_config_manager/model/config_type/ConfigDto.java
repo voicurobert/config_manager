@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 public class ConfigDto {
 
-    private String configId;
+    private String id;
 
     private String name;
 }

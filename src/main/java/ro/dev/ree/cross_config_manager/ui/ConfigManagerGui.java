@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 public class ConfigManagerGui {
-
     public void createContents(Composite parent) {
         var mainLayout = new RowLayout();
         mainLayout.type = SWT.VERTICAL;
@@ -54,15 +53,24 @@ public class ConfigManagerGui {
 
             }
         });
+        //String var=NewConfigGui.a[0];
+
 
         Button viewConfigsButton = new Button(parent, SWT.PUSH);
         viewConfigsButton.setLayoutData(new RowData(width, height));
         viewConfigsButton.setText("View configs");
-
+        // Label lblText = new Label(parent, SWT.NONE );
         viewConfigsButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
+//                if(var==null){
+//
+//                    lblText.setText( "make a new config " );
+//
+//                }else {
+
                 viewConfigsButtonClicked();
+//                }
             }
 
             @Override
@@ -70,6 +78,7 @@ public class ConfigManagerGui {
 
             }
         });
+
 
         mainLayout.marginLeft = (Display.getCurrent().getBounds().width / 2) - 50;
         mainLayout.marginTop = (Display.getCurrent().getBounds().height / 2) - height * 3;
@@ -79,17 +88,20 @@ public class ConfigManagerGui {
         NewConfigGui newConfigGui = new NewConfigGui();
         newConfigGui.open();
     }
+
     public void loadConfigButtonClicked() {
         LoadConfigGui loadConfigGui = new LoadConfigGui();
         loadConfigGui.open();
     }
+
     public void viewConfigsButtonClicked() {
         ConfigListViewGui configListViewGui = new ConfigListViewGui();
         configListViewGui.open();
 
     }
 
-//    public void createContents(Composite parent) {
+}
+//public void createContents(Composite parent) {
 //        var mainLayout = new GridLayout();
 //        mainLayout.numColumns = 3;
 //
@@ -155,26 +167,26 @@ public class ConfigManagerGui {
 //            }
 //        });
 //
-////        var menu = new Menu(parent);
-////        parent.setMenu(menu);
-////
-////        var fileMenu = new Menu(menu);
-////
-////        var menuItem = new MenuItem(menu, SWT.CASCADE);
-////        menuItem.setText("File");
-////        menuItem.setMenu(fileMenu);
-////
-////        var menuItem2 = new MenuItem(fileMenu, SWT.NONE);
-////        menuItem2.setText("haha2");
-////
-////        var menuItem3 = new MenuItem(fileMenu, SWT.NONE);
-////        menuItem3.setText("haha2");
-////
-////        menu.setVisible(true);
+//        var menu = new Menu(parent);
+//        parent.setMenu(menu);
+//
+//        var fileMenu = new Menu(menu);
+//
+//        var menuItem = new MenuItem(menu, SWT.CASCADE);
+//        menuItem.setText("File");
+//        menuItem.setMenu(fileMenu);
+//
+//        var menuItem2 = new MenuItem(fileMenu, SWT.NONE);
+//        menuItem2.setText("haha2");
+//
+//        var menuItem3 = new MenuItem(fileMenu, SWT.NONE);
+//        menuItem3.setText("haha2");
+//
+//        menu.setVisible(true);
 //
 //
-////        var label = new Label(parent, SWT.NONE);
-////        label.setText("I'm an RWT standalone app running on Spring Boot. Pretty neat!");
+//        var label = new Label(parent, SWT.NONE);
+//        label.setText("I'm an RWT standalone app running on Spring Boot. Pretty neat!");
 //    }
-
-}
+//
+//}

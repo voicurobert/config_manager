@@ -4,12 +4,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
+import ro.dev.ree.cross_config_manager.model.class_type.ClassType;
+import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
 
 public class ClassTypeGui extends TableComposite {
+
+    private final ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
+
     @Override
     public String[] columns() {
-        return new String[]{"IdCT", "ConfigId", "Name", "Path", "ParentPath"};
+        return new String[]{"Index", "Name", "Path", "parentPath"};
     }
 
     @Override
@@ -22,15 +28,16 @@ public class ClassTypeGui extends TableComposite {
         createCheckbox(parent);
 
         Table table = (Table) super.createContents(parent);
-        table.setToolTipText("ClassTypeTable");
+        ClassType classType = new ClassType();
+        // List<ClassTypeDto> allByConfigId = classTypeService.findAllByConfigId(classType.getConfigId());
 
         String[][] classTypeData = {
-                {"idct1", "configId", "name", "path", "parentPath"},
-                {"idct2", "configId", "name", "path", "parentPath"},
-                {"idct3", "configId", "name", "path", "parentPath"},
-                {"idct4", "configId", "name", "path", "parentPath"},
-                {"idct5", "configId", "name", "path", "parentPath"},
-                {"idct6", "configId", "name", "path", "parentPath"}
+                {"idnt1", "Index", "Name", "Path", "parentPath"},
+                {"idnt2", "Index", "Name", "Path", "parentPath"},
+                {"idnt3", "Index", "Name", "Path", "parentPath"},
+                {"idnt4", "Index", "Name", "Path", "parentPath"},
+                {"idnt5", "Index", "Name", "Path", "parentPath"},
+                {"idnt6", "Index", "Name", "Path", "parentPath"}
         };
 
         for (String[] row : classTypeData) {
@@ -40,4 +47,6 @@ public class ClassTypeGui extends TableComposite {
 
         return table;
     }
+
+
 }

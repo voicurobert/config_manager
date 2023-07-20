@@ -3,32 +3,92 @@ package ro.dev.ree.cross_config_manager.ui;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
+import ro.dev.ree.cross_config_manager.model.config_type.Config;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigTypeService;
+
+import java.util.List;
 
 public class ConfigListViewGui {
     private Shell shell;
+    private ConfigTypeService configTypeService = ConfigManagerContextProvider.getBean(ConfigTypeService.class);
+
     public ConfigListViewGui() {
         shell = new Shell(Display.getCurrent(), SWT.NO_TRIM);
     }
 
     public void open() {
 
+        List<Config> listConfigName = configTypeService.findAll();
+        Config[] v = new Config[listConfigName.size()];
+
+        for (int i = 0; i < listConfigName.size(); i++) {
+            v[i] = listConfigName.get(i);
+        }
+
         shell.setMaximized(true);
         var mainLayout = new RowLayout();
         mainLayout.type = SWT.VERTICAL;
         mainLayout.center = true;
-        mainLayout.justify = true;
         mainLayout.fill = true;
-        mainLayout.spacing = 10;
-
+        mainLayout.spacing = 1;
+        int width = 150;
+        int height = 40;
         shell.setLayout(mainLayout);
 
+
+        Table configTypeTable = new Table(shell, SWT.BORDER | SWT.CENTER);
+
+        configTypeTable.setHeaderVisible(true);
+        configTypeTable.setLinesVisible(true);
+        configTypeTable.setLayoutData(new RowData(250, 150));
+        String[] NodeTypeRulesHeaders = {"Config name                                           "};
+
+        for (String header : NodeTypeRulesHeaders) {
+            TableColumn column = new TableColumn(configTypeTable, SWT.BORDER);
+            column.setText(header);
+        }
+
+
+        for (int i = 0; i < v.length; i++) {
+            TableItem item = new TableItem(configTypeTable, SWT.BORDER);
+            for (int j = 0; j < v.length; j++) {
+                item.setText(v[i].getName());
+            }
+        }
+
+        Menu menu = new Menu(configTypeTable);
+        configTypeTable.setMenu(menu);
+        var menuItem = new MenuItem(menu, SWT.NONE);
+        menuItem.setText("Config detail");
+
+
+        menuItem.addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent selectionEvent) {
+
+                configView();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent selectionEvent) {
+
+            }
+
+        });
+
+        for (TableColumn column : configTypeTable.getColumns()) {
+            column.pack();
+
+        }
+
+
         Button backToMainButton = new Button(shell, SWT.PUSH);
-
+        backToMainButton.setLayoutData(new RowData(width, height));
         backToMainButton.setText("Back to main menu");
-
-
         backToMainButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -41,6 +101,17 @@ public class ConfigListViewGui {
             }
         });
 
+
+        mainLayout.marginLeft = (Display.getCurrent().getBounds().width / 2) - 150;
+        mainLayout.marginTop = (Display.getCurrent().getBounds().height / 2) - height * 3;
         shell.open();
     }
+
+    public void configView() {
+        ConfigViewGui viewGui = new ConfigViewGui();
+        viewGui.open();
+
+    }
+
+
 }
