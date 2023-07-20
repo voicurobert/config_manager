@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.ui.utils.TreeComposite;
 
 public class NodeTypeRulesGui extends TreeComposite {
@@ -17,6 +18,11 @@ public class NodeTypeRulesGui extends TreeComposite {
     @Override
     public String treeName() {
         return "Node Types Rules";
+    }
+
+    @Override
+    public ServiceRepository getServiceRepository() {
+        return null;
     }
 
     @Override

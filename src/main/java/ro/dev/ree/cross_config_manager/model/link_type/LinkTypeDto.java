@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LinkTypeDto {
-
+    private String id;
     private String configId;
 
     private String discriminator;

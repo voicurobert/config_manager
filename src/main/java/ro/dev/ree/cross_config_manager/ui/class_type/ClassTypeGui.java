@@ -5,14 +5,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
+import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassType;
+import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
 import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
+
+import java.util.List;
 
 public class ClassTypeGui extends TableComposite {
 
     private final ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
+    public static final String TABLE_NAME = "Class Type";
 
     @Override
     public String[] columns() {
@@ -21,12 +26,12 @@ public class ClassTypeGui extends TableComposite {
 
     @Override
     public String tableName() {
-        return "Class Types";
+        return TABLE_NAME;
     }
 
     @Override
     public ServiceRepository getServiceRepository() {
-        return null;
+        return classTypeService;
     }
 
     @Override
@@ -34,22 +39,23 @@ public class ClassTypeGui extends TableComposite {
         createCheckbox(parent);
 
         Table table = (Table) super.createContents(parent);
-        ClassType classType = new ClassType();
-        // List<ClassTypeDto> allByConfigId = classTypeService.findAllByConfigId(classType.getConfigId());
+        table.setToolTipText("ClassTypeTable");
 
-        String[][] classTypeData = {
-                {"idnt1", "Index", "Name", "Path", "parentPath"},
-                {"idnt2", "Index", "Name", "Path", "parentPath"},
-                {"idnt3", "Index", "Name", "Path", "parentPath"},
-                {"idnt4", "Index", "Name", "Path", "parentPath"},
-                {"idnt5", "Index", "Name", "Path", "parentPath"},
-                {"idnt6", "Index", "Name", "Path", "parentPath"}
-        };
+        List<RecordDto> allByConfigId = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
-        for (String[] row : classTypeData) {
+        for (int i = 0; i < allByConfigId.size(); i++) {
+            ClassTypeDto classTypeDto = (ClassTypeDto) allByConfigId.get(i);
+            String[] vec = new String[columns().length];
+            vec[0] = classTypeDto.getId();
+            vec[1] = classTypeDto.getConfigId();
+            vec[2] = classTypeDto.getName();
+            vec[3] = classTypeDto.getPath();
+            vec[4] = classTypeDto.getParentPath();
+
             TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(row);
+            item.setText(vec);
         }
+
 
         return table;
     }

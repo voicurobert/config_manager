@@ -8,6 +8,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
+import ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules.LinkTypeNodeTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 
 public class ModifyElementDialog extends Dialog {
@@ -133,7 +134,8 @@ public class ModifyElementDialog extends Dialog {
         switch (tableName) {
             case NodeTypeGui.TABLE_NAME:
                 serviceRepository.insert(NodeTypeDto.newFromItems(columnValues));
-                //case LinkTypeGui.TABLE_NAME:
+            case LinkTypeNodeTypeRulesGui.TREE_NAME:
+                serviceRepository.insert(NodeTypeDto.newFromItems(columnValues));
         }
     }
 }

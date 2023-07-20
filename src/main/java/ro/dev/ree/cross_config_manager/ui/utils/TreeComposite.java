@@ -6,6 +6,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
+import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 
 public abstract class TreeComposite implements Drawable {
 
@@ -16,6 +17,9 @@ public abstract class TreeComposite implements Drawable {
     public abstract String[] columns();
 
     public abstract String treeName();
+
+    public abstract ServiceRepository getServiceRepository();
+
 
     @Override
     public Composite createContents(Composite parent) {
@@ -37,7 +41,7 @@ public abstract class TreeComposite implements Drawable {
         tree.setMenu(menu);
         Menu fileMenu = new Menu(menu);
         MenuItem menuHeadline = new MenuItem(menu, SWT.CASCADE);
-        menuHeadline.setText(treeName() +" Menu");
+        menuHeadline.setText(treeName() + " Menu");
         menuHeadline.setMenu(fileMenu);
         MenuItem addMenu = new MenuItem(fileMenu, SWT.PUSH);
         addMenu.setText("Add new " + treeName());
@@ -52,7 +56,9 @@ public abstract class TreeComposite implements Drawable {
         addMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ModifyElementDialog dialog = new ModifyElementDialog(tree.getParent().getShell(),tree,"Add");
+                ModifyElementDialog dialog = new ModifyElementDialog(tree.getParent().getShell(), tree, "Add");
+                dialog.setServiceRepository(getServiceRepository());
+
                 dialog.open();
             }
 
@@ -64,7 +70,7 @@ public abstract class TreeComposite implements Drawable {
         updateMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ModifyElementDialog dialog = new ModifyElementDialog(tree.getParent().getShell(),tree,"Update");
+                ModifyElementDialog dialog = new ModifyElementDialog(tree.getParent().getShell(), tree, "Update");
                 dialog.open();
             }
 
@@ -77,7 +83,7 @@ public abstract class TreeComposite implements Drawable {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 TreeItem[] treeItems = tree.getSelection();
-                for (TreeItem treeitem:treeItems) {
+                for (TreeItem treeitem : treeItems) {
                     treeitem.removeAll(); // Remove all childrens
                     treeitem.dispose();   // Remove actual parent
                 }
@@ -104,5 +110,10 @@ public abstract class TreeComposite implements Drawable {
             }
         });
         button.setSelection(false);
+    }
+
+    protected void delete(int[] index) {
+        tree.removeAll();
+        tree.pack();
     }
 }
