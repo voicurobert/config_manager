@@ -6,6 +6,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 
 public class ModifyElementDialog extends Dialog {
 
@@ -16,6 +17,8 @@ public class ModifyElementDialog extends Dialog {
     private Shell shell;
     private Text[] inputTexts;
     private String action;
+
+    private ServiceRepository serviceRepository;
 
     public ModifyElementDialog(Shell parent, Table table, String action) {
         super(parent, SWT.APPLICATION_MODAL);
