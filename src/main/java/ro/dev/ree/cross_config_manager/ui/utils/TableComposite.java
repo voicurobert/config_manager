@@ -75,7 +75,7 @@ public abstract class TableComposite implements Drawable {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 table.remove(table.getSelectionIndices());
-                for (TableColumn column : table.getColumns()) column.pack();
+                table.pack();
             }
 
             @Override

@@ -8,6 +8,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.ui.utils.Drawable;
 
 public class ConfigViewGui {
@@ -29,8 +30,7 @@ public class ConfigViewGui {
         scrolledComposite.setAlwaysShowScrollBars(true);
 
         Label title = new Label(composite, SWT.CENTER);
-        //title.setText("CROSS Config - " + ConfigSingleton.getSingleton().getConfig().getName());
-        title.setText("CROSS Config - ");
+        title.setText("CROSS Config - " + ConfigSingleton.getSingleton().getConfigDto().getName());
         title.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
 
         ConfigManagerComposites composites = new ConfigManagerComposites();

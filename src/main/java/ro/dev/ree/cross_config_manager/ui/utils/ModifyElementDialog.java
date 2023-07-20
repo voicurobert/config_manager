@@ -9,25 +9,10 @@ import org.eclipse.swt.widgets.*;
 
 public class ModifyElementDialog extends Dialog {
 
-    private Composite control; // either tree or table
-
-    private Table table;
-    private Tree tree;
+    private final Composite control; // either tree or table
     private Shell shell;
     private Text[] inputTexts;
-    private String action;
-
-    public ModifyElementDialog(Shell parent, Table table, String action) {
-        super(parent, SWT.APPLICATION_MODAL);
-        this.table = table;
-        this.action = action;
-    }
-
-    public ModifyElementDialog(Shell parent, Tree tree, String action) {
-        super(parent, SWT.APPLICATION_MODAL);
-        this.tree = tree;
-        this.action = action;
-    }
+    private final String action;
 
     public ModifyElementDialog(Shell parent, Composite composite, String action) {
         super(parent, SWT.APPLICATION_MODAL);
@@ -54,110 +39,80 @@ public class ModifyElementDialog extends Dialog {
         composite.setLayout(layout);
 
         // Get the selected item in the table or tree
-        TableItem tableSelectedItem;
-        TreeItem treeSelectedItem;
-        if (table != null) {
-            tableSelectedItem = table.getSelection()[0];
+        Widget selectedItem;
+        int numColumns;
 
-            // Get the number of columns in the table
-            int numColumns = table.getColumnCount();
+        selectedItem = (control instanceof Table) ? ((Table) control).getSelection()[0] : ((Tree) control).getSelection()[0];
+        numColumns =  (control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount();
 
-            // Create an array of Text for each column of the selected item
-            inputTexts = new Text[numColumns];
-            for (int i = 0; i < numColumns; i++) {
-                Label label = new Label(composite, SWT.NONE);
-                label.setText(table.getColumn(i).getText() + ":");
+        // Create an array of Text for each column of the selected item
+        inputTexts = new Text[numColumns];
+        for (int i = 0; i < numColumns; i++) {
+            Label label = new Label(composite, SWT.NONE);
+            label.setText((control instanceof Table) ? ((Table) control).getColumn(i).getText() + ":" : ((Tree) control).getColumn(i).getText() + ":");
+            inputTexts[i] = new Text(composite, SWT.BORDER);
+            inputTexts[i].setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-                inputTexts[i] = new Text(composite, SWT.BORDER);
-                inputTexts[i].setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-
-                // Set initial value for Text Input
-                if (action == "Update")
-                    inputTexts[i].setText(tableSelectedItem.getText(i));
-            }
-
-            Button actionButton = new Button(composite, SWT.PUSH);
-            actionButton.setText((action == "Update") ? "Update" : "Add");
-            actionButton.addListener(SWT.Selection, event -> handleAction(tableSelectedItem, action));
-        } else if (tree != null) {
-            treeSelectedItem = tree.getSelection()[0];
-
-            // Get the number of columns in the table
-            int numColumns = tree.getColumnCount();
-
-            // Create an array of Text for each column of the selected item
-            inputTexts = new Text[numColumns];
-            for (int i = 0; i < numColumns; i++) {
-                Label label = new Label(composite, SWT.NONE);
-                label.setText(tree.getColumn(i).getText() + ":");
-
-                inputTexts[i] = new Text(composite, SWT.BORDER);
-                inputTexts[i].setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-            }
-
-            Button actionButton = new Button(composite, SWT.PUSH);
-            actionButton.setText((action == "Update") ? "Update" : "Add");
-            actionButton.addListener(SWT.Selection, event -> handleAction(treeSelectedItem, action));
+            // Set initial value for Text Input
+            if (action.equals("Update"))
+                inputTexts[i].setText((selectedItem instanceof TableItem) ? ((TableItem) selectedItem).getText(i) : ((TreeItem) selectedItem).getText(i));
         }
+
+        Button actionButton = new Button(composite, SWT.PUSH);
+        actionButton.setText((action.equals("Update")) ? "Update" : "Add");
+        actionButton.addListener(SWT.Selection, event -> handleAction(selectedItem, action));
 
         Button cancelButton = new Button(composite, SWT.PUSH);
         cancelButton.setText("Cancel");
         cancelButton.addListener(SWT.Selection, event -> shell.close());
-
     }
 
-    private void handleAction(TableItem selectedItem, String action) {
-        if (inputTexts != null) {
-            if (action == "Add") {
-                String[] items = new String[table.getColumnCount()];
-                for (int i = 0; i < inputTexts.length; i++) {
-                    items[i] = inputTexts[i].getText().trim();
-                }
-                TableItem tableItem = new TableItem(table, SWT.NONE);
-                tableItem.setText(items);
-                for (TableColumn column : table.getColumns()) column.pack();
-            } else {
-                for (int i = 0; i < inputTexts.length; i++) {
-                    String text = inputTexts[i].getText().trim();
-                    selectedItem.setText(i, text);
-                }
-                for (TableColumn column : table.getColumns()) column.pack();
-            }
-        }
-        shell.close();
-    }
-
-    private void handleAction(TreeItem selectedItem, String action) {
+    private void handleAction(Widget selectedItem, String action) {
         if (inputTexts == null) {
             return;
         }
-
         if (action.equals("Add")) {
-            String[] items = new String[tree.getColumnCount()];
+            String[] items = new String[(control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount()];
             for (int i = 0; i < inputTexts.length; i++) {
                 items[i] = inputTexts[i].getText().trim();
             }
-
-//            if (control instanceof Tree) {
-//                TreeItem treeItem = new TreeItem(tree, SWT.NONE);
-//                treeItem.setText(items);
-//            } else {
-//                TableItem tableItem = new TableItem(table, SWT.NONE);
-//                tableItem.setText(items);
-//            }
-
-
-            for (TreeColumn column : tree.getColumns()) {
-                column.pack();
+            Widget newItem;
+            if ((selectedItem instanceof TableItem)) {
+                assert control instanceof Table;
+                newItem = new TableItem((Table) control, SWT.NONE);
+            } else {
+                assert control instanceof Tree;
+                newItem = new TreeItem((Tree) control, SWT.NONE);
+            }
+            if(selectedItem instanceof TableItem){
+                ((TableItem) newItem).setText(items);
+                for (TableColumn column : ((Table) control).getColumns()) {
+                    column.pack();
+                }
+            } else {
+                ((TreeItem) newItem).setText(items);
+                for (TreeColumn column : ((Tree) control).getColumns()) {
+                    column.pack();
+                }
             }
         } else {
             for (int i = 0; i < inputTexts.length; i++) {
                 String text = inputTexts[i].getText().trim();
-                selectedItem.setText(i, text);
+                if(selectedItem instanceof TableItem){
+                    ((TableItem) selectedItem).setText(i,text);
+                } else {
+                    ((TreeItem) selectedItem).setText(i,text);
+                }
             }
-            for (TreeColumn column : tree.getColumns()) column.pack();
+            if(selectedItem instanceof TableItem){
+                for (TableColumn column : ((Table) control).getColumns()) {
+                    column.pack();
+                }
+            } else {
+                for (TreeColumn column : ((Tree) control).getColumns()) {
+                    column.pack();
+                }
+            }
         }
-
     }
-
 }

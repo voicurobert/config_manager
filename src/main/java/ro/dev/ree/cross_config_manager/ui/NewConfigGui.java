@@ -86,6 +86,8 @@ public class NewConfigGui {
                     configDto = configTypeService.save(configDto);
                     ConfigSingleton.getSingleton().setConfigDto(configDto);
                     text.setText("");
+                    ConfigViewGui configViewGUI = new ConfigViewGui();
+                    configViewGUI.open();
                 }
             }
 

@@ -34,8 +34,9 @@ public class LoadConfigGui {
         toConfigViewButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ConfigViewGui configViewGUI = new ConfigViewGui();
-                configViewGUI.open();
+//                ConfigViewGui configViewGUI = new ConfigViewGui();
+//                configViewGUI.open();
+
             }
 
             @Override

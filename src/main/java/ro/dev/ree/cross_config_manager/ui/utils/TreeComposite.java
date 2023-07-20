@@ -81,7 +81,7 @@ public abstract class TreeComposite implements Drawable {
                     treeitem.removeAll(); // Remove all childrens
                     treeitem.dispose();   // Remove actual parent
                 }
-                for (TreeColumn column : tree.getColumns()) column.pack();
+                tree.pack();
             }
 
             @Override
