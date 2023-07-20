@@ -2,12 +2,14 @@ package ro.dev.ree.cross_config_manager.model.node_type;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import ro.dev.ree.cross_config_manager.model.RecordDto;
+import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class NodeTypeService {
+public class NodeTypeService implements ServiceRepository {
 
     private final NodeTypeRepository repository;
 
@@ -22,7 +24,27 @@ public class NodeTypeService {
     }
 
 
-    public List<NodeTypeDto> findAllByConfigId(String configId) {
+    @Override
+    public RecordDto insert(RecordDto recordDto) {
+        return null;
+    }
+
+    @Override
+    public RecordDto update(RecordDto recordDto) {
+        return null;
+    }
+
+    @Override
+    public void delete(RecordDto recordDto) {
+
+    }
+
+    @Override
+    public List<RecordDto> findAll() {
+        return null;
+    }
+
+    public List<RecordDto> findAllByConfigId(String configId) {
         return repository.findAll().stream().
                 filter(nodeType -> nodeType.getConfigId().equals(configId)).
                 map(nodeType -> {

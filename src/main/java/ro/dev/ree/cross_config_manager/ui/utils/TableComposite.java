@@ -6,6 +6,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
+import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 
 public abstract class TableComposite implements Drawable {
 
@@ -17,9 +18,12 @@ public abstract class TableComposite implements Drawable {
 
     public abstract String tableName();
 
+    public abstract ServiceRepository getServiceRepository();
+
     public Composite createContents(Composite parent) {
         table = new Table(parent, SWT.BORDER | SWT.CENTER);
         table.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
+
 
         table.setToolTipText(tableName());
         table.setHeaderVisible(true);
@@ -35,7 +39,7 @@ public abstract class TableComposite implements Drawable {
         table.setMenu(menu);
         Menu fileMenu = new Menu(menu);
         MenuItem menuHeadline = new MenuItem(menu, SWT.CASCADE);
-        menuHeadline.setText(tableName() +" Menu");
+        menuHeadline.setText(tableName() + " Menu");
         menuHeadline.setMenu(fileMenu);
         MenuItem addMenu = new MenuItem(fileMenu, SWT.PUSH);
         addMenu.setText("Add new " + tableName());
@@ -50,7 +54,8 @@ public abstract class TableComposite implements Drawable {
         addMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ModifyElementDialog dialog = new ModifyElementDialog(table.getParent().getShell(),table,"Add");
+                ModifyElementDialog dialog = new ModifyElementDialog(table.getParent().getShell(), table, "Add");
+                dialog.setServiceRepository(getServiceRepository());
                 dialog.open();
             }
 
@@ -62,8 +67,8 @@ public abstract class TableComposite implements Drawable {
         updateMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-               ModifyElementDialog dialog = new ModifyElementDialog(table.getParent().getShell(),table,"Update");
-               dialog.open();
+                ModifyElementDialog dialog = new ModifyElementDialog(table.getParent().getShell(), table, "Update");
+                dialog.open();
             }
 
             @Override
@@ -74,8 +79,7 @@ public abstract class TableComposite implements Drawable {
         deleteMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                table.remove(table.getSelectionIndices());
-                table.pack();
+                delete(table.getSelectionIndices());
             }
 
             @Override
@@ -100,6 +104,8 @@ public abstract class TableComposite implements Drawable {
         button.setSelection(false);
     }
 
-
-
+    public void delete(int[] index) {
+        table.remove(index);
+        table.pack();
+    }
 }

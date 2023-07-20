@@ -5,6 +5,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
+import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.class_type.ClassType;
 import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
@@ -21,6 +22,11 @@ public class ClassTypeGui extends TableComposite {
     @Override
     public String tableName() {
         return "Class Types";
+    }
+
+    @Override
+    public ServiceRepository getServiceRepository() {
+        return null;
     }
 
     @Override

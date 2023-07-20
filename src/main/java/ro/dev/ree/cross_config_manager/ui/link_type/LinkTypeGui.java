@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
 
 public class LinkTypeGui extends TableComposite {
@@ -18,6 +19,11 @@ public class LinkTypeGui extends TableComposite {
     @Override
     public String tableName() {
         return "Link Types";
+    }
+
+    @Override
+    public ServiceRepository getServiceRepository() {
+        return null;
     }
 
     @Override

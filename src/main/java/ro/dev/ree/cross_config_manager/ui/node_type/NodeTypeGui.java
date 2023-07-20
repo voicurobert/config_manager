@@ -5,6 +5,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
+import ro.dev.ree.cross_config_manager.model.RecordDto;
+import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
@@ -13,6 +15,8 @@ import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
 import java.util.List;
 
 public class NodeTypeGui extends TableComposite {
+
+    public static final String TABLE_NAME = "Node Type";
 
     // De facut cu service la toate
     private final NodeTypeService nodeTypeService = ConfigManagerContextProvider.getBean(NodeTypeService.class);
@@ -26,7 +30,12 @@ public class NodeTypeGui extends TableComposite {
 
     @Override
     public String tableName() {
-        return "Node Types";
+        return TABLE_NAME;
+    }
+
+    @Override
+    public ServiceRepository getServiceRepository() {
+        return nodeTypeService;
     }
 
     @Override
@@ -36,10 +45,10 @@ public class NodeTypeGui extends TableComposite {
 
         Table table = (Table) super.createContents(parent);
 
-        List<NodeTypeDto> allByConfigId = nodeTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        List<RecordDto> allByConfigId = nodeTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
         for (int i = 0; i < allByConfigId.size(); i++) {
-            NodeTypeDto nodeTypeDto = allByConfigId.get(i);
+            NodeTypeDto nodeTypeDto = (NodeTypeDto) allByConfigId.get(i);
 
             String[] vec = new String[columns().length];
             vec[0] = nodeTypeDto.getId();
@@ -63,5 +72,10 @@ public class NodeTypeGui extends TableComposite {
         return table;
     }
 
-
+    @Override
+    public void delete(int[] index) {
+        super.delete(index);
+        // get record based on index and delete it\
+        //nodeTypeService.delete();
+    }
 }

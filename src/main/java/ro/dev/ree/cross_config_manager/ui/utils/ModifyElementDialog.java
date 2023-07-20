@@ -6,6 +6,9 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
+import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 
 public class ModifyElementDialog extends Dialog {
 
@@ -14,10 +17,16 @@ public class ModifyElementDialog extends Dialog {
     private Text[] inputTexts;
     private final String action;
 
+    private ServiceRepository serviceRepository;
+
     public ModifyElementDialog(Shell parent, Composite composite, String action) {
         super(parent, SWT.APPLICATION_MODAL);
         this.control = composite;
         this.action = action;
+    }
+
+    public void setServiceRepository(ServiceRepository serviceRepository) {
+        this.serviceRepository = serviceRepository;
     }
 
     public void open() {
@@ -43,7 +52,7 @@ public class ModifyElementDialog extends Dialog {
         int numColumns;
 
         selectedItem = (control instanceof Table) ? ((Table) control).getSelection()[0] : ((Tree) control).getSelection()[0];
-        numColumns =  (control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount();
+        numColumns = (control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount();
 
         // Create an array of Text for each column of the selected item
         inputTexts = new Text[numColumns];
@@ -71,6 +80,7 @@ public class ModifyElementDialog extends Dialog {
         if (inputTexts == null) {
             return;
         }
+
         if (action.equals("Add")) {
             String[] items = new String[(control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount()];
             for (int i = 0; i < inputTexts.length; i++) {
@@ -80,11 +90,14 @@ public class ModifyElementDialog extends Dialog {
             if ((selectedItem instanceof TableItem)) {
                 assert control instanceof Table;
                 newItem = new TableItem((Table) control, SWT.NONE);
+
+                insertRecord(control.getToolTipText(), items);
+
             } else {
                 assert control instanceof Tree;
                 newItem = new TreeItem((Tree) control, SWT.NONE);
             }
-            if(selectedItem instanceof TableItem){
+            if (selectedItem instanceof TableItem) {
                 ((TableItem) newItem).setText(items);
                 for (TableColumn column : ((Table) control).getColumns()) {
                     column.pack();
@@ -98,13 +111,13 @@ public class ModifyElementDialog extends Dialog {
         } else {
             for (int i = 0; i < inputTexts.length; i++) {
                 String text = inputTexts[i].getText().trim();
-                if(selectedItem instanceof TableItem){
-                    ((TableItem) selectedItem).setText(i,text);
+                if (selectedItem instanceof TableItem) {
+                    ((TableItem) selectedItem).setText(i, text);
                 } else {
-                    ((TreeItem) selectedItem).setText(i,text);
+                    ((TreeItem) selectedItem).setText(i, text);
                 }
             }
-            if(selectedItem instanceof TableItem){
+            if (selectedItem instanceof TableItem) {
                 for (TableColumn column : ((Table) control).getColumns()) {
                     column.pack();
                 }
@@ -113,6 +126,14 @@ public class ModifyElementDialog extends Dialog {
                     column.pack();
                 }
             }
+        }
+    }
+
+    private void insertRecord(String tableName, String[] columnValues) {
+        switch (tableName) {
+            case NodeTypeGui.TABLE_NAME:
+                serviceRepository.insert(NodeTypeDto.newFromItems(columnValues));
+                //case LinkTypeGui.TABLE_NAME:
         }
     }
 }
