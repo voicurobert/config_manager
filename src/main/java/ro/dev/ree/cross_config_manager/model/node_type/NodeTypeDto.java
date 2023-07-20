@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NodeTypeDto {
 
+    private String id;
     private String configId;
 
     private String discriminator;

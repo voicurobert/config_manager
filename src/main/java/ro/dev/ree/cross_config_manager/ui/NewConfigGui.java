@@ -1,29 +1,26 @@
 package ro.dev.ree.cross_config_manager.ui;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigDto;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigTypeService;
 
 
 public class NewConfigGui {
 
-    private Shell shell;
+    private final Shell shell;
+    private final ConfigTypeService configTypeService = ConfigManagerContextProvider.getBean(ConfigTypeService.class);
+
 
     public NewConfigGui() {
         shell = new Shell(Display.getCurrent(), SWT.NO_TRIM);
-
     }
-
-    private ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
-    private ConfigTypeService configTypeService = ConfigManagerContextProvider.getBean(ConfigTypeService.class);
 
     public void open() {
         shell.setMaximized(true);
@@ -42,7 +39,6 @@ public class NewConfigGui {
         int width = 150;
         int height = 40;
 
-
         mainLayout.marginLeft = (Display.getCurrent().getBounds().width / 2) - 140;
         mainLayout.marginTop = (Display.getCurrent().getBounds().height / 2) - height * 5;
 
@@ -55,19 +51,19 @@ public class NewConfigGui {
         Text text = new Text(shell, SWT.BORDER);
         text.setLayoutData(new RowData(100, SWT.DEFAULT));
 
-        Composite butoonComposite = new Composite(shell, SWT.NONE);
-        butoonComposite.setLayout(secondLayout);
+        Composite buttonComposite = new Composite(shell, SWT.NONE);
+        buttonComposite.setLayout(secondLayout);
         Label secondLblText = new Label(shell, SWT.NONE);
-        Button cancelButton = new Button(butoonComposite, SWT.PUSH);
+
+        
+        Button cancelButton = new Button(buttonComposite, SWT.PUSH);
         cancelButton.setLayoutData(new RowData(width, height));
         cancelButton.setText("Back");
         cancelButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 shell.dispose();
-
             }
-
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -75,62 +71,30 @@ public class NewConfigGui {
             }
         });
 
-
-        Button saveButton = new Button(butoonComposite, SWT.PUSH);
+        Button saveButton = new Button(buttonComposite, SWT.PUSH);
         saveButton.setLayoutData(new RowData(width, height));
-        saveButton.setText("save");
+        saveButton.setText("Save");
         saveButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
 
-                ConfigDto configDto = new ConfigDto();
-                if (text.getText() == "") {
-
-                    secondLblText.setText("write something");
-                    //classTypeDto.setName("nothing");
+                if (text.getText().equals("")) {
+                    secondLblText.setText("You have to set the config name in order to save it!");
                 } else {
-                    secondLblText.setText("you've set the config name");
-
+                    ConfigDto configDto = new ConfigDto();
                     configDto.setName(text.getText());
                     configDto = configTypeService.save(configDto);
-
-
+                    ConfigSingleton.getSingleton().setConfigDto(configDto);
                     text.setText("");
-
                 }
-                //shell.dispose();
-
             }
-
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
 
             }
         });
-
-
         shell.open();
-
     }
-
-
-    public void createContents(Composite parent) {
-        SashForm sashForm = new SashForm(parent, 256);
-        var mainLayout = new RowLayout();
-        mainLayout.type = SWT.VERTICAL;
-        mainLayout.center = true;
-        mainLayout.justify = true;
-        mainLayout.fill = true;
-
-
-        parent.setLayout(mainLayout);
-
-//        Button newConfigButton = new Button(parent, SWT.PUSH);
-//        newConfigButton.setText("New config222");
-        var label = new Label(parent, SWT.NONE);
-        label.setText("Add a new config");
-    }
-
 
 }

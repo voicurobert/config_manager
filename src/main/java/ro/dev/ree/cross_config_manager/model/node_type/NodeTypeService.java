@@ -32,4 +32,8 @@ public class NodeTypeService {
                 }).
                 collect(Collectors.toList());
     }
+
+//    public List<NodeTypeDto> findAllByConfigIdNew(String configId) {
+//        repository.findAll(ExampleMatcher.)
+//    }
 }

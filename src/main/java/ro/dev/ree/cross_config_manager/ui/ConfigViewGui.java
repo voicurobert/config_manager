@@ -29,6 +29,7 @@ public class ConfigViewGui {
         scrolledComposite.setAlwaysShowScrollBars(true);
 
         Label title = new Label(composite, SWT.CENTER);
+        //title.setText("CROSS Config - " + ConfigSingleton.getSingleton().getConfig().getName());
         title.setText("CROSS Config - ");
         title.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
 

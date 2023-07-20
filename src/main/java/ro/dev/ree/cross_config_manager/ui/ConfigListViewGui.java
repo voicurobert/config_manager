@@ -13,15 +13,14 @@ import ro.dev.ree.cross_config_manager.model.config_type.ConfigTypeService;
 import java.util.List;
 
 public class ConfigListViewGui {
-    private Shell shell;
-    private ConfigTypeService configTypeService = ConfigManagerContextProvider.getBean(ConfigTypeService.class);
+    private final Shell shell;
+    private final ConfigTypeService configTypeService = ConfigManagerContextProvider.getBean(ConfigTypeService.class);
 
     public ConfigListViewGui() {
         shell = new Shell(Display.getCurrent(), SWT.NO_TRIM);
     }
 
     public void open() {
-
         List<Config> listConfigName = configTypeService.findAll();
         Config[] v = new Config[listConfigName.size()];
 
@@ -45,11 +44,12 @@ public class ConfigListViewGui {
         configTypeTable.setHeaderVisible(true);
         configTypeTable.setLinesVisible(true);
         configTypeTable.setLayoutData(new RowData(250, 150));
-        String[] NodeTypeRulesHeaders = {"Config name                                           "};
+        String[] NodeTypeRulesHeaders = {"Config name"};
 
         for (String header : NodeTypeRulesHeaders) {
             TableColumn column = new TableColumn(configTypeTable, SWT.BORDER);
             column.setText(header);
+            column.pack();
         }
 
 
@@ -69,7 +69,8 @@ public class ConfigListViewGui {
         menuItem.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent selectionEvent) {
-
+                // TODO get table selection and save config object to ConfigSingleton
+                //ConfigSingleton.getSingleton().setConfig();
                 configView();
             }
 

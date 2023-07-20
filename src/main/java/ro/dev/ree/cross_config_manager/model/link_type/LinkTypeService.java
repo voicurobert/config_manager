@@ -18,7 +18,7 @@ public class LinkTypeService {
         BeanUtils.copyProperties(linkTypeDto, linkType);
 
         // sets the config id for this link type object
-        linkType.setConfigId(ConfigSingleton.getSingleton().getConfigId());
+        linkType.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
         return repository.save(linkType);
     }

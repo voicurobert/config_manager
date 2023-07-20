@@ -4,7 +4,7 @@ public class ConfigSingleton {
 
     private static ConfigSingleton singleton;
 
-    private String configId;
+    private ConfigDto config;
 
     private ConfigSingleton() {
 
@@ -17,11 +17,12 @@ public class ConfigSingleton {
         return singleton;
     }
 
-    public String getConfigId() {
-        return configId;
+    public ConfigDto getConfigDto() {
+        return config;
     }
 
-    public void setConfigId(String configId) {
-        this.configId = configId;
+    public void setConfigDto(ConfigDto config) {
+        this.config = config;
     }
+
 }

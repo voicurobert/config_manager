@@ -20,10 +20,8 @@ public class ConfigTypeService {
         BeanUtils.copyProperties(configDto, configType);
         Config config = repository.save(configType);
         configDto.setId(config.getId());
-        ConfigSingleton.getSingleton().setConfigId(config.getId());
 
         return configDto;
-
     }
 
     public void update(ConfigDto configDto) {
@@ -40,7 +38,6 @@ public class ConfigTypeService {
     }
 
     public List<Config> findAll() {
-
         return repository.findAll();
     }
 

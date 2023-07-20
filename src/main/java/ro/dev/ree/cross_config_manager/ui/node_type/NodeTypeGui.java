@@ -19,9 +19,9 @@ public class NodeTypeGui extends TableComposite {
 
     @Override
     public String[] columns() {
-        return new String[]{"IdNT","ConfigId", "Discriminator", "Name", "AppIcon", "MapIcon",
+        return new String[]{"IdNT", "ConfigId", "Discriminator", "Name", "AppIcon", "MapIcon",
                 "CapacityFull", "CapacityUnitName", "TypeClassPath",
-                "RootType", "System","MultiparentAllowed", "UniquenessType"};
+                "RootType", "System", "MultiparentAllowed", "UniquenessType"};
     }
 
     @Override
@@ -35,34 +35,29 @@ public class NodeTypeGui extends TableComposite {
         createCheckbox(parent);
 
         Table table = (Table) super.createContents(parent);
-        table.setToolTipText("NodeTypeTable");
 
-        List<NodeTypeDto> allByConfigId = nodeTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigId());
+        List<NodeTypeDto> allByConfigId = nodeTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
-        String[][] nodeTypeData = {
-                {"idnt1", "configId", "discriminator", "name", "appIcon", "mapIcon",
-                        "capacityFull", "capacityUnitName", "typeClassPath",
-                        "rootType", "system", "multiparentAllowed", "uniquenessType"},
-                {"idnt2", "configId", "discriminator", "name", "appIcon", "mapIcon",
-                        "capacityFull", "capacityUnitName", "typeClassPath",
-                        "rootType", "system", "multiparentAllowed", "uniquenessType"},
-                {"idnt3", "configId", "discriminator", "name", "appIcon", "mapIcon",
-                        "capacityFull", "capacityUnitName", "typeClassPath",
-                        "rootType", "system", "multiparentAllowed", "uniquenessType"},
-                {"idnt4", "configId", "discriminator", "name", "appIcon", "mapIcon",
-                        "capacityFull", "capacityUnitName", "typeClassPath",
-                        "rootType", "system", "multiparentAllowed", "uniquenessType"},
-                {"idnt5", "configId", "discriminator", "name", "appIcon", "mapIcon",
-                        "capacityFull", "capacityUnitName", "typeClassPath",
-                        "rootType", "system", "multiparentAllowed", "uniquenessType"},
-                {"idnt6", "configId", "discriminator", "name", "appIcon", "mapIcon",
-                        "capacityFull", "capacityUnitName", "typeClassPath",
-                        "rootType", "system", "multiparentAllowed", "uniquenessType"}
-        };
+        for (int i = 0; i < allByConfigId.size(); i++) {
+            NodeTypeDto nodeTypeDto = allByConfigId.get(i);
 
-        for (String[] row : nodeTypeData) {
+            String[] vec = new String[columns().length];
+            vec[0] = nodeTypeDto.getId();
+            vec[1] = nodeTypeDto.getConfigId();
+            vec[2] = nodeTypeDto.getDiscriminator();
+            vec[3] = nodeTypeDto.getName();
+            vec[4] = nodeTypeDto.getAppIcon();
+            vec[5] = nodeTypeDto.getMapIcon();
+            vec[6] = nodeTypeDto.getCapacityFull();
+            vec[7] = nodeTypeDto.getCapacityUnitName();
+            vec[8] = nodeTypeDto.getTypeClassPath();
+            vec[9] = nodeTypeDto.getRootType();
+            vec[10] = nodeTypeDto.getSystem();
+            vec[11] = nodeTypeDto.getMultiparentAllowed();
+            vec[12] = nodeTypeDto.getUniquenessType();
+
             TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(row);
+            item.setText(vec);
         }
 
         return table;

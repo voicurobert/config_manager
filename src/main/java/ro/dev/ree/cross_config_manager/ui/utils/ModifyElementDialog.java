@@ -8,6 +8,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 public class ModifyElementDialog extends Dialog {
+
+    private Composite control; // either tree or table
+
     private Table table;
     private Tree tree;
     private Shell shell;
@@ -19,11 +22,19 @@ public class ModifyElementDialog extends Dialog {
         this.table = table;
         this.action = action;
     }
+
     public ModifyElementDialog(Shell parent, Tree tree, String action) {
         super(parent, SWT.APPLICATION_MODAL);
         this.tree = tree;
         this.action = action;
     }
+
+    public ModifyElementDialog(Shell parent, Composite composite, String action) {
+        super(parent, SWT.APPLICATION_MODAL);
+        this.control = composite;
+        this.action = action;
+    }
+
     public void open() {
         shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         shell.setText("Modify Items Dialog");
@@ -45,7 +56,7 @@ public class ModifyElementDialog extends Dialog {
         // Get the selected item in the table or tree
         TableItem tableSelectedItem;
         TreeItem treeSelectedItem;
-        if(table != null){
+        if (table != null) {
             tableSelectedItem = table.getSelection()[0];
 
             // Get the number of columns in the table
@@ -61,15 +72,14 @@ public class ModifyElementDialog extends Dialog {
                 inputTexts[i].setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
                 // Set initial value for Text Input
-                if(action == "Update")
+                if (action == "Update")
                     inputTexts[i].setText(tableSelectedItem.getText(i));
             }
 
             Button actionButton = new Button(composite, SWT.PUSH);
             actionButton.setText((action == "Update") ? "Update" : "Add");
             actionButton.addListener(SWT.Selection, event -> handleAction(tableSelectedItem, action));
-        }
-        else if(tree != null){
+        } else if (tree != null) {
             treeSelectedItem = tree.getSelection()[0];
 
             // Get the number of columns in the table
@@ -95,9 +105,10 @@ public class ModifyElementDialog extends Dialog {
         cancelButton.addListener(SWT.Selection, event -> shell.close());
 
     }
+
     private void handleAction(TableItem selectedItem, String action) {
         if (inputTexts != null) {
-            if(action == "Add") {
+            if (action == "Add") {
                 String[] items = new String[table.getColumnCount()];
                 for (int i = 0; i < inputTexts.length; i++) {
                     items[i] = inputTexts[i].getText().trim();
@@ -105,8 +116,7 @@ public class ModifyElementDialog extends Dialog {
                 TableItem tableItem = new TableItem(table, SWT.NONE);
                 tableItem.setText(items);
                 for (TableColumn column : table.getColumns()) column.pack();
-            }
-            else{
+            } else {
                 for (int i = 0; i < inputTexts.length; i++) {
                     String text = inputTexts[i].getText().trim();
                     selectedItem.setText(i, text);
@@ -118,25 +128,36 @@ public class ModifyElementDialog extends Dialog {
     }
 
     private void handleAction(TreeItem selectedItem, String action) {
-        if (inputTexts != null) {
-            if(action == "Add") {
-                String[] items = new String[tree.getColumnCount()];
-                for (int i = 0; i < inputTexts.length; i++) {
-                    items[i] = inputTexts[i].getText().trim();
-                }
-                TreeItem treeItem = new TreeItem(tree, SWT.NONE);
-                treeItem.setText(items);
-                for (TreeColumn column : tree.getColumns()) column.pack();
-            }
-            else{
-                for (int i = 0; i < inputTexts.length; i++) {
-                    String text = inputTexts[i].getText().trim();
-                    selectedItem.setText(i, text);
-                }
-                for (TreeColumn column : tree.getColumns()) column.pack();
-            }
+        if (inputTexts == null) {
+            return;
         }
-        shell.close();
+
+        if (action.equals("Add")) {
+            String[] items = new String[tree.getColumnCount()];
+            for (int i = 0; i < inputTexts.length; i++) {
+                items[i] = inputTexts[i].getText().trim();
+            }
+
+//            if (control instanceof Tree) {
+//                TreeItem treeItem = new TreeItem(tree, SWT.NONE);
+//                treeItem.setText(items);
+//            } else {
+//                TableItem tableItem = new TableItem(table, SWT.NONE);
+//                tableItem.setText(items);
+//            }
+
+
+            for (TreeColumn column : tree.getColumns()) {
+                column.pack();
+            }
+        } else {
+            for (int i = 0; i < inputTexts.length; i++) {
+                String text = inputTexts[i].getText().trim();
+                selectedItem.setText(i, text);
+            }
+            for (TreeColumn column : tree.getColumns()) column.pack();
+        }
+
     }
 
 }
