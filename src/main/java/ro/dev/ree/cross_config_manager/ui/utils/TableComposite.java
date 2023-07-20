@@ -50,26 +50,24 @@ public abstract class TableComposite implements Drawable {
         addMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                AddTableElementDialog dialog = new AddTableElementDialog(table.getParent().getShell(), table);
+                ModifyElementDialog dialog = new ModifyElementDialog(table.getParent().getShell(),table,"Add");
                 dialog.open();
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
-
             }
         });
 
         updateMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                UpdateTableElementDialog dialog = new UpdateTableElementDialog(table.getParent().getShell(), table);
-                dialog.open();
+               ModifyElementDialog dialog = new ModifyElementDialog(table.getParent().getShell(),table,"Update");
+               dialog.open();
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
-
             }
         });
 
@@ -82,7 +80,6 @@ public abstract class TableComposite implements Drawable {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
-
             }
         });
 

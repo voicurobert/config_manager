@@ -52,28 +52,24 @@ public abstract class TreeComposite implements Drawable {
         addMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-
-                AddTreeElementDialog dialog = new AddTreeElementDialog(tree.getParent().getShell(), tree);
+                ModifyElementDialog dialog = new ModifyElementDialog(tree.getParent().getShell(),tree,"Add");
                 dialog.open();
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
-
             }
         });
 
         updateMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-
-                UpdateTreeElementDialog dialog = new UpdateTreeElementDialog(tree.getParent().getShell(), tree);
+                ModifyElementDialog dialog = new ModifyElementDialog(tree.getParent().getShell(),tree,"Update");
                 dialog.open();
             }
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
-
             }
         });
 
@@ -90,7 +86,6 @@ public abstract class TreeComposite implements Drawable {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
-
             }
         });
 
