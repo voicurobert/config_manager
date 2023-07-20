@@ -11,7 +11,9 @@ import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules.LinkTypeNodeTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 
-public class ModifyElementDialog extends Dialog {
+import java.util.Arrays;
+
+public class EditorDialog extends Dialog {
 
     private final Composite control; // either tree or table
     private Shell shell;
@@ -20,7 +22,7 @@ public class ModifyElementDialog extends Dialog {
 
     private ServiceRepository serviceRepository;
 
-    public ModifyElementDialog(Shell parent, Composite composite, String action) {
+    public EditorDialog(Shell parent, Composite composite, String action) {
         super(parent, SWT.APPLICATION_MODAL);
         this.control = composite;
         this.action = action;
@@ -50,11 +52,22 @@ public class ModifyElementDialog extends Dialog {
 
         // Get the selected item in the table or tree
         Widget selectedItem;
-        int numColumns;
+        int numColumns = (control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount();
 
+        if((control instanceof Table) ? ((Table) control).getSelection().length == 0 : ((Tree) control).getSelection().length == 0) {
+            Widget newItem;
+            newItem = (control instanceof Table) ? new TableItem((Table) control, SWT.NONE) : new TreeItem((Tree) control, SWT.NONE);
+            String[]text = new String[numColumns];
+            Arrays.fill(text, "");
+            if ((control instanceof Table)) {
+                ((TableItem) newItem).setText(text);
+                ((Table) control).setSelection((TableItem) newItem);
+            } else {
+                ((TreeItem) newItem).setText(text);
+                ((Tree) control).setSelection((TreeItem) newItem);
+            }
+        }
         selectedItem = (control instanceof Table) ? ((Table) control).getSelection()[0] : ((Tree) control).getSelection()[0];
-        numColumns = (control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount();
-
         // Create an array of Text for each column of the selected item
         inputTexts = new Text[numColumns];
         for (int i = 0; i < numColumns; i++) {
@@ -88,17 +101,15 @@ public class ModifyElementDialog extends Dialog {
                 items[i] = inputTexts[i].getText().trim();
             }
             Widget newItem;
-            if ((selectedItem instanceof TableItem)) {
-                assert control instanceof Table;
-                newItem = new TableItem((Table) control, SWT.NONE);
-
+            if ((control instanceof Table)) {
+                newItem =((TableItem) selectedItem).getText().equals("") ?  (TableItem) selectedItem : new TableItem((Table) control, SWT.NONE);
                 insertRecord(control.getToolTipText(), items);
 
             } else {
-                assert control instanceof Tree;
-                newItem = new TreeItem((Tree) control, SWT.NONE);
+                newItem =((TreeItem) selectedItem).getText().equals("") ?  (TreeItem) selectedItem : new TreeItem((Tree) control, SWT.NONE);
+                insertRecord(control.getToolTipText(), items);
             }
-            if (selectedItem instanceof TableItem) {
+            if ((control instanceof Table)) {
                 ((TableItem) newItem).setText(items);
                 for (TableColumn column : ((Table) control).getColumns()) {
                     column.pack();
