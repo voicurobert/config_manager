@@ -43,15 +43,15 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite {
         tree.setToolTipText("LinkTypeNodeTypeRulesTree");
 
         List<RecordDto> allByConfigId = linkTypeNodeTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        for (int i = 0; i < allByConfigId.size(); i++) {
+        for (RecordDto recordDto : allByConfigId) {
 
-            LinkTypeNodeTypeRulesDto linkTypeNodeTypeRulesDto = (LinkTypeNodeTypeRulesDto) allByConfigId.get(i);
+            LinkTypeNodeTypeRulesDto linkTypeNodeTypeRulesDto = (LinkTypeNodeTypeRulesDto) recordDto;
 
             String[] vec = new String[columns().length];
             vec[0] = linkTypeNodeTypeRulesDto.getId();
             vec[1] = linkTypeNodeTypeRulesDto.getConfigId();
-            vec[2] = linkTypeNodeTypeRulesDto.getLinkType().getId();
-            vec[3] = linkTypeNodeTypeRulesDto.getNodeType().getId();
+            vec[2] = linkTypeNodeTypeRulesDto.getLinkType();
+            vec[3] = linkTypeNodeTypeRulesDto.getNodeType();
             vec[4] = linkTypeNodeTypeRulesDto.getQuality();
 
             TreeItem item = new TreeItem(tree, SWT.NONE);

@@ -19,9 +19,9 @@ public class LinkTypeNodeTypeRules {
 
     private String configId;
 
-    private LinkType linkType;
+    private String linkType; //type LinkType
 
-    private NodeType nodeType;
+    private String nodeType; //type NodeType
 
     private String quality;
 }

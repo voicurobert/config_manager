@@ -16,8 +16,9 @@ import java.util.List;
 
 public class ClassTypeGui extends TableComposite {
 
-    private final ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
     public static final String TABLE_NAME = "Class Type";
+
+    private final ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
 
     @Override
     public String[] columns() {
@@ -43,8 +44,8 @@ public class ClassTypeGui extends TableComposite {
 
         List<RecordDto> allByConfigId = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
-        for (int i = 0; i < allByConfigId.size(); i++) {
-            ClassTypeDto classTypeDto = (ClassTypeDto) allByConfigId.get(i);
+        for (RecordDto recordDto : allByConfigId) {
+            ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
             String[] vec = new String[columns().length];
             vec[0] = classTypeDto.getId();
             vec[1] = classTypeDto.getConfigId();
@@ -56,9 +57,14 @@ public class ClassTypeGui extends TableComposite {
             item.setText(vec);
         }
 
-
         return table;
     }
 
+    @Override
+    public void delete(int[] index) {
+        super.delete(index);
+        // get record based on index and delete it
+        //classTypeService.delete();
+    }
 
 }

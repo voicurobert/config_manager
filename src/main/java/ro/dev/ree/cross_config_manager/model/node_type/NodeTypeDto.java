@@ -11,7 +11,16 @@ import ro.dev.ree.cross_config_manager.model.RecordDto;
 @AllArgsConstructor
 public class NodeTypeDto extends RecordDto {
 
-    private String id;
+    @Override
+    public void setId(String id) {
+        super.setId(id);
+    }
+
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+
     private String configId;
 
     private String discriminator;
@@ -41,20 +50,19 @@ public class NodeTypeDto extends RecordDto {
 
         for (int i = 0; i < vec.length; i++) {
             nodeTypeDto.setId(vec[0]);
-//        vec[1] = nodeTypeDto.getConfigId();
-//        vec[2] = nodeTypeDto.getDiscriminator();
-//        vec[3] = nodeTypeDto.getName();
-//        vec[4] = nodeTypeDto.getAppIcon();
-//        vec[5] = nodeTypeDto.getMapIcon();
-//        vec[6] = nodeTypeDto.getCapacityFull();
-//        vec[7] = nodeTypeDto.getCapacityUnitName();
-//        vec[8] = nodeTypeDto.getTypeClassPath();
-//        vec[9] = nodeTypeDto.getRootType();
-//        vec[10] = nodeTypeDto.getSystem();
-//        vec[11] = nodeTypeDto.getMultiparentAllowed();
-//        vec[12] = nodeTypeDto.getUniquenessType();
+            nodeTypeDto.setConfigId(vec[1]);
+            nodeTypeDto.setDiscriminator(vec[2]);
+            nodeTypeDto.setName(vec[3]);
+            nodeTypeDto.setAppIcon(vec[4]);
+            nodeTypeDto.setMapIcon(vec[5]);
+            nodeTypeDto.setCapacityFull(vec[6]);
+            nodeTypeDto.setCapacityUnitName(vec[7]);
+            nodeTypeDto.setTypeClassPath(vec[8]);
+            nodeTypeDto.setRootType(vec[9]);
+            nodeTypeDto.setSystem(vec[10]);
+            nodeTypeDto.setMultiparentAllowed(vec[11]);
+            nodeTypeDto.setUniquenessType(vec[12]);
         }
-
 
         return nodeTypeDto;
     }

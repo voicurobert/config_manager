@@ -18,9 +18,9 @@ public class LinkTypeRules {
 
     private String configId;
 
-    private LinkType consumer;
+    private String consumer; //type LinkType
 
-    private LinkType provider;
+    private String provider; //type LinkType
 
     private String routingPolicy;
 

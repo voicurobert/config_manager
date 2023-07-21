@@ -7,9 +7,18 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
+import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
+import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
+import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
+import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
+import ro.dev.ree.cross_config_manager.ui.class_type.ClassTypeGui;
+import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
 import ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules.LinkTypeNodeTypeRulesGui;
+import ro.dev.ree.cross_config_manager.ui.link_type_rules.LinkTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
+import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
 
 import java.util.Arrays;
 
@@ -143,10 +152,18 @@ public class EditorDialog extends Dialog {
 
     private void insertRecord(String tableName, String[] columnValues) {
         switch (tableName) {
+            case ClassTypeGui.TABLE_NAME:
+                serviceRepository.insert(ClassTypeDto.newFromItems(columnValues));
             case NodeTypeGui.TABLE_NAME:
                 serviceRepository.insert(NodeTypeDto.newFromItems(columnValues));
+            case LinkTypeGui.TABLE_NAME:
+                serviceRepository.insert(LinkTypeDto.newFromItems(columnValues));
+            case NodeTypeRulesGui.TREE_NAME:
+                serviceRepository.insert(NodeTypeRulesDto.newFromItems(columnValues));
+            case LinkTypeRulesGui.TREE_NAME:
+                serviceRepository.insert(LinkTypeRulesDto.newFromItems(columnValues));
             case LinkTypeNodeTypeRulesGui.TREE_NAME:
-                serviceRepository.insert(NodeTypeDto.newFromItems(columnValues));
+                serviceRepository.insert(LinkTypeNodeTypeRulesDto.newFromItems(columnValues));
         }
     }
 }

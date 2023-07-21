@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 @Service
 public class LinkTypeNodeTypeRulesService implements ServiceRepository {
 
-    private final MongoTemplate mongoTemplate;
     private final LinkTypeNodeTypeRulesRepository repository;
+    private final MongoTemplate mongoTemplate;
 
     public LinkTypeNodeTypeRulesService(LinkTypeNodeTypeRulesRepository repository, MongoTemplate mongoTemplate) {
 

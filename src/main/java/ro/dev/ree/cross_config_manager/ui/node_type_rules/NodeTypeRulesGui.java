@@ -4,10 +4,22 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
+import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
+import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
+import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesService;
 import ro.dev.ree.cross_config_manager.ui.utils.TreeComposite;
 
+import java.util.List;
+
 public class NodeTypeRulesGui extends TreeComposite {
+
+    public static final String TREE_NAME = "Node Type Rules";
+
+    private final NodeTypeRulesService nodeTypeRulesService = ConfigManagerContextProvider.getBean(NodeTypeRulesService.class);
+
 
     @Override
     public String[] columns() {
@@ -17,12 +29,12 @@ public class NodeTypeRulesGui extends TreeComposite {
 
     @Override
     public String treeName() {
-        return "Node Types Rules";
+        return TREE_NAME;
     }
 
     @Override
     public ServiceRepository getServiceRepository() {
-        return null;
+        return nodeTypeRulesService;
     }
 
     @Override
@@ -30,29 +42,32 @@ public class NodeTypeRulesGui extends TreeComposite {
         createCheckbox(parent);
 
         Tree tree = (Tree) super.createContents(parent);
-        tree.setToolTipText("NodeTypeRulesTree");
 
-        String[][] nodeTypeRulesData = {
-                {"idntr1", "configId", "child", "parent",
-                        "capacityCalculatorName", "mandatoryParent"},
-                {"idntr2", "configId", "child", "parent",
-                        "capacityCalculatorName", "mandatoryParent"},
-                {"idntr3", "configId", "child", "parent",
-                        "capacityCalculatorName", "mandatoryParent"},
-                {"idntr4", "configId", "child", "parent",
-                        "capacityCalculatorName", "mandatoryParent"},
-                {"idntr5", "configId", "child", "parent",
-                        "capacityCalculatorName", "mandatoryParent"},
-                {"idntr6", "configId", "child", "parent",
-                        "capacityCalculatorName", "mandatoryParent"}
-        };
+        List<RecordDto> allByConfigId = nodeTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
-        for (String[] row : nodeTypeRulesData) {
+        for (RecordDto recordDto : allByConfigId) {
+            NodeTypeRulesDto nodeTypeRulesDto = (NodeTypeRulesDto) recordDto;
+
+            String[] vec = new String[columns().length];
+            vec[0] = nodeTypeRulesDto.getId();
+            vec[1] = nodeTypeRulesDto.getConfigId();
+            vec[2] = nodeTypeRulesDto.getChild();
+            vec[3] = nodeTypeRulesDto.getParent();
+            vec[4] = nodeTypeRulesDto.getCapacityCalculatorName();
+            vec[5] = nodeTypeRulesDto.getMandatoryParent();
+
             TreeItem item = new TreeItem(tree, SWT.NONE);
-            item.setText(row);
+            item.setText(vec);
         }
 
         return tree;
+    }
+
+    @Override
+    public void delete(int[] index) {
+        super.delete(index);
+        // get record based on index and delete it
+        //linkTypeService.delete();
     }
 
 }

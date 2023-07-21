@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 @Service
 public class ClassTypeService implements ServiceRepository {
 
-    private final MongoTemplate mongoTemplate;
     private final ClassTypeRepository repository;
+    private final MongoTemplate mongoTemplate;
 
     public ClassTypeService(ClassTypeRepository repository, MongoTemplate mongoTemplate) {
         this.repository = repository;

@@ -47,8 +47,8 @@ public class NodeTypeGui extends TableComposite {
 
         List<RecordDto> allByConfigId = nodeTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
-        for (int i = 0; i < allByConfigId.size(); i++) {
-            NodeTypeDto nodeTypeDto = (NodeTypeDto) allByConfigId.get(i);
+        for (RecordDto recordDto : allByConfigId) {
+            NodeTypeDto nodeTypeDto = (NodeTypeDto) recordDto;
 
             String[] vec = new String[columns().length];
             vec[0] = nodeTypeDto.getId();

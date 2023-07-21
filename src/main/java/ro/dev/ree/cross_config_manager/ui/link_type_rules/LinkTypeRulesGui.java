@@ -16,10 +16,8 @@ import java.util.List;
 
 public class LinkTypeRulesGui extends TreeComposite {
 
-    private final LinkTypeRulesService linkTypeRulesService = ConfigManagerContextProvider.getBean(LinkTypeRulesService.class);
-
     public static final String TREE_NAME = "Link Types Rules";
-
+    private final LinkTypeRulesService linkTypeRulesService = ConfigManagerContextProvider.getBean(LinkTypeRulesService.class);
 
     @Override
     public String[] columns() {
@@ -44,22 +42,29 @@ public class LinkTypeRulesGui extends TreeComposite {
         tree.setToolTipText("LinkTypeRulesTree");
 
         List<RecordDto> allByConfigId = linkTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        for (int i = 0; i < allByConfigId.size(); i++) {
+        for (RecordDto recordDto : allByConfigId) {
 
-            LinkTypeRulesDto linkTypeRulesDto = (LinkTypeRulesDto) allByConfigId.get(i);
+            LinkTypeRulesDto linkTypeRulesDto = (LinkTypeRulesDto) recordDto;
             String[] vec = new String[columns().length];
             vec[0] = linkTypeRulesDto.getId();
             vec[1] = linkTypeRulesDto.getConfigId();
-            // vec[2] = linkTypeRulesDto.getConsumer();
-            //vec[3] = linkTypeRulesDto.getProvider();
-            vec[4] = linkTypeRulesDto.getCapacityCalculatorName();
-            vec[5] = linkTypeRulesDto.getNumberOfChannels();
-            vec[6] = linkTypeRulesDto.getRoutingPolicy();
+            vec[2] = linkTypeRulesDto.getConsumer();
+            vec[3] = linkTypeRulesDto.getProvider();
+            vec[4] = linkTypeRulesDto.getRoutingPolicy();
+            vec[5] = linkTypeRulesDto.getCapacityCalculatorName();
+            vec[6] = linkTypeRulesDto.getNumberOfChannels();
+
             TreeItem item = new TreeItem(tree, SWT.NONE);
             item.setText(vec);
         }
 
-
         return tree;
+    }
+
+    @Override
+    public void delete(int[] index) {
+        super.delete(index);
+        // get record based on index and delete it
+        //linkTypeService.delete();
     }
 }
