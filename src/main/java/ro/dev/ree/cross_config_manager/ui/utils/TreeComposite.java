@@ -25,8 +25,9 @@ public abstract class TreeComposite implements Drawable {
     public Composite createContents(Composite parent) {
 
         tree = new Tree(parent, SWT.BORDER | SWT.CENTER);
-        tree.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
-
+        GridData gd_tree = new GridData(-1,150);
+        gd_tree.horizontalAlignment = 2;
+        tree.setLayoutData(gd_tree);
         tree.setToolTipText(treeName());
         tree.setHeaderVisible(true);
         tree.setLinesVisible(true);

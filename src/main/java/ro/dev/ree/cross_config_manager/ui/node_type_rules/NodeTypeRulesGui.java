@@ -43,9 +43,6 @@ public class NodeTypeRulesGui extends TreeComposite {
         createCheckbox(parent);
 
         Tree tree = (Tree) super.createContents(parent);
-        GridData gd_table = new GridData(-1,150);
-        gd_table.horizontalAlignment = 2;
-        tree.setLayoutData(gd_table);
 
         List<RecordDto> allByConfigId = nodeTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 

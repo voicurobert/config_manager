@@ -22,8 +22,9 @@ public abstract class TableComposite implements Drawable {
 
     public Composite createContents(Composite parent) {
         table = new Table(parent, SWT.BORDER | SWT.CENTER);
-        table.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
-
+        GridData gd_table = new GridData(-1,150);
+        gd_table.horizontalAlignment = 2;
+        table.setLayoutData(gd_table);
         table.setToolTipText(tableName());
         table.setHeaderVisible(true);
         table.setLinesVisible(true);

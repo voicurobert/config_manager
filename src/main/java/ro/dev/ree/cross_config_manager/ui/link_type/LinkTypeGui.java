@@ -42,9 +42,6 @@ public class LinkTypeGui extends TableComposite {
         createCheckbox(parent);
 
         Table table = (Table) super.createContents(parent);
-        GridData gd_table = new GridData(-1,150);
-        gd_table.horizontalAlignment = 2;
-        table.setLayoutData(gd_table);
 
         List<RecordDto> allByConfigId = linkTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 

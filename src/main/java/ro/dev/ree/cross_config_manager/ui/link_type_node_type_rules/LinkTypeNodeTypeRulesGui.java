@@ -42,9 +42,6 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite {
 
         Tree tree = (Tree) super.createContents(parent);
         tree.setToolTipText("LinkTypeNodeTypeRulesTree");
-        GridData gd_table = new GridData(-1,150);
-        gd_table.horizontalAlignment = 2;
-        tree.setLayoutData(gd_table);
 
         List<RecordDto> allByConfigId = linkTypeNodeTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
         for (RecordDto recordDto : allByConfigId) {

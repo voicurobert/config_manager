@@ -43,9 +43,6 @@ public class ClassTypeGui extends TableComposite {
 
         Table table = (Table) super.createContents(parent);
         table.setToolTipText("ClassTypeTable");
-        GridData gd_table = new GridData(-1,150);
-        gd_table.horizontalAlignment = 2;
-        table.setLayoutData(gd_table);
         List<RecordDto> allByConfigId = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
         for (RecordDto recordDto : allByConfigId) {
