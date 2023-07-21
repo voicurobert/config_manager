@@ -1,6 +1,7 @@
 package ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -41,6 +42,9 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite {
 
         Tree tree = (Tree) super.createContents(parent);
         tree.setToolTipText("LinkTypeNodeTypeRulesTree");
+        GridData gd_table = new GridData(-1,150);
+        gd_table.horizontalAlignment = 2;
+        tree.setLayoutData(gd_table);
 
         List<RecordDto> allByConfigId = linkTypeNodeTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
         for (RecordDto recordDto : allByConfigId) {

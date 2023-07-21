@@ -1,6 +1,7 @@
 package ro.dev.ree.cross_config_manager.ui.link_type_rules;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -40,6 +41,9 @@ public class LinkTypeRulesGui extends TreeComposite {
 
         Tree tree = (Tree) super.createContents(parent);
         tree.setToolTipText("LinkTypeRulesTree");
+        GridData gd_table = new GridData(-1,150);
+        gd_table.horizontalAlignment = 2;
+        tree.setLayoutData(gd_table);
 
         List<RecordDto> allByConfigId = linkTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
         for (RecordDto recordDto : allByConfigId) {

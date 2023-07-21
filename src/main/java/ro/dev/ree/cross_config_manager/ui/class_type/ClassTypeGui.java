@@ -1,6 +1,8 @@
 package ro.dev.ree.cross_config_manager.ui.class_type;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -41,7 +43,9 @@ public class ClassTypeGui extends TableComposite {
 
         Table table = (Table) super.createContents(parent);
         table.setToolTipText("ClassTypeTable");
-
+        GridData gd_table = new GridData(-1,150);
+        gd_table.horizontalAlignment = 2;
+        table.setLayoutData(gd_table);
         List<RecordDto> allByConfigId = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
         for (RecordDto recordDto : allByConfigId) {

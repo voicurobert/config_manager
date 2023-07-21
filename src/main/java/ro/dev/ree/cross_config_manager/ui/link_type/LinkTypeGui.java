@@ -1,6 +1,7 @@
 package ro.dev.ree.cross_config_manager.ui.link_type;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -41,6 +42,9 @@ public class LinkTypeGui extends TableComposite {
         createCheckbox(parent);
 
         Table table = (Table) super.createContents(parent);
+        GridData gd_table = new GridData(-1,150);
+        gd_table.horizontalAlignment = 2;
+        table.setLayoutData(gd_table);
 
         List<RecordDto> allByConfigId = linkTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 

@@ -1,6 +1,7 @@
 package ro.dev.ree.cross_config_manager.ui.node_type_rules;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -42,6 +43,9 @@ public class NodeTypeRulesGui extends TreeComposite {
         createCheckbox(parent);
 
         Tree tree = (Tree) super.createContents(parent);
+        GridData gd_table = new GridData(-1,150);
+        gd_table.horizontalAlignment = 2;
+        tree.setLayoutData(gd_table);
 
         List<RecordDto> allByConfigId = nodeTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
