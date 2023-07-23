@@ -1,7 +1,6 @@
 package ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -22,7 +21,7 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite {
 
     @Override
     public String[] columns() {
-        return new String[]{"IdLTNTR", "ConfigId", "LinkType", "NodeType",
+        return new String[]{"LinkType", "NodeType",
                 "Quality"};
     }
 
@@ -49,11 +48,11 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite {
             LinkTypeNodeTypeRulesDto linkTypeNodeTypeRulesDto = (LinkTypeNodeTypeRulesDto) recordDto;
 
             String[] vec = new String[columns().length];
-            vec[0] = linkTypeNodeTypeRulesDto.getId();
-            vec[1] = linkTypeNodeTypeRulesDto.getConfigId();
-            vec[2] = linkTypeNodeTypeRulesDto.getLinkType();
-            vec[3] = linkTypeNodeTypeRulesDto.getNodeType();
-            vec[4] = linkTypeNodeTypeRulesDto.getQuality();
+//            vec[0] = linkTypeNodeTypeRulesDto.getId();
+//            vec[1] = linkTypeNodeTypeRulesDto.getConfigId();
+            vec[0] = linkTypeNodeTypeRulesDto.getLinkType();
+            vec[1] = linkTypeNodeTypeRulesDto.getNodeType();
+            vec[2] = linkTypeNodeTypeRulesDto.getQuality();
 
             TreeItem item = new TreeItem(tree, SWT.NONE);
             item.setText(vec);

@@ -1,7 +1,6 @@
 package ro.dev.ree.cross_config_manager.ui.link_type_rules;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -22,7 +21,7 @@ public class LinkTypeRulesGui extends TreeComposite {
 
     @Override
     public String[] columns() {
-        return new String[]{"IdLTR", "ConfigId", "Consumer", "Provider",
+        return new String[]{"Consumer", "Provider",
                 "RoutingPolicy", "CapacityCalculatorName", "NumberOfChannels"};
     }
 
@@ -47,13 +46,13 @@ public class LinkTypeRulesGui extends TreeComposite {
 
             LinkTypeRulesDto linkTypeRulesDto = (LinkTypeRulesDto) recordDto;
             String[] vec = new String[columns().length];
-            vec[0] = linkTypeRulesDto.getId();
-            vec[1] = linkTypeRulesDto.getConfigId();
-            vec[2] = linkTypeRulesDto.getConsumer();
-            vec[3] = linkTypeRulesDto.getProvider();
-            vec[4] = linkTypeRulesDto.getRoutingPolicy();
-            vec[5] = linkTypeRulesDto.getCapacityCalculatorName();
-            vec[6] = linkTypeRulesDto.getNumberOfChannels();
+//            vec[0] = linkTypeRulesDto.getId();
+//            vec[1] = linkTypeRulesDto.getConfigId();
+            vec[0] = linkTypeRulesDto.getConsumer();
+            vec[1] = linkTypeRulesDto.getProvider();
+            vec[2] = linkTypeRulesDto.getRoutingPolicy();
+            vec[3] = linkTypeRulesDto.getCapacityCalculatorName();
+            vec[4] = linkTypeRulesDto.getNumberOfChannels();
 
             TreeItem item = new TreeItem(tree, SWT.NONE);
             item.setText(vec);

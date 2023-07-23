@@ -12,16 +12,6 @@ import ro.dev.ree.cross_config_manager.model.node_type.NodeType;
 @AllArgsConstructor
 public class LinkTypeNodeTypeRulesDto extends RecordDto {
 
-    @Override
-    public void setId(String id) {
-        super.setId(id);
-    }
-
-    @Override
-    public String getId() {
-        return super.getId();
-    }
-
     private String configId;
 
     private String linkType; //type LinkType
@@ -34,11 +24,11 @@ public class LinkTypeNodeTypeRulesDto extends RecordDto {
         var linkTypeNodeTypeRulesDto = new LinkTypeNodeTypeRulesDto();
 
         for (int i = 0; i < vec.length; i++) {
-            linkTypeNodeTypeRulesDto.setId(vec[0]);
-            linkTypeNodeTypeRulesDto.setConfigId(vec[1]);
-            linkTypeNodeTypeRulesDto.setLinkType(vec[2]);
-            linkTypeNodeTypeRulesDto.setNodeType(vec[3]);
-            linkTypeNodeTypeRulesDto.setQuality(vec[4]);
+            linkTypeNodeTypeRulesDto.setId(linkTypeNodeTypeRulesDto.getId());
+            linkTypeNodeTypeRulesDto.setConfigId(linkTypeNodeTypeRulesDto.getConfigId());
+            linkTypeNodeTypeRulesDto.setLinkType(vec[0]);
+            linkTypeNodeTypeRulesDto.setNodeType(vec[1]);
+            linkTypeNodeTypeRulesDto.setQuality(vec[2]);
         }
 
         return linkTypeNodeTypeRulesDto;

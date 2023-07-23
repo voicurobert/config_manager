@@ -1,8 +1,6 @@
 package ro.dev.ree.cross_config_manager.ui.class_type;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -24,7 +22,7 @@ public class ClassTypeGui extends TableComposite {
 
     @Override
     public String[] columns() {
-        return new String[]{"Index", "Name", "Path", "parentPath"};
+        return new String[]{"Name", "Path", "ParentPath"};
     }
 
     @Override
@@ -48,11 +46,11 @@ public class ClassTypeGui extends TableComposite {
         for (RecordDto recordDto : allByConfigId) {
             ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
             String[] vec = new String[columns().length];
-            vec[0] = classTypeDto.getId();
-            vec[1] = classTypeDto.getConfigId();
-            vec[2] = classTypeDto.getName();
-            vec[3] = classTypeDto.getPath();
-            vec[4] = classTypeDto.getParentPath();
+//            vec[0] = classTypeDto.getId();
+//            vec[1] = classTypeDto.getConfigId();
+            vec[0] = classTypeDto.getName();
+            vec[1] = classTypeDto.getPath();
+            vec[2] = classTypeDto.getParentPath();
 
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(vec);

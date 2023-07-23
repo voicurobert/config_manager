@@ -1,7 +1,6 @@
 package ro.dev.ree.cross_config_manager.ui.node_type;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -19,12 +18,11 @@ public class NodeTypeGui extends TableComposite {
 
     public static final String TABLE_NAME = "Node Type";
 
-    // De facut cu service la toate
     private final NodeTypeService nodeTypeService = ConfigManagerContextProvider.getBean(NodeTypeService.class);
 
     @Override
     public String[] columns() {
-        return new String[]{"IdNT", "ConfigId", "Discriminator", "Name", "AppIcon", "MapIcon",
+        return new String[]{"Discriminator", "Name", "AppIcon", "MapIcon",
                 "CapacityFull", "CapacityUnitName", "TypeClassPath",
                 "RootType", "System", "MultiparentAllowed", "UniquenessType"};
     }
@@ -52,19 +50,19 @@ public class NodeTypeGui extends TableComposite {
             NodeTypeDto nodeTypeDto = (NodeTypeDto) recordDto;
 
             String[] vec = new String[columns().length];
-            vec[0] = nodeTypeDto.getId();
-            vec[1] = nodeTypeDto.getConfigId();
-            vec[2] = nodeTypeDto.getDiscriminator();
-            vec[3] = nodeTypeDto.getName();
-            vec[4] = nodeTypeDto.getAppIcon();
-            vec[5] = nodeTypeDto.getMapIcon();
-            vec[6] = nodeTypeDto.getCapacityFull();
-            vec[7] = nodeTypeDto.getCapacityUnitName();
-            vec[8] = nodeTypeDto.getTypeClassPath();
-            vec[9] = nodeTypeDto.getRootType();
-            vec[10] = nodeTypeDto.getSystem();
-            vec[11] = nodeTypeDto.getMultiparentAllowed();
-            vec[12] = nodeTypeDto.getUniquenessType();
+//            vec[0] = nodeTypeDto.getId();
+//            vec[1] = nodeTypeDto.getConfigId();
+            vec[0] = nodeTypeDto.getDiscriminator();
+            vec[1] = nodeTypeDto.getName();
+            vec[2] = nodeTypeDto.getAppIcon();
+            vec[3] = nodeTypeDto.getMapIcon();
+            vec[4] = nodeTypeDto.getCapacityFull();
+            vec[5] = nodeTypeDto.getCapacityUnitName();
+            vec[6] = nodeTypeDto.getTypeClassPath();
+            vec[7] = nodeTypeDto.getRootType();
+            vec[8] = nodeTypeDto.getSystem();
+            vec[9] = nodeTypeDto.getMultiparentAllowed();
+            vec[10] = nodeTypeDto.getUniquenessType();
 
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(vec);

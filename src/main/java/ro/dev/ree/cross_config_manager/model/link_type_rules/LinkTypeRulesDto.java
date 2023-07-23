@@ -11,16 +11,6 @@ import ro.dev.ree.cross_config_manager.model.link_type.LinkType;
 @AllArgsConstructor
 public class LinkTypeRulesDto extends RecordDto {
 
-    @Override
-    public void setId(String id) {
-        super.setId(id);
-    }
-
-    @Override
-    public String getId() {
-        return super.getId();
-    }
-
     private String configId;
 
     private String consumer; //type LinkType
@@ -37,13 +27,13 @@ public class LinkTypeRulesDto extends RecordDto {
         var linkTypeRulesDto = new LinkTypeRulesDto();
 
         for (int i = 0; i < vec.length; i++) {
-            linkTypeRulesDto.setId(vec[0]);
-            linkTypeRulesDto.setConfigId(vec[1]);
-            linkTypeRulesDto.setConsumer(vec[2]);
-            linkTypeRulesDto.setProvider(vec[3]);
-            linkTypeRulesDto.setRoutingPolicy(vec[4]);
-            linkTypeRulesDto.setCapacityCalculatorName(vec[5]);
-            linkTypeRulesDto.setNumberOfChannels(vec[6]);
+            linkTypeRulesDto.setId(linkTypeRulesDto.getId());
+            linkTypeRulesDto.setConfigId(linkTypeRulesDto.getConfigId());
+            linkTypeRulesDto.setConsumer(vec[0]);
+            linkTypeRulesDto.setProvider(vec[1]);
+            linkTypeRulesDto.setRoutingPolicy(vec[2]);
+            linkTypeRulesDto.setCapacityCalculatorName(vec[3]);
+            linkTypeRulesDto.setNumberOfChannels(vec[4]);
 
         }
 

@@ -11,16 +11,6 @@ import ro.dev.ree.cross_config_manager.model.RecordDto;
 @AllArgsConstructor
 public class NodeTypeDto extends RecordDto {
 
-    @Override
-    public void setId(String id) {
-        super.setId(id);
-    }
-
-    @Override
-    public String getId() {
-        return super.getId();
-    }
-
     private String configId;
 
     private String discriminator;
@@ -49,19 +39,19 @@ public class NodeTypeDto extends RecordDto {
         var nodeTypeDto = new NodeTypeDto();
 
         for (int i = 0; i < vec.length; i++) {
-            nodeTypeDto.setId(vec[0]);
-            nodeTypeDto.setConfigId(vec[1]);
-            nodeTypeDto.setDiscriminator(vec[2]);
-            nodeTypeDto.setName(vec[3]);
-            nodeTypeDto.setAppIcon(vec[4]);
-            nodeTypeDto.setMapIcon(vec[5]);
-            nodeTypeDto.setCapacityFull(vec[6]);
-            nodeTypeDto.setCapacityUnitName(vec[7]);
-            nodeTypeDto.setTypeClassPath(vec[8]);
-            nodeTypeDto.setRootType(vec[9]);
-            nodeTypeDto.setSystem(vec[10]);
-            nodeTypeDto.setMultiparentAllowed(vec[11]);
-            nodeTypeDto.setUniquenessType(vec[12]);
+            nodeTypeDto.setId(nodeTypeDto.getId());
+            nodeTypeDto.setConfigId(nodeTypeDto.getConfigId());
+            nodeTypeDto.setDiscriminator(vec[0]);
+            nodeTypeDto.setName(vec[1]);
+            nodeTypeDto.setAppIcon(vec[2]);
+            nodeTypeDto.setMapIcon(vec[3]);
+            nodeTypeDto.setCapacityFull(vec[4]);
+            nodeTypeDto.setCapacityUnitName(vec[5]);
+            nodeTypeDto.setTypeClassPath(vec[6]);
+            nodeTypeDto.setRootType(vec[7]);
+            nodeTypeDto.setSystem(vec[8]);
+            nodeTypeDto.setMultiparentAllowed(vec[9]);
+            nodeTypeDto.setUniquenessType(vec[10]);
         }
 
         return nodeTypeDto;

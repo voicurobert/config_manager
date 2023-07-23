@@ -10,16 +10,6 @@ import ro.dev.ree.cross_config_manager.model.RecordDto;
 @AllArgsConstructor
 public class NodeTypeRulesDto extends RecordDto {
 
-    @Override
-    public void setId(String id) {
-        super.setId(id);
-    }
-
-    @Override
-    public String getId() {
-        return super.getId();
-    }
-
     private String configId;
 
     private String child;
@@ -34,12 +24,12 @@ public class NodeTypeRulesDto extends RecordDto {
         var nodeTypeRulesDto = new NodeTypeRulesDto();
 
         for (int i = 0; i < vec.length; i++) {
-            nodeTypeRulesDto.setId(vec[0]);
-            nodeTypeRulesDto.setConfigId(vec[1]);
-            nodeTypeRulesDto.setChild(vec[2]);
-            nodeTypeRulesDto.setParent(vec[3]);
-            nodeTypeRulesDto.setCapacityCalculatorName(vec[4]);
-            nodeTypeRulesDto.setMandatoryParent(vec[5]);
+            nodeTypeRulesDto.setId(nodeTypeRulesDto.getId());
+            nodeTypeRulesDto.setConfigId(nodeTypeRulesDto.getConfigId());
+            nodeTypeRulesDto.setChild(vec[0]);
+            nodeTypeRulesDto.setParent(vec[1]);
+            nodeTypeRulesDto.setCapacityCalculatorName(vec[2]);
+            nodeTypeRulesDto.setMandatoryParent(vec[3]);
         }
 
         return nodeTypeRulesDto;

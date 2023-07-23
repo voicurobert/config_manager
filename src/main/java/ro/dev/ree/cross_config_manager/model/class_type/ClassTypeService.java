@@ -22,6 +22,12 @@ public class ClassTypeService implements ServiceRepository {
         this.mongoTemplate = mongoTemplate;
     }
 
+    public void save(ClassTypeDto classTypeDto) {
+        ClassType classType = new ClassType();
+        BeanUtils.copyProperties(classTypeDto, classType);
+        repository.save(classType);
+    }
+
     @Override
     public RecordDto insert(RecordDto recordDto) {
         ClassType classType = new ClassType();

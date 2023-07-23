@@ -1,7 +1,6 @@
 package ro.dev.ree.cross_config_manager.ui.link_type;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -22,7 +21,7 @@ public class LinkTypeGui extends TableComposite {
 
     @Override
     public String[] columns() {
-        return new String[]{"IdLT", "ConfigId", "Discriminator", "Name", "AppIcon", "MapIcon",
+        return new String[]{"Discriminator", "Name", "AppIcon", "MapIcon",
                 "CapacityFull", "CapacityUnitName", "TypeClassPath",
                 "System", "Unique"};
     }
@@ -49,17 +48,17 @@ public class LinkTypeGui extends TableComposite {
             LinkTypeDto linkTypeDto = (LinkTypeDto) recordDto;
 
             String[] vec = new String[columns().length];
-            vec[0] = linkTypeDto.getId();
-            vec[1] = linkTypeDto.getConfigId();
-            vec[2] = linkTypeDto.getDiscriminator();
-            vec[3] = linkTypeDto.getName();
-            vec[4] = linkTypeDto.getAppIcon();
-            vec[5] = linkTypeDto.getMapIcon();
-            vec[6] = linkTypeDto.getCapacityFull();
-            vec[7] = linkTypeDto.getCapacityUnitName();
-            vec[8] = linkTypeDto.getTypeClassPath();
-            vec[9] = linkTypeDto.getSystem();
-            vec[10] = linkTypeDto.getUnique();
+//            vec[0] = linkTypeDto.getId();
+//            vec[1] = linkTypeDto.getConfigId();
+            vec[0] = linkTypeDto.getDiscriminator();
+            vec[1] = linkTypeDto.getName();
+            vec[2] = linkTypeDto.getAppIcon();
+            vec[3] = linkTypeDto.getMapIcon();
+            vec[4] = linkTypeDto.getCapacityFull();
+            vec[5] = linkTypeDto.getCapacityUnitName();
+            vec[6] = linkTypeDto.getTypeClassPath();
+            vec[7] = linkTypeDto.getSystem();
+            vec[8] = linkTypeDto.getUnique();
 
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(vec);

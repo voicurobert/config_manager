@@ -10,16 +10,6 @@ import ro.dev.ree.cross_config_manager.model.RecordDto;
 @AllArgsConstructor
 public class LinkTypeDto extends RecordDto {
 
-    @Override
-    public void setId(String id) {
-        super.setId(id);
-    }
-
-    @Override
-    public String getId() {
-        return super.getId();
-    }
-
     private String configId;
 
     private String discriminator;
@@ -44,17 +34,17 @@ public class LinkTypeDto extends RecordDto {
         var linkTypeDto = new LinkTypeDto();
 
         for (int i = 0; i < vec.length; i++) {
-            linkTypeDto.setId(vec[0]);
-            linkTypeDto.setConfigId(vec[1]);
-            linkTypeDto.setDiscriminator(vec[2]);
-            linkTypeDto.setName(vec[3]);
-            linkTypeDto.setAppIcon(vec[4]);
-            linkTypeDto.setMapIcon(vec[5]);
-            linkTypeDto.setCapacityFull(vec[6]);
-            linkTypeDto.setCapacityUnitName(vec[7]);
-            linkTypeDto.setTypeClassPath(vec[8]);
-            linkTypeDto.setSystem(vec[9]);
-            linkTypeDto.setUnique(vec[10]);
+            linkTypeDto.setId(linkTypeDto.getId());
+            linkTypeDto.setConfigId(linkTypeDto.getConfigId());
+            linkTypeDto.setDiscriminator(vec[0]);
+            linkTypeDto.setName(vec[1]);
+            linkTypeDto.setAppIcon(vec[2]);
+            linkTypeDto.setMapIcon(vec[3]);
+            linkTypeDto.setCapacityFull(vec[4]);
+            linkTypeDto.setCapacityUnitName(vec[5]);
+            linkTypeDto.setTypeClassPath(vec[6]);
+            linkTypeDto.setSystem(vec[7]);
+            linkTypeDto.setUnique(vec[8]);
         }
 
         return linkTypeDto;

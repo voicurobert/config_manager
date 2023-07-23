@@ -88,6 +88,8 @@ public class EditorDialog extends Dialog {
             // Set initial value for Text Input
             if (action.equals("Update"))
                 inputTexts[i].setText((selectedItem instanceof TableItem) ? ((TableItem) selectedItem).getText(i) : ((TreeItem) selectedItem).getText(i));
+            else
+                inputTexts[i].setText("");
         }
 
         Button actionButton = new Button(composite, SWT.PUSH);
@@ -112,12 +114,10 @@ public class EditorDialog extends Dialog {
             Widget newItem;
             if ((control instanceof Table)) {
                 newItem =((TableItem) selectedItem).getText().equals("") ?  (TableItem) selectedItem : new TableItem((Table) control, SWT.NONE);
-                insertRecord(control.getToolTipText(), items);
-
             } else {
                 newItem =((TreeItem) selectedItem).getText().equals("") ?  (TreeItem) selectedItem : new TreeItem((Tree) control, SWT.NONE);
-                insertRecord(control.getToolTipText(), items);
             }
+            insertRecord(control.getToolTipText(), items);
             if ((control instanceof Table)) {
                 ((TableItem) newItem).setText(items);
                 for (TableColumn column : ((Table) control).getColumns()) {
