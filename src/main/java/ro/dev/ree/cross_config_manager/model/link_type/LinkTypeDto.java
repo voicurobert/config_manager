@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 @Data
 @NoArgsConstructor
@@ -34,8 +35,7 @@ public class LinkTypeDto extends RecordDto {
         var linkTypeDto = new LinkTypeDto();
 
         for (int i = 0; i < vec.length; i++) {
-            linkTypeDto.setId(linkTypeDto.getId());
-            linkTypeDto.setConfigId(linkTypeDto.getConfigId());
+            linkTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
             linkTypeDto.setDiscriminator(vec[0]);
             linkTypeDto.setName(vec[1]);
             linkTypeDto.setAppIcon(vec[2]);

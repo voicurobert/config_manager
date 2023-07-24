@@ -154,16 +154,24 @@ public class EditorDialog extends Dialog {
         switch (tableName) {
             case ClassTypeGui.TABLE_NAME:
                 serviceRepository.insert(ClassTypeDto.newFromItems(columnValues));
+                break;
             case NodeTypeGui.TABLE_NAME:
                 serviceRepository.insert(NodeTypeDto.newFromItems(columnValues));
+                break;
             case LinkTypeGui.TABLE_NAME:
                 serviceRepository.insert(LinkTypeDto.newFromItems(columnValues));
+                break;
             case NodeTypeRulesGui.TREE_NAME:
                 serviceRepository.insert(NodeTypeRulesDto.newFromItems(columnValues));
+                break;
             case LinkTypeRulesGui.TREE_NAME:
                 serviceRepository.insert(LinkTypeRulesDto.newFromItems(columnValues));
+                break;
             case LinkTypeNodeTypeRulesGui.TREE_NAME:
                 serviceRepository.insert(LinkTypeNodeTypeRulesDto.newFromItems(columnValues));
+                break;
+            default:
+                break;
         }
     }
 }

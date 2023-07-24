@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 @Data
 @NoArgsConstructor
@@ -39,8 +40,7 @@ public class NodeTypeDto extends RecordDto {
         var nodeTypeDto = new NodeTypeDto();
 
         for (int i = 0; i < vec.length; i++) {
-            nodeTypeDto.setId(nodeTypeDto.getId());
-            nodeTypeDto.setConfigId(nodeTypeDto.getConfigId());
+            nodeTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
             nodeTypeDto.setDiscriminator(vec[0]);
             nodeTypeDto.setName(vec[1]);
             nodeTypeDto.setAppIcon(vec[2]);

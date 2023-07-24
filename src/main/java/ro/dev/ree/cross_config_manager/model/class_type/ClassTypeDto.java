@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigTypeService;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 
 @Data
@@ -24,8 +26,7 @@ public class ClassTypeDto extends RecordDto {
         var classTypeDto = new ClassTypeDto();
 
         for (int i = 0; i < vec.length; i++) {
-            classTypeDto.setId(classTypeDto.getId());
-            classTypeDto.setConfigId(classTypeDto.getConfigId());
+            classTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
             classTypeDto.setName(vec[0]);
             classTypeDto.setPath(vec[1]);
             classTypeDto.setParentPath(vec[2]);

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 @Data
 @NoArgsConstructor
@@ -24,8 +25,7 @@ public class NodeTypeRulesDto extends RecordDto {
         var nodeTypeRulesDto = new NodeTypeRulesDto();
 
         for (int i = 0; i < vec.length; i++) {
-            nodeTypeRulesDto.setId(nodeTypeRulesDto.getId());
-            nodeTypeRulesDto.setConfigId(nodeTypeRulesDto.getConfigId());
+            nodeTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
             nodeTypeRulesDto.setChild(vec[0]);
             nodeTypeRulesDto.setParent(vec[1]);
             nodeTypeRulesDto.setCapacityCalculatorName(vec[2]);
