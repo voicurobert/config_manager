@@ -68,6 +68,7 @@ public abstract class TableComposite implements Drawable {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, "Update");
+                dialog.setServiceRepository(getServiceRepository());
                 dialog.open();
             }
 

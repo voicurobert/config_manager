@@ -64,12 +64,20 @@ public class ClassTypeService implements ServiceRepository {
     }
 
     @Override
-    public List<RecordDto> findAll() {
-        return repository.findAll().stream().map(classType -> {
-            ClassTypeDto classTypeDto = new ClassTypeDto();
-            BeanUtils.copyProperties(classType, classTypeDto);
-            return classTypeDto;
-        }).collect(Collectors.toList());
+    public List<RecordDto> findAll(String[] columns, String[] old_columns) {
+        return repository.findAll().stream().
+                filter(classType -> classType.getName().equals(old_columns[0])
+                        && classType.getPath().equals(old_columns[1])
+                        && classType.getParentPath().equals(old_columns[2])).
+                map(classType -> {
+                    classType.setName(columns[0]);
+                    classType.setPath(columns[1]);
+                    classType.setParentPath(columns[2]);
+                    ClassTypeDto dto = new ClassTypeDto();
+                    BeanUtils.copyProperties(classType, dto);
+                    return dto;
+                }).
+                collect(Collectors.toList());
     }
 
     @Override
@@ -91,7 +99,7 @@ public class ClassTypeService implements ServiceRepository {
         return mongoTemplate.find(query, ClassType.class).stream().
                 map(classType -> {
                     ClassTypeDto dto = new ClassTypeDto();
-                    BeanUtils.copyProperties(dto, classType);
+                    BeanUtils.copyProperties(classType, dto);
                     return dto;
                 }).
                 collect(Collectors.toList());

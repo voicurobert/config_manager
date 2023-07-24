@@ -31,22 +31,23 @@ public class LinkTypeDto extends RecordDto {
 
     private String unique;
 
-    public static LinkTypeDto newFromItems(String[] vec) {
+    public static LinkTypeDto newFromItems(String[] columnValues) {
         var linkTypeDto = new LinkTypeDto();
 
-        for (int i = 0; i < vec.length; i++) {
+        for (int i = 0; i < columnValues.length; i++) {
             linkTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-            linkTypeDto.setDiscriminator(vec[0]);
-            linkTypeDto.setName(vec[1]);
-            linkTypeDto.setAppIcon(vec[2]);
-            linkTypeDto.setMapIcon(vec[3]);
-            linkTypeDto.setCapacityFull(vec[4]);
-            linkTypeDto.setCapacityUnitName(vec[5]);
-            linkTypeDto.setTypeClassPath(vec[6]);
-            linkTypeDto.setSystem(vec[7]);
-            linkTypeDto.setUnique(vec[8]);
+            linkTypeDto.setDiscriminator(columnValues[0]);
+            linkTypeDto.setName(columnValues[1]);
+            linkTypeDto.setAppIcon(columnValues[2]);
+            linkTypeDto.setMapIcon(columnValues[3]);
+            linkTypeDto.setCapacityFull(columnValues[4]);
+            linkTypeDto.setCapacityUnitName(columnValues[5]);
+            linkTypeDto.setTypeClassPath(columnValues[6]);
+            linkTypeDto.setSystem(columnValues[7]);
+            linkTypeDto.setUnique(columnValues[8]);
         }
 
         return linkTypeDto;
     }
+
 }

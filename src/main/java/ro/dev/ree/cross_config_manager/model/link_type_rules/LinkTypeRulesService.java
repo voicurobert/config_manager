@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,12 +66,24 @@ public class LinkTypeRulesService implements ServiceRepository {
     }
 
     @Override
-    public List<RecordDto> findAll() {
-        return repository.findAll().stream().map(linkTypeRules -> {
-            LinkTypeRulesDto linkTypeRulesDto = new LinkTypeRulesDto();
-            BeanUtils.copyProperties(linkTypeRules, linkTypeRulesDto);
-            return linkTypeRulesDto;
-        }).collect(Collectors.toList());
+    public List<RecordDto> findAll(String[] columns, String[] old_columns) {
+        return repository.findAll().stream().
+                filter(linkTypeRules -> linkTypeRules.getConsumer().equals(old_columns[0])
+                        && linkTypeRules.getProvider().equals(old_columns[1])
+                        && linkTypeRules.getRoutingPolicy().equals(old_columns[2])
+                        && linkTypeRules.getCapacityCalculatorName().equals(old_columns[3])
+                        && linkTypeRules.getNumberOfChannels().equals(old_columns[4])).
+                map(linkTypeRules -> {
+                    linkTypeRules.setConsumer(columns[0]);
+                    linkTypeRules.setProvider(columns[1]);
+                    linkTypeRules.setRoutingPolicy(columns[2]);
+                    linkTypeRules.setCapacityCalculatorName(columns[3]);
+                    linkTypeRules.setNumberOfChannels(columns[4]);
+                    LinkTypeRulesDto dto = new LinkTypeRulesDto();
+                    BeanUtils.copyProperties(linkTypeRules, dto);
+                    return dto;
+                }).
+                collect(Collectors.toList());
     }
 
     @Override
@@ -92,7 +105,7 @@ public class LinkTypeRulesService implements ServiceRepository {
         return mongoTemplate.find(query, LinkTypeRules.class).stream().
                 map(linkTypeRules -> {
                     LinkTypeRulesDto dto = new LinkTypeRulesDto();
-                    BeanUtils.copyProperties(dto, linkTypeRules);
+                    BeanUtils.copyProperties(linkTypeRules, dto);
                     return dto;
                 }).
                 collect(Collectors.toList());

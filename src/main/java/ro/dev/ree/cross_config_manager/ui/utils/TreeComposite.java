@@ -59,7 +59,6 @@ public abstract class TreeComposite implements Drawable {
             public void widgetSelected(SelectionEvent e) {
                 EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree, "Add");
                 dialog.setServiceRepository(getServiceRepository());
-
                 dialog.open();
             }
 
@@ -72,6 +71,7 @@ public abstract class TreeComposite implements Drawable {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree, "Update");
+                dialog.setServiceRepository(getServiceRepository());
                 dialog.open();
             }
 

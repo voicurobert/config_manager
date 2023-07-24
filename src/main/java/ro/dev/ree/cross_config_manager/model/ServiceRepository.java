@@ -10,7 +10,7 @@ public interface ServiceRepository {
 
     void delete(RecordDto recordDto);
 
-    List<RecordDto> findAll();
+    List<RecordDto> findAll(String[] columns, String[] old_columns);
 
     List<RecordDto> findAllByConfigId(String configId);
 }

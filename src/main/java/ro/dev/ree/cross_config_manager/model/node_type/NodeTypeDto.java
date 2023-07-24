@@ -36,24 +36,25 @@ public class NodeTypeDto extends RecordDto {
 
     private String uniquenessType;
 
-    public static NodeTypeDto newFromItems(String[] vec) {
+    public static NodeTypeDto newFromItems(String[] columnValues) {
         var nodeTypeDto = new NodeTypeDto();
 
-        for (int i = 0; i < vec.length; i++) {
+        for (int i = 0; i < columnValues.length; i++) {
             nodeTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-            nodeTypeDto.setDiscriminator(vec[0]);
-            nodeTypeDto.setName(vec[1]);
-            nodeTypeDto.setAppIcon(vec[2]);
-            nodeTypeDto.setMapIcon(vec[3]);
-            nodeTypeDto.setCapacityFull(vec[4]);
-            nodeTypeDto.setCapacityUnitName(vec[5]);
-            nodeTypeDto.setTypeClassPath(vec[6]);
-            nodeTypeDto.setRootType(vec[7]);
-            nodeTypeDto.setSystem(vec[8]);
-            nodeTypeDto.setMultiparentAllowed(vec[9]);
-            nodeTypeDto.setUniquenessType(vec[10]);
+            nodeTypeDto.setDiscriminator(columnValues[0]);
+            nodeTypeDto.setName(columnValues[1]);
+            nodeTypeDto.setAppIcon(columnValues[2]);
+            nodeTypeDto.setMapIcon(columnValues[3]);
+            nodeTypeDto.setCapacityFull(columnValues[4]);
+            nodeTypeDto.setCapacityUnitName(columnValues[5]);
+            nodeTypeDto.setTypeClassPath(columnValues[6]);
+            nodeTypeDto.setRootType(columnValues[7]);
+            nodeTypeDto.setSystem(columnValues[8]);
+            nodeTypeDto.setMultiparentAllowed(columnValues[9]);
+            nodeTypeDto.setUniquenessType(columnValues[10]);
         }
 
         return nodeTypeDto;
     }
+
 }

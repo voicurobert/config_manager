@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,12 +68,20 @@ public class LinkTypeNodeTypeRulesService implements ServiceRepository {
     }
 
     @Override
-    public List<RecordDto> findAll() {
-        return repository.findAll().stream().map(linkTypeNodeTypeRules -> {
-            LinkTypeNodeTypeRulesDto linkTypeNodeTypeRulesDto = new LinkTypeNodeTypeRulesDto();
-            BeanUtils.copyProperties(linkTypeNodeTypeRules, linkTypeNodeTypeRulesDto);
-            return linkTypeNodeTypeRulesDto;
-        }).collect(Collectors.toList());
+    public List<RecordDto> findAll(String[] columns, String[] old_columns) {
+        return repository.findAll().stream().
+                filter(linkTypeNodeTypeRules -> linkTypeNodeTypeRules.getLinkType().equals(old_columns[0])
+                        && linkTypeNodeTypeRules.getNodeType().equals(old_columns[1])
+                        && linkTypeNodeTypeRules.getQuality().equals(old_columns[2])).
+                map(linkTypeNodeTypeRules -> {
+                    linkTypeNodeTypeRules.setLinkType(columns[0]);
+                    linkTypeNodeTypeRules.setNodeType(columns[1]);
+                    linkTypeNodeTypeRules.setQuality(columns[2]);
+                    LinkTypeNodeTypeRulesDto dto = new LinkTypeNodeTypeRulesDto();
+                    BeanUtils.copyProperties(linkTypeNodeTypeRules, dto);
+                    return dto;
+                }).
+                collect(Collectors.toList());
     }
 
     @Override
@@ -94,7 +103,7 @@ public class LinkTypeNodeTypeRulesService implements ServiceRepository {
         return mongoTemplate.find(query, LinkTypeNodeTypeRules.class).stream().
                 map(linkTypeNodeTypeRules -> {
                     LinkTypeNodeTypeRulesDto dto = new LinkTypeNodeTypeRulesDto();
-                    BeanUtils.copyProperties(dto, linkTypeNodeTypeRules);
+                    BeanUtils.copyProperties(linkTypeNodeTypeRules,dto);
                     return dto;
                 }).
                 collect(Collectors.toList());

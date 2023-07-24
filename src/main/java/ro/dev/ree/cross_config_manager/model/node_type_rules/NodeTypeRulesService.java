@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,12 +67,22 @@ public class NodeTypeRulesService implements ServiceRepository {
     }
 
     @Override
-    public List<RecordDto> findAll() {
-        return repository.findAll().stream().map(nodeTypeRules -> {
-            NodeTypeRulesDto nodeTypeRulesDto = new NodeTypeRulesDto();
-            BeanUtils.copyProperties(nodeTypeRules, nodeTypeRulesDto);
-            return nodeTypeRulesDto;
-        }).collect(Collectors.toList());
+    public List<RecordDto> findAll(String[] columns, String[] old_columns) {
+        return repository.findAll().stream().
+                filter(nodeTypeRules -> nodeTypeRules.getChild().equals(old_columns[0])
+                        && nodeTypeRules.getParent().equals(old_columns[1])
+                        && nodeTypeRules.getCapacityCalculatorName().equals(old_columns[2])
+                        && nodeTypeRules.getMandatoryParent().equals(old_columns[3])).
+                map(nodeTypeRules -> {
+                    nodeTypeRules.setChild(columns[0]);
+                    nodeTypeRules.setParent(columns[1]);
+                    nodeTypeRules.setCapacityCalculatorName(columns[2]);
+                    nodeTypeRules.setMandatoryParent(columns[3]);
+                    NodeTypeRulesDto dto = new NodeTypeRulesDto();
+                    BeanUtils.copyProperties(nodeTypeRules, dto);
+                    return dto;
+                }).
+                collect(Collectors.toList());
     }
 
     public List<RecordDto> findAllByConfigId(String configId) {
@@ -92,7 +103,7 @@ public class NodeTypeRulesService implements ServiceRepository {
         return mongoTemplate.find(query, NodeTypeRules.class).stream().
                 map(nodeTypeRules -> {
                     NodeTypeRulesDto dto = new NodeTypeRulesDto();
-                    BeanUtils.copyProperties(dto, nodeTypeRules);
+                    BeanUtils.copyProperties(nodeTypeRules, dto);
                     return dto;
                 }).
                 collect(Collectors.toList());

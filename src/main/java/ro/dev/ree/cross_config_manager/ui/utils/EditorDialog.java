@@ -6,8 +6,10 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
@@ -21,6 +23,7 @@ import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class EditorDialog extends Dialog {
 
@@ -102,43 +105,45 @@ public class EditorDialog extends Dialog {
     }
 
     private void handleAction(Widget selectedItem, String action) {
-        if (inputTexts == null) {
-            return;
-        }
-
         if (action.equals("Add")) {
             String[] items = new String[(control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount()];
             for (int i = 0; i < inputTexts.length; i++) {
                 items[i] = inputTexts[i].getText().trim();
             }
             Widget newItem;
-            if ((control instanceof Table)) {
-                newItem =((TableItem) selectedItem).getText().equals("") ?  (TableItem) selectedItem : new TableItem((Table) control, SWT.NONE);
-            } else {
-                newItem =((TreeItem) selectedItem).getText().equals("") ?  (TreeItem) selectedItem : new TreeItem((Tree) control, SWT.NONE);
-            }
-            insertRecord(control.getToolTipText(), items);
-            if ((control instanceof Table)) {
+            if (control instanceof Table) {
+                newItem = ((TableItem) selectedItem).getText().equals("") ? (TableItem) selectedItem : new TableItem((Table) control, SWT.NONE);
                 ((TableItem) newItem).setText(items);
                 for (TableColumn column : ((Table) control).getColumns()) {
                     column.pack();
                 }
             } else {
+                newItem = ((TreeItem) selectedItem).getText().equals("") ? (TreeItem) selectedItem : new TreeItem((Tree) control, SWT.NONE);
                 ((TreeItem) newItem).setText(items);
                 for (TreeColumn column : ((Tree) control).getColumns()) {
                     column.pack();
                 }
             }
+            insertRecord(items);
         } else {
+            String[] items = new String[(control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount()];
+            String[] old_items = new String[(control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount()];
             for (int i = 0; i < inputTexts.length; i++) {
-                String text = inputTexts[i].getText().trim();
                 if (selectedItem instanceof TableItem) {
-                    ((TableItem) selectedItem).setText(i, text);
+                    old_items[i] = ((TableItem) selectedItem).getText(i);
                 } else {
-                    ((TreeItem) selectedItem).setText(i, text);
+                    old_items[i] = ((TreeItem) selectedItem).getText(i);
                 }
             }
-            if (selectedItem instanceof TableItem) {
+            for (int i = 0; i < inputTexts.length; i++) {
+                items[i] = inputTexts[i].getText().trim();
+                if (selectedItem instanceof TableItem) {
+                    ((TableItem) selectedItem).setText(i, items[i]);
+                } else {
+                    ((TreeItem) selectedItem).setText(i, items[i]);
+                }
+            }
+            if (control instanceof Table) {
                 for (TableColumn column : ((Table) control).getColumns()) {
                     column.pack();
                 }
@@ -147,11 +152,12 @@ public class EditorDialog extends Dialog {
                     column.pack();
                 }
             }
+            updateRecord(items, old_items);
         }
     }
 
-    private void insertRecord(String tableName, String[] columnValues) {
-        switch (tableName) {
+    private void insertRecord(String[] columnValues) {
+        switch (control.getToolTipText()) {
             case ClassTypeGui.TABLE_NAME:
                 serviceRepository.insert(ClassTypeDto.newFromItems(columnValues));
                 break;
@@ -173,5 +179,10 @@ public class EditorDialog extends Dialog {
             default:
                 break;
         }
+    }
+
+    private void updateRecord(String[] columnValues, String[] old_columnValues) {
+        List<RecordDto> all = serviceRepository.findAll(columnValues, old_columnValues);
+        serviceRepository.update(all.get(0));
     }
 }

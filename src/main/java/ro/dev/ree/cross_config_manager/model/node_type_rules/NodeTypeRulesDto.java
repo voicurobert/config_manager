@@ -21,17 +21,18 @@ public class NodeTypeRulesDto extends RecordDto {
 
     private String mandatoryParent;
 
-    public static NodeTypeRulesDto newFromItems(String[] vec) {
+    public static NodeTypeRulesDto newFromItems(String[] columnValues) {
         var nodeTypeRulesDto = new NodeTypeRulesDto();
 
-        for (int i = 0; i < vec.length; i++) {
+        for (int i = 0; i < columnValues.length; i++) {
             nodeTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-            nodeTypeRulesDto.setChild(vec[0]);
-            nodeTypeRulesDto.setParent(vec[1]);
-            nodeTypeRulesDto.setCapacityCalculatorName(vec[2]);
-            nodeTypeRulesDto.setMandatoryParent(vec[3]);
+            nodeTypeRulesDto.setChild(columnValues[0]);
+            nodeTypeRulesDto.setParent(columnValues[1]);
+            nodeTypeRulesDto.setCapacityCalculatorName(columnValues[2]);
+            nodeTypeRulesDto.setMandatoryParent(columnValues[3]);
         }
 
         return nodeTypeRulesDto;
     }
+
 }

@@ -2,12 +2,9 @@ package ro.dev.ree.cross_config_manager.model.class_type;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
-import ro.dev.ree.cross_config_manager.model.config_type.ConfigTypeService;
-import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 
 @Data
 @NoArgsConstructor
@@ -22,16 +19,17 @@ public class ClassTypeDto extends RecordDto {
 
     private String parentPath;
 
-    public static ClassTypeDto newFromItems(String[] vec) {
+    public static ClassTypeDto newFromItems(String[] columnValues) {
         var classTypeDto = new ClassTypeDto();
 
-        for (int i = 0; i < vec.length; i++) {
+        for (int i = 0; i < columnValues.length; i++) {
             classTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-            classTypeDto.setName(vec[0]);
-            classTypeDto.setPath(vec[1]);
-            classTypeDto.setParentPath(vec[2]);
+            classTypeDto.setName(columnValues[0]);
+            classTypeDto.setPath(columnValues[1]);
+            classTypeDto.setParentPath(columnValues[2]);
         }
 
         return classTypeDto;
     }
+
 }

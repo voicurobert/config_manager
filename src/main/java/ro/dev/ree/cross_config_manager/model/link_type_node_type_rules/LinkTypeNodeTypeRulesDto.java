@@ -21,16 +21,17 @@ public class LinkTypeNodeTypeRulesDto extends RecordDto {
 
     private String quality;
 
-    public static LinkTypeNodeTypeRulesDto newFromItems(String[] vec) {
+    public static LinkTypeNodeTypeRulesDto newFromItems(String[] columnValues) {
         var linkTypeNodeTypeRulesDto = new LinkTypeNodeTypeRulesDto();
 
-        for (int i = 0; i < vec.length; i++) {
+        for (int i = 0; i < columnValues.length; i++) {
             linkTypeNodeTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-            linkTypeNodeTypeRulesDto.setLinkType(vec[0]);
-            linkTypeNodeTypeRulesDto.setNodeType(vec[1]);
-            linkTypeNodeTypeRulesDto.setQuality(vec[2]);
+            linkTypeNodeTypeRulesDto.setLinkType(columnValues[0]);
+            linkTypeNodeTypeRulesDto.setNodeType(columnValues[1]);
+            linkTypeNodeTypeRulesDto.setQuality(columnValues[2]);
         }
 
         return linkTypeNodeTypeRulesDto;
     }
+
 }

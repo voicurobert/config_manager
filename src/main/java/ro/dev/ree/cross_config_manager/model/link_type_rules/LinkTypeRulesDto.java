@@ -24,19 +24,20 @@ public class LinkTypeRulesDto extends RecordDto {
 
     private String numberOfChannels;
 
-    public static LinkTypeRulesDto newFromItems(String[] vec) {
+    public static LinkTypeRulesDto newFromItems(String[] columnValues) {
         var linkTypeRulesDto = new LinkTypeRulesDto();
 
-        for (int i = 0; i < vec.length; i++) {
+        for (int i = 0; i < columnValues.length; i++) {
             linkTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-            linkTypeRulesDto.setConsumer(vec[0]);
-            linkTypeRulesDto.setProvider(vec[1]);
-            linkTypeRulesDto.setRoutingPolicy(vec[2]);
-            linkTypeRulesDto.setCapacityCalculatorName(vec[3]);
-            linkTypeRulesDto.setNumberOfChannels(vec[4]);
+            linkTypeRulesDto.setConsumer(columnValues[0]);
+            linkTypeRulesDto.setProvider(columnValues[1]);
+            linkTypeRulesDto.setRoutingPolicy(columnValues[2]);
+            linkTypeRulesDto.setCapacityCalculatorName(columnValues[3]);
+            linkTypeRulesDto.setNumberOfChannels(columnValues[4]);
 
         }
 
         return linkTypeRulesDto;
     }
+
 }

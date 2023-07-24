@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,12 +70,32 @@ public class LinkTypeService implements ServiceRepository {
     }
 
     @Override
-    public List<RecordDto> findAll() {
-        return repository.findAll().stream().map(linkType -> {
-            LinkTypeDto linkTypeDto = new LinkTypeDto();
-            BeanUtils.copyProperties(linkType, linkTypeDto);
-            return linkTypeDto;
-        }).collect(Collectors.toList());
+    public List<RecordDto> findAll(String[] columns, String[] old_columns) {
+        return repository.findAll().stream().
+                filter(linkType -> linkType.getDiscriminator().equals(old_columns[0])
+                        && linkType.getName().equals(old_columns[1])
+                        && linkType.getAppIcon().equals(old_columns[2])
+                        && linkType.getMapIcon().equals(old_columns[3])
+                        && linkType.getCapacityFull().equals(old_columns[4])
+                        && linkType.getCapacityUnitName().equals(old_columns[5])
+                        && linkType.getTypeClassPath().equals(old_columns[6])
+                        && linkType.getSystem().equals(old_columns[7])
+                        && linkType.getUnique().equals(old_columns[8])).
+                map(linkType -> {
+                    linkType.setDiscriminator(columns[0]);
+                    linkType.setName(columns[1]);
+                    linkType.setAppIcon(columns[2]);
+                    linkType.setMapIcon(columns[3]);
+                    linkType.setCapacityFull(columns[4]);
+                    linkType.setCapacityUnitName(columns[5]);
+                    linkType.setTypeClassPath(columns[6]);
+                    linkType.setSystem(columns[7]);
+                    linkType.setUnique(columns[8]);
+                    LinkTypeDto dto = new LinkTypeDto();
+                    BeanUtils.copyProperties(linkType, dto);
+                    return dto;
+                }).
+                collect(Collectors.toList());
     }
 
     public List<RecordDto> findAllByConfigId(String configId) {
@@ -95,7 +116,7 @@ public class LinkTypeService implements ServiceRepository {
         return mongoTemplate.find(query, LinkType.class).stream().
                 map(linkType -> {
                     LinkTypeDto dto = new LinkTypeDto();
-                    BeanUtils.copyProperties(dto, linkType);
+                    BeanUtils.copyProperties(linkType, dto);
                     return dto;
                 }).
                 collect(Collectors.toList());
