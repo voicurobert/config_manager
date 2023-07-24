@@ -40,7 +40,7 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite {
         createCheckbox(parent);
 
         Tree tree = (Tree) super.createContents(parent);
-        tree.setToolTipText("LinkTypeNodeTypeRulesTree");
+
 
         List<RecordDto> allByConfigId = linkTypeNodeTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
         for (RecordDto recordDto : allByConfigId) {

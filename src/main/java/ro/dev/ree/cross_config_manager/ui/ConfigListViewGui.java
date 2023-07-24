@@ -7,7 +7,10 @@ import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
+import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.config_type.Config;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigDto;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigTypeService;
 
 import java.util.List;
@@ -22,11 +25,11 @@ public class ConfigListViewGui {
 
     public void open() {
         List<Config> listConfigName = configTypeService.findAll();
-        Config[] v = new Config[listConfigName.size()];
-
-        for (int i = 0; i < listConfigName.size(); i++) {
-            v[i] = listConfigName.get(i);
-        }
+//        Config[] v = new Config[listConfigName.size()];
+//
+//        for (int i = 0; i < listConfigName.size(); i++) {
+//            v[i] = listConfigName.get(i);
+//        }
 
         shell.setMaximized(true);
         var mainLayout = new RowLayout();
@@ -44,20 +47,18 @@ public class ConfigListViewGui {
         configTypeTable.setHeaderVisible(true);
         configTypeTable.setLinesVisible(true);
         configTypeTable.setLayoutData(new RowData(250, 150));
-        String[] NodeTypeRulesHeaders = {"Config name"};
+        String[] headerListView = {"Config name"};
 
-        for (String header : NodeTypeRulesHeaders) {
+        for (String header : headerListView) {
             TableColumn column = new TableColumn(configTypeTable, SWT.BORDER);
             column.setText(header);
             column.pack();
         }
 
 
-        for (int i = 0; i < v.length; i++) {
+        for (Config config : listConfigName) {
             TableItem item = new TableItem(configTypeTable, SWT.BORDER);
-            for (int j = 0; j < v.length; j++) {
-                item.setText(v[i].getName());
-            }
+            item.setText(config.getName());
         }
 
         Menu menu = new Menu(configTypeTable);
@@ -70,7 +71,12 @@ public class ConfigListViewGui {
             @Override
             public void widgetSelected(SelectionEvent selectionEvent) {
                 // TODO get table selection and save config object to ConfigSingleton
-                //ConfigSingleton.getSingleton().setConfig();
+                TableItem selection = configTypeTable.getSelection()[0];
+                List<RecordDto> list = configTypeService.findByConfigName(selection.getText());
+
+                ConfigSingleton.getSingleton().setConfigDto((ConfigDto) list.get(0));
+
+
                 configView();
             }
 
