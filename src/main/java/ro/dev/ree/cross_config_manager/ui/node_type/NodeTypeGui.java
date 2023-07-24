@@ -74,7 +74,9 @@ public class NodeTypeGui extends TableComposite {
     @Override
     public void delete(int[] index) {
         super.delete(index);
-        // get record based on index and delete it\
-        //nodeTypeService.delete();
+        List<RecordDto> allByConfigId = nodeTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        if (index.length != 0) {
+            nodeTypeService.delete(allByConfigId.get(index[0]));
+        }
     }
 }

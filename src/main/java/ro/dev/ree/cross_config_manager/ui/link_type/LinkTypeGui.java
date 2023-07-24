@@ -8,8 +8,8 @@ import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
-import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeService;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
+import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeService;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
 
 import java.util.List;
@@ -70,7 +70,9 @@ public class LinkTypeGui extends TableComposite {
     @Override
     public void delete(int[] index) {
         super.delete(index);
-        // get record based on index and delete it
-        //linkTypeService.delete();
+        List<RecordDto> allByConfigId = linkTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        if (index.length != 0) {
+            linkTypeService.delete(allByConfigId.get(index[0]));
+        }
     }
 }

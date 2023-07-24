@@ -25,7 +25,7 @@ public abstract class TreeComposite implements Drawable {
     public Composite createContents(Composite parent) {
 
         tree = new Tree(parent, SWT.BORDER | SWT.CENTER);
-        GridData gd_tree = new GridData(-1,150);
+        GridData gd_tree = new GridData(-1, 150);
         gd_tree.horizontalAlignment = 2;
         tree.setLayoutData(gd_tree);
         tree.setToolTipText(treeName());
@@ -84,11 +84,16 @@ public abstract class TreeComposite implements Drawable {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 TreeItem[] treeItems = tree.getSelection();
+
                 for (TreeItem treeitem : treeItems) {
+
                     treeitem.removeAll(); // Remove all childrens
                     treeitem.dispose();   // Remove actual parent
                 }
+                delete(tree.getColumnOrder());
                 tree.pack();
+
+
             }
 
             @Override
@@ -113,8 +118,8 @@ public abstract class TreeComposite implements Drawable {
         button.setSelection(false);
     }
 
-    protected void delete(int[] index) {
-        tree.removeAll();
+    public void delete(int[] index) {
+        //tree.removeAll();
         tree.pack();
     }
 }
