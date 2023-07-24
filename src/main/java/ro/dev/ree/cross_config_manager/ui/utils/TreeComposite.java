@@ -85,13 +85,17 @@ public abstract class TreeComposite implements Drawable {
             public void widgetSelected(SelectionEvent e) {
                 TreeItem[] treeItems = tree.getSelection();
 
+                int[] selectedIndices = new int[treeItems.length];
+                for (int i = 0; i < treeItems.length; i++) {
+                    selectedIndices[i] = tree.indexOf(treeItems[i]);
+                }
+
                 for (TreeItem treeitem : treeItems) {
 
                     treeitem.removeAll(); // Remove all childrens
                     treeitem.dispose();   // Remove actual parent
                 }
-                delete(tree.getColumnOrder());
-                tree.pack();
+                delete(selectedIndices);
 
 
             }
@@ -119,7 +123,6 @@ public abstract class TreeComposite implements Drawable {
     }
 
     public void delete(int[] index) {
-        //tree.removeAll();
-        tree.pack();
+
     }
 }

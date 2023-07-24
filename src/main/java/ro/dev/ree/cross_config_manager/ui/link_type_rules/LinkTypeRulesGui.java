@@ -65,9 +65,8 @@ public class LinkTypeRulesGui extends TreeComposite {
     public void delete(int[] index) {
         super.delete(index);
         List<RecordDto> allByConfigId = linkTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-
-
-        linkTypeRulesService.delete(allByConfigId.get(index[0]));
-
+        if (index.length != 0) {
+            linkTypeRulesService.delete(allByConfigId.get(index[0]));
+        }
     }
 }
