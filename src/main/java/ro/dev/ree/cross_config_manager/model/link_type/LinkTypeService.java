@@ -82,7 +82,7 @@ public class LinkTypeService implements ServiceRepository {
                 filter(linkType -> linkType.getConfigId().equals(configId)).
                 map(linkType -> {
                     LinkTypeDto dto = new LinkTypeDto();
-                    BeanUtils.copyProperties(dto, linkType);
+                    BeanUtils.copyProperties(linkType, dto);
                     return dto;
                 }).
                 collect(Collectors.toList());

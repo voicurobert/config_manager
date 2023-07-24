@@ -79,7 +79,7 @@ public class NodeTypeService implements ServiceRepository {
                 filter(nodeType -> nodeType.getConfigId().equals(configId)).
                 map(nodeType -> {
                     NodeTypeDto dto = new NodeTypeDto();
-                    BeanUtils.copyProperties(dto, nodeType);
+                    BeanUtils.copyProperties(nodeType, dto);
                     return dto;
                 }).
                 collect(Collectors.toList());

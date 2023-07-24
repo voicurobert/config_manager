@@ -81,7 +81,7 @@ public class LinkTypeNodeTypeRulesService implements ServiceRepository {
                 filter(linkTypeNodeTypeRules -> linkTypeNodeTypeRules.getConfigId().equals(configId)).
                 map(linkTypeNodeTypeRules -> {
                     LinkTypeNodeTypeRulesDto dto = new LinkTypeNodeTypeRulesDto();
-                    BeanUtils.copyProperties(dto, linkTypeNodeTypeRules);
+                    BeanUtils.copyProperties(linkTypeNodeTypeRules, dto);
                     return dto;
                 }).
                 collect(Collectors.toList());

@@ -78,7 +78,7 @@ public class ClassTypeService implements ServiceRepository {
                 filter(classType -> classType.getConfigId().equals(configId)).
                 map(classType -> {
                     ClassTypeDto dto = new ClassTypeDto();
-                    BeanUtils.copyProperties(dto, classType);
+                    BeanUtils.copyProperties(classType, dto);
                     return dto;
                 }).
                 collect(Collectors.toList());

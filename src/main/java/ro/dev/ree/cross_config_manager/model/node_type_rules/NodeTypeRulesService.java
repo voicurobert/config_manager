@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,11 +79,12 @@ public class NodeTypeRulesService implements ServiceRepository {
                 filter(nodeTypeRules -> nodeTypeRules.getConfigId().equals(configId)).
                 map(nodeTypeRules -> {
                     NodeTypeRulesDto dto = new NodeTypeRulesDto();
-                    BeanUtils.copyProperties(dto, nodeTypeRules);
+                    BeanUtils.copyProperties(nodeTypeRules, dto);
                     return dto;
                 }).
                 collect(Collectors.toList());
     }
+
     public List<RecordDto> findAllByConfigIdNew(String configId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("configId").is(configId));

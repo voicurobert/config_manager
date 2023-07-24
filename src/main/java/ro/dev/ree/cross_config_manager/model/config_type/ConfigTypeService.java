@@ -54,7 +54,7 @@ public class ConfigTypeService {
         return mongoTemplate.find(query, Config.class).stream().
                 map(config -> {
                     ConfigDto dto = new ConfigDto();
-                    BeanUtils.copyProperties(dto, config);
+                    BeanUtils.copyProperties(config, dto);
                     return dto;
                 }).
                 collect(Collectors.toList());
