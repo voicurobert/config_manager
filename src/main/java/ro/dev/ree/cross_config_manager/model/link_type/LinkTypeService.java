@@ -31,7 +31,7 @@ public class LinkTypeService implements ServiceRepository {
 //    }
 
     @Override
-    public RecordDto insertOrUpdate(RecordDto recordDto) {
+    public void insertOrUpdate(RecordDto recordDto) {
         LinkType linkType = new LinkType();
 
         LinkTypeDto linkTypeDto = (LinkTypeDto) recordDto;
@@ -39,8 +39,6 @@ public class LinkTypeService implements ServiceRepository {
 
         LinkType insert = repository.insert(linkType);
         linkTypeDto.setId(insert.getId());
-
-        return linkTypeDto;
     }
 
     @Override

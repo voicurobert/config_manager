@@ -28,7 +28,7 @@ public class NodeTypeService implements ServiceRepository {
 
 
     @Override
-    public RecordDto insertOrUpdate(RecordDto recordDto) {
+    public void insertOrUpdate(RecordDto recordDto) {
         NodeType nodeType = new NodeType();
 
         NodeTypeDto nodeTypeDto = (NodeTypeDto) recordDto;
@@ -36,8 +36,6 @@ public class NodeTypeService implements ServiceRepository {
 
         NodeType insert = repository.insert(nodeType);
         nodeTypeDto.setId(insert.getId());
-
-        return nodeTypeDto;
     }
 
     @Override

@@ -28,7 +28,7 @@ public class LinkTypeNodeTypeRulesService implements ServiceRepository {
 //    }
 
     @Override
-    public RecordDto insertOrUpdate(RecordDto recordDto) {
+    public void insertOrUpdate(RecordDto recordDto) {
         LinkTypeNodeTypeRules linkTypeNodeTypeRules = new LinkTypeNodeTypeRules();
 
         LinkTypeNodeTypeRulesDto linkTypeNodeTypeRulesDto = (LinkTypeNodeTypeRulesDto) recordDto;
@@ -36,8 +36,6 @@ public class LinkTypeNodeTypeRulesService implements ServiceRepository {
 
         LinkTypeNodeTypeRules insert = repository.insert(linkTypeNodeTypeRules);
         linkTypeNodeTypeRulesDto.setId(insert.getId());
-
-        return linkTypeNodeTypeRulesDto;
     }
 
     @Override

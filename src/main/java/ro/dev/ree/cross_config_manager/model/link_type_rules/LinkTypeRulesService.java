@@ -27,7 +27,7 @@ public class LinkTypeRulesService implements ServiceRepository {
 //    }
 
     @Override
-    public RecordDto insertOrUpdate(RecordDto recordDto) {
+    public void insertOrUpdate(RecordDto recordDto) {
         LinkTypeRules linkTypeRules = new LinkTypeRules();
 
         LinkTypeRulesDto linkTypeRulesDto = (LinkTypeRulesDto) recordDto;
@@ -35,8 +35,6 @@ public class LinkTypeRulesService implements ServiceRepository {
 
         LinkTypeRules insert = repository.insert(linkTypeRules);
         linkTypeRulesDto.setId(insert.getId());
-
-        return linkTypeRulesDto;
     }
 
     @Override

@@ -27,7 +27,7 @@ public class ClassTypeService implements ServiceRepository {
 //    }
 
     @Override
-    public RecordDto insertOrUpdate(RecordDto recordDto) {
+    public void insertOrUpdate(RecordDto recordDto) {
         ClassType classType = new ClassType();
 
         ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
@@ -35,8 +35,6 @@ public class ClassTypeService implements ServiceRepository {
 
         ClassType insert = repository.save(classType);
         classTypeDto.setId(insert.getId());
-
-        return classTypeDto;
     }
 
 

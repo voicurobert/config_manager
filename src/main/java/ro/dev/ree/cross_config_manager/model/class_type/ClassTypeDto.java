@@ -27,7 +27,7 @@ public class ClassTypeDto extends RecordDto {
         {
             classTypeDto.setId(ID);
         }
-        for (int i = 1; i < columnValues.length; i++) {
+        for (int i = 0; i < columnValues.length; i++) {
             classTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
             classTypeDto.setName(columnValues[0]);
             classTypeDto.setPath(columnValues[1]);
