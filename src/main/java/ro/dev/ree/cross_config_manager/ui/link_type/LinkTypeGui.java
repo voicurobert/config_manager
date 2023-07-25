@@ -18,8 +18,6 @@ public class LinkTypeGui extends TableComposite {
 
     public static final String TABLE_NAME = "Link Type";
 
-    public static String ID = "";
-
     private final LinkTypeService linkTypeService = ConfigManagerContextProvider.getBean(LinkTypeService.class);
 
     @Override
@@ -32,11 +30,6 @@ public class LinkTypeGui extends TableComposite {
     @Override
     public String tableName() {
         return TABLE_NAME;
-    }
-
-    @Override
-    public String ID() {
-        return ID;
     }
 
     @Override
@@ -56,7 +49,6 @@ public class LinkTypeGui extends TableComposite {
             LinkTypeDto linkTypeDto = (LinkTypeDto) recordDto;
             String[] vec = new String[columns().length];
 
-            ID = linkTypeDto.getId();
             vec[0] = linkTypeDto.getDiscriminator();
             vec[1] = linkTypeDto.getName();
             vec[2] = linkTypeDto.getAppIcon();

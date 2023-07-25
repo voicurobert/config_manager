@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,9 +16,12 @@ public class LinkTypeRulesService implements ServiceRepository {
     private final LinkTypeRulesRepository repository;
     private final MongoTemplate mongoTemplate;
 
-    public LinkTypeRulesService(LinkTypeRulesRepository repository, MongoTemplate mongoTemplate) {
+    private final List<LinkTypeRulesDto> linkTypeRulesDtoList;
+
+    public LinkTypeRulesService(LinkTypeRulesRepository repository, MongoTemplate mongoTemplate, List<LinkTypeRulesDto> linkTypeRulesDtoList) {
         this.repository = repository;
         this.mongoTemplate = mongoTemplate;
+        this.linkTypeRulesDtoList = linkTypeRulesDtoList;
     }
 
 //    public void save(LinkTypeRulesDto linkTypeRulesDto) {
@@ -27,14 +31,28 @@ public class LinkTypeRulesService implements ServiceRepository {
 //    }
 
     @Override
-    public void insertOrUpdate(RecordDto recordDto) {
+    public void insertOrUpdate(String[] columnValues, String action, int index) {
         LinkTypeRules linkTypeRules = new LinkTypeRules();
+        LinkTypeRulesDto linkTypeRulesDto = new LinkTypeRulesDto();
 
-        LinkTypeRulesDto linkTypeRulesDto = (LinkTypeRulesDto) recordDto;
+        linkTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        linkTypeRulesDto.setConsumer(columnValues[0]);
+        linkTypeRulesDto.setProvider(columnValues[1]);
+        linkTypeRulesDto.setRoutingPolicy(columnValues[2]);
+        linkTypeRulesDto.setCapacityCalculatorName(columnValues[3]);
+        linkTypeRulesDto.setNumberOfChannels(columnValues[4]);
+
+        if(action.equals("Update")){
+            linkTypeRulesDto.setId(linkTypeRulesDtoList.get(index).getId());
+        }
         BeanUtils.copyProperties(linkTypeRulesDto, linkTypeRules);
+        LinkTypeRules insert = repository.save(linkTypeRules);
 
-        LinkTypeRules insert = repository.insert(linkTypeRules);
-        linkTypeRulesDto.setId(insert.getId());
+        if(action.equals("Add")){
+            linkTypeRulesDto.setId(insert.getId());
+            linkTypeRulesDtoList.add(linkTypeRulesDto);
+        }
+
     }
 
     @Override

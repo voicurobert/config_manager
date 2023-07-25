@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,9 +16,12 @@ public class LinkTypeService implements ServiceRepository {
     private final LinkTypeRepository repository;
     private final MongoTemplate mongoTemplate;
 
-    public LinkTypeService(LinkTypeRepository repository, MongoTemplate mongoTemplate) {
+    private final List<LinkTypeDto> linkTypeDtoList;
+
+    public LinkTypeService(LinkTypeRepository repository, MongoTemplate mongoTemplate, List<LinkTypeDto> linkTypeDtoList) {
         this.repository = repository;
         this.mongoTemplate = mongoTemplate;
+        this.linkTypeDtoList = linkTypeDtoList;
     }
 
 //    public void save(LinkTypeDto linkTypeDto) {
@@ -31,14 +35,32 @@ public class LinkTypeService implements ServiceRepository {
 //    }
 
     @Override
-    public void insertOrUpdate(RecordDto recordDto) {
+    public void insertOrUpdate(String[] columnValues, String action, int index) {
         LinkType linkType = new LinkType();
+        LinkTypeDto linkTypeDto = new LinkTypeDto();
 
-        LinkTypeDto linkTypeDto = (LinkTypeDto) recordDto;
+        linkTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        linkTypeDto.setDiscriminator(columnValues[0]);
+        linkTypeDto.setName(columnValues[1]);
+        linkTypeDto.setAppIcon(columnValues[2]);
+        linkTypeDto.setMapIcon(columnValues[3]);
+        linkTypeDto.setCapacityFull(columnValues[4]);
+        linkTypeDto.setCapacityUnitName(columnValues[5]);
+        linkTypeDto.setTypeClassPath(columnValues[6]);
+        linkTypeDto.setSystem(columnValues[7]);
+        linkTypeDto.setUnique(columnValues[8]);
+
+        if(action.equals("Update")){
+            linkTypeDto.setId(linkTypeDtoList.get(index).getId());
+        }
         BeanUtils.copyProperties(linkTypeDto, linkType);
+        LinkType insert = repository.save(linkType);
 
-        LinkType insert = repository.insert(linkType);
-        linkTypeDto.setId(insert.getId());
+        if(action.equals("Add")){
+            linkTypeDto.setId(insert.getId());
+            linkTypeDtoList.add(linkTypeDto);
+        }
+
     }
 
     @Override

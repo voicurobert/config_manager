@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
-import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 @Data
 @NoArgsConstructor
@@ -30,26 +29,5 @@ public class LinkTypeDto extends RecordDto {
     private String system;
 
     private String unique;
-
-    public static LinkTypeDto NewOrUpdateFromItems(String[] columnValues, String action, String ID) {
-        var linkTypeDto = new LinkTypeDto();
-        if(action.equals("Update")){
-            linkTypeDto.setId(ID);
-        }
-        for (int i = 0; i < columnValues.length; i++) {
-            linkTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-            linkTypeDto.setDiscriminator(columnValues[0]);
-            linkTypeDto.setName(columnValues[1]);
-            linkTypeDto.setAppIcon(columnValues[2]);
-            linkTypeDto.setMapIcon(columnValues[3]);
-            linkTypeDto.setCapacityFull(columnValues[4]);
-            linkTypeDto.setCapacityUnitName(columnValues[5]);
-            linkTypeDto.setTypeClassPath(columnValues[6]);
-            linkTypeDto.setSystem(columnValues[7]);
-            linkTypeDto.setUnique(columnValues[8]);
-        }
-
-        return linkTypeDto;
-    }
 
 }

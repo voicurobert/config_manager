@@ -7,7 +7,6 @@ import org.eclipse.swt.widgets.TableItem;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassType;
 import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
 import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
@@ -18,8 +17,6 @@ import java.util.List;
 public class ClassTypeGui extends TableComposite {
 
     public static final String TABLE_NAME = "Class Type";
-
-    public static String ID = "";
 
     private final ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
 
@@ -32,11 +29,6 @@ public class ClassTypeGui extends TableComposite {
     @Override
     public String tableName() {
         return TABLE_NAME;
-    }
-
-    @Override
-    public String ID() {
-        return ID;
     }
 
     @Override
@@ -55,7 +47,6 @@ public class ClassTypeGui extends TableComposite {
             ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
             String[] vec = new String[columns().length];
 
-            ID = classTypeDto.getId();
             vec[0] = classTypeDto.getName();
             vec[1] = classTypeDto.getPath();
             vec[2] = classTypeDto.getParentPath();

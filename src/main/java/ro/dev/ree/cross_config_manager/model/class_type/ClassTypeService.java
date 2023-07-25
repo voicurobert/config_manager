@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,9 +16,12 @@ public class ClassTypeService implements ServiceRepository {
     private final ClassTypeRepository repository;
     private final MongoTemplate mongoTemplate;
 
-    public ClassTypeService(ClassTypeRepository repository, MongoTemplate mongoTemplate) {
+    private final List<ClassTypeDto> classTypeDtoList;
+
+    public ClassTypeService(ClassTypeRepository repository, MongoTemplate mongoTemplate, List<ClassTypeDto> classTypeDtoList) {
         this.repository = repository;
         this.mongoTemplate = mongoTemplate;
+        this.classTypeDtoList = classTypeDtoList;
     }
 
 //    public void save(ClassTypeDto classTypeDto) {
@@ -27,14 +31,25 @@ public class ClassTypeService implements ServiceRepository {
 //    }
 
     @Override
-    public void insertOrUpdate(RecordDto recordDto) {
+    public void insertOrUpdate(String[] columnValues, String action, int index) {
         ClassType classType = new ClassType();
+        ClassTypeDto classTypeDto = new ClassTypeDto();
 
-        ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
+        classTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        classTypeDto.setName(columnValues[0]);
+        classTypeDto.setPath(columnValues[1]);
+        classTypeDto.setParentPath(columnValues[2]);
+
+        if(action.equals("Update")){
+            classTypeDto.setId(classTypeDtoList.get(index).getId());
+        }
         BeanUtils.copyProperties(classTypeDto, classType);
-
         ClassType insert = repository.save(classType);
-        classTypeDto.setId(insert.getId());
+
+        if(action.equals("Add")){
+            classTypeDto.setId(insert.getId());
+            classTypeDtoList.add(classTypeDto);
+        }
     }
 
 

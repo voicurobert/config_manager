@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ServiceRepository {
 
-    void insertOrUpdate(RecordDto recordDto);
+    void insertOrUpdate(String[] columnValues, String action, int index);
 
     void delete(RecordDto recordDto);
 

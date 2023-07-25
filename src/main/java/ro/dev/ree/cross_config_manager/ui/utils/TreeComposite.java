@@ -18,8 +18,6 @@ public abstract class TreeComposite implements Drawable {
 
     public abstract String treeName();
 
-    public abstract String ID();
-
     public abstract ServiceRepository getServiceRepository();
 
 
@@ -59,7 +57,7 @@ public abstract class TreeComposite implements Drawable {
         addMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree, ID(), "Add");
+                EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree,"Add");
                 dialog.setServiceRepository(getServiceRepository());
                 dialog.open();
             }
@@ -72,7 +70,7 @@ public abstract class TreeComposite implements Drawable {
         updateMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree, ID(), "Update");
+                EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree, "Update");
                 dialog.setServiceRepository(getServiceRepository());
                 dialog.open();
             }
@@ -98,7 +96,6 @@ public abstract class TreeComposite implements Drawable {
                     treeitem.dispose();   // Remove actual parent
                 }
                 delete(selectedIndices);
-
 
             }
 

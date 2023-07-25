@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,9 +16,12 @@ public class NodeTypeService implements ServiceRepository {
     private final NodeTypeRepository repository;
     private final MongoTemplate mongoTemplate;
 
-    public NodeTypeService(NodeTypeRepository repository, MongoTemplate mongoTemplate) {
+    private final List<NodeTypeDto> nodeTypeDtoList;
+
+    public NodeTypeService(NodeTypeRepository repository, MongoTemplate mongoTemplate, List<NodeTypeDto> nodeTypeDtoList) {
         this.repository = repository;
         this.mongoTemplate = mongoTemplate;
+        this.nodeTypeDtoList = nodeTypeDtoList;
     }
 
 //    public void save(NodeTypeDto nodeTypeDto) {
@@ -28,14 +32,33 @@ public class NodeTypeService implements ServiceRepository {
 
 
     @Override
-    public void insertOrUpdate(RecordDto recordDto) {
+    public void insertOrUpdate(String[] columnValues, String action, int index) {
         NodeType nodeType = new NodeType();
+        NodeTypeDto nodeTypeDto = new NodeTypeDto();
 
-        NodeTypeDto nodeTypeDto = (NodeTypeDto) recordDto;
+        nodeTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        nodeTypeDto.setDiscriminator(columnValues[0]);
+        nodeTypeDto.setName(columnValues[1]);
+        nodeTypeDto.setAppIcon(columnValues[2]);
+        nodeTypeDto.setMapIcon(columnValues[3]);
+        nodeTypeDto.setCapacityFull(columnValues[4]);
+        nodeTypeDto.setCapacityUnitName(columnValues[5]);
+        nodeTypeDto.setTypeClassPath(columnValues[6]);
+        nodeTypeDto.setRootType(columnValues[7]);
+        nodeTypeDto.setSystem(columnValues[8]);
+        nodeTypeDto.setMultiparentAllowed(columnValues[9]);
+        nodeTypeDto.setUniquenessType(columnValues[10]);
+
+        if(action.equals("Update")){
+            nodeTypeDto.setId(nodeTypeDtoList.get(index).getId());
+        }
         BeanUtils.copyProperties(nodeTypeDto, nodeType);
+        NodeType insert = repository.save(nodeType);
 
-        NodeType insert = repository.insert(nodeType);
-        nodeTypeDto.setId(insert.getId());
+        if(action.equals("Add")){
+            nodeTypeDto.setId(insert.getId());
+            nodeTypeDtoList.add(nodeTypeDto);
+        }
     }
 
     @Override

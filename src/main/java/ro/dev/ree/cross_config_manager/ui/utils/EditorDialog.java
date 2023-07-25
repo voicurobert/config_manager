@@ -7,12 +7,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
-import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
-import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
-import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
-import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.ui.class_type.ClassTypeGui;
 import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
 import ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules.LinkTypeNodeTypeRulesGui;
@@ -29,15 +23,12 @@ public class EditorDialog extends Dialog {
     private Text[] inputTexts;
     private final String action;
 
-    private final String ID;
-
     private ServiceRepository serviceRepository;
 
-    public EditorDialog(Shell parent, Composite composite, String ID, String action) {
+    public EditorDialog(Shell parent, Composite composite, String action) {
         super(parent, SWT.APPLICATION_MODAL);
         this.control = composite;
         this.action = action;
-        this.ID = ID;
     }
 
     public void setServiceRepository(ServiceRepository serviceRepository) {
@@ -106,6 +97,7 @@ public class EditorDialog extends Dialog {
 
     private void handleAction(Widget selectedItem, String action) {
         String[] items = new String[(control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount()];
+        int index = 0;
         if (action.equals("Add")) {
             Widget newItem;
             for (int i = 0; i < inputTexts.length; i++) {
@@ -123,8 +115,10 @@ public class EditorDialog extends Dialog {
                 items[i] = inputTexts[i].getText().trim();
                 if (control instanceof Table) {
                     ((TableItem) selectedItem).setText(i, items[i]);
+                    index = ((Table) control).getSelectionIndex();
                 } else {
                     ((TreeItem) selectedItem).setText(i, items[i]);
+                    //TODO De vazut cum luam indexul de la Tree
                 }
             }
         }
@@ -137,32 +131,7 @@ public class EditorDialog extends Dialog {
                 column.pack();
             }
         }
-        insertOrUpdateRecord(items);
-    }
 
-    private void insertOrUpdateRecord(String[] columnValues) {
-        switch (control.getToolTipText()) {
-            case ClassTypeGui.TABLE_NAME:
-                serviceRepository.insertOrUpdate(ClassTypeDto.NewOrUpdateFromItems(columnValues, action, ID));
-                break;
-            case NodeTypeGui.TABLE_NAME:
-                serviceRepository.insertOrUpdate(NodeTypeDto.NewOrUpdateFromItems(columnValues, action, ID));
-                break;
-            case LinkTypeGui.TABLE_NAME:
-                serviceRepository.insertOrUpdate(LinkTypeDto.NewOrUpdateFromItems(columnValues, action, ID));
-                break;
-            case NodeTypeRulesGui.TREE_NAME:
-                serviceRepository.insertOrUpdate(NodeTypeRulesDto.NewOrUpdateFromItems(columnValues, action, ID));
-                break;
-            case LinkTypeRulesGui.TREE_NAME:
-                serviceRepository.insertOrUpdate(LinkTypeRulesDto.NewOrUpdateFromItems(columnValues, action, ID));
-                break;
-            case LinkTypeNodeTypeRulesGui.TREE_NAME:
-                serviceRepository.insertOrUpdate(LinkTypeNodeTypeRulesDto.NewOrUpdateFromItems(columnValues, action, ID));
-                break;
-            default:
-                break;
-        }
+        serviceRepository.insertOrUpdate(items, action, index);
     }
-
 }

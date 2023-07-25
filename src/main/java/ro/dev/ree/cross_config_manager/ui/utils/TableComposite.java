@@ -18,8 +18,6 @@ public abstract class TableComposite implements Drawable {
 
     public abstract String tableName();
 
-    public abstract String ID();
-
     public abstract ServiceRepository getServiceRepository();
 
     public Composite createContents(Composite parent) {
@@ -56,7 +54,7 @@ public abstract class TableComposite implements Drawable {
         addMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, ID(), "Add");
+                EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table,"Add");
                 dialog.setServiceRepository(getServiceRepository());
                 dialog.open();
             }
@@ -69,7 +67,7 @@ public abstract class TableComposite implements Drawable {
         updateMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, ID(), "Update");
+                EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, "Update");
                 dialog.setServiceRepository(getServiceRepository());
                 dialog.open();
             }
@@ -109,7 +107,5 @@ public abstract class TableComposite implements Drawable {
 
     public void delete(int[] index) {
         table.remove(index);
-        table.pack();
-
     }
 }
