@@ -18,8 +18,9 @@ public class NodeTypeRulesGui extends TreeComposite {
 
     public static final String TREE_NAME = "Node Type Rules";
 
-    private final NodeTypeRulesService nodeTypeRulesService = ConfigManagerContextProvider.getBean(NodeTypeRulesService.class);
+    public static String ID = "";
 
+    private final NodeTypeRulesService nodeTypeRulesService = ConfigManagerContextProvider.getBean(NodeTypeRulesService.class);
 
     @Override
     public String[] columns() {
@@ -30,6 +31,11 @@ public class NodeTypeRulesGui extends TreeComposite {
     @Override
     public String treeName() {
         return TREE_NAME;
+    }
+
+    @Override
+    public String ID() {
+        return ID;
     }
 
     @Override
@@ -47,10 +53,9 @@ public class NodeTypeRulesGui extends TreeComposite {
 
         for (RecordDto recordDto : allByConfigId) {
             NodeTypeRulesDto nodeTypeRulesDto = (NodeTypeRulesDto) recordDto;
-
             String[] vec = new String[columns().length];
-//            vec[0] = nodeTypeRulesDto.getId();
-//            vec[1] = nodeTypeRulesDto.getConfigId();
+
+            ID = nodeTypeRulesDto.getId();
             vec[0] = nodeTypeRulesDto.getChild();
             vec[1] = nodeTypeRulesDto.getParent();
             vec[2] = nodeTypeRulesDto.getCapacityCalculatorName();

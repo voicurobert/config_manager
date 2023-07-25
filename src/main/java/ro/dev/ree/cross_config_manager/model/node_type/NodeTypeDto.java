@@ -36,9 +36,11 @@ public class NodeTypeDto extends RecordDto {
 
     private String uniquenessType;
 
-    public static NodeTypeDto newFromItems(String[] columnValues) {
+    public static NodeTypeDto NewOrUpdateFromItems(String[] columnValues, String action, String ID) {
         var nodeTypeDto = new NodeTypeDto();
-
+        if(action.equals("Update")){
+            nodeTypeDto.setId(ID);
+        }
         for (int i = 0; i < columnValues.length; i++) {
             nodeTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
             nodeTypeDto.setDiscriminator(columnValues[0]);

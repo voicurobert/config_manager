@@ -18,6 +18,8 @@ public class NodeTypeGui extends TableComposite {
 
     public static final String TABLE_NAME = "Node Type";
 
+    public static String ID = "";
+
     private final NodeTypeService nodeTypeService = ConfigManagerContextProvider.getBean(NodeTypeService.class);
 
     @Override
@@ -30,6 +32,11 @@ public class NodeTypeGui extends TableComposite {
     @Override
     public String tableName() {
         return TABLE_NAME;
+    }
+
+    @Override
+    public String ID() {
+        return ID;
     }
 
     @Override
@@ -48,10 +55,9 @@ public class NodeTypeGui extends TableComposite {
 
         for (RecordDto recordDto : allByConfigId) {
             NodeTypeDto nodeTypeDto = (NodeTypeDto) recordDto;
-
             String[] vec = new String[columns().length];
-//            vec[0] = nodeTypeDto.getId();
-//            vec[1] = nodeTypeDto.getConfigId();
+
+            ID = nodeTypeDto.getId();
             vec[0] = nodeTypeDto.getDiscriminator();
             vec[1] = nodeTypeDto.getName();
             vec[2] = nodeTypeDto.getAppIcon();

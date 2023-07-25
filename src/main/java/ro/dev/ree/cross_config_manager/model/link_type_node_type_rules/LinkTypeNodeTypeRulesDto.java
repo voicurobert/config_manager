@@ -21,9 +21,11 @@ public class LinkTypeNodeTypeRulesDto extends RecordDto {
 
     private String quality;
 
-    public static LinkTypeNodeTypeRulesDto newFromItems(String[] columnValues) {
+    public static LinkTypeNodeTypeRulesDto NewOrUpdateFromItems(String[] columnValues, String action, String ID) {
         var linkTypeNodeTypeRulesDto = new LinkTypeNodeTypeRulesDto();
-
+        if(action.equals("Update")){
+            linkTypeNodeTypeRulesDto.setId(ID);
+        }
         for (int i = 0; i < columnValues.length; i++) {
             linkTypeNodeTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
             linkTypeNodeTypeRulesDto.setLinkType(columnValues[0]);

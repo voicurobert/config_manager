@@ -18,6 +18,8 @@ public abstract class TableComposite implements Drawable {
 
     public abstract String tableName();
 
+    public abstract String ID();
+
     public abstract ServiceRepository getServiceRepository();
 
     public Composite createContents(Composite parent) {
@@ -38,14 +40,14 @@ public abstract class TableComposite implements Drawable {
         menu = new Menu(table);
         table.setMenu(menu);
         Menu fileMenu = new Menu(menu);
-        MenuItem menuHeadline = new MenuItem(menu, SWT.CASCADE);
-        menuHeadline.setText(tableName() + " Menu");
-        menuHeadline.setMenu(fileMenu);
+//        MenuItem menuHeadline = new MenuItem(menu, SWT.CASCADE);
+//        menuHeadline.setText(tableName() + " Menu");
+//        menuHeadline.setMenu(fileMenu);
         MenuItem addMenu = new MenuItem(fileMenu, SWT.PUSH);
         addMenu.setText("Add new " + tableName());
-        MenuItem updateMenu = new MenuItem(fileMenu, SWT.NONE);
+        MenuItem updateMenu = new MenuItem(fileMenu, SWT.PUSH);
         updateMenu.setText("Update " + tableName());
-        MenuItem deleteMenu = new MenuItem(fileMenu, SWT.NONE);
+        MenuItem deleteMenu = new MenuItem(fileMenu, SWT.PUSH);
         deleteMenu.setText("Delete " + tableName());
 
         menu.setEnabled(false);
@@ -54,7 +56,7 @@ public abstract class TableComposite implements Drawable {
         addMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, "Add");
+                EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, ID(), "Add");
                 dialog.setServiceRepository(getServiceRepository());
                 dialog.open();
             }
@@ -67,7 +69,7 @@ public abstract class TableComposite implements Drawable {
         updateMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, "Update");
+                EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, ID(), "Update");
                 dialog.setServiceRepository(getServiceRepository());
                 dialog.open();
             }

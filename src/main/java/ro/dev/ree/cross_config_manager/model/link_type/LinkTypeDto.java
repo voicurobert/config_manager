@@ -31,9 +31,11 @@ public class LinkTypeDto extends RecordDto {
 
     private String unique;
 
-    public static LinkTypeDto newFromItems(String[] columnValues) {
+    public static LinkTypeDto NewOrUpdateFromItems(String[] columnValues, String action, String ID) {
         var linkTypeDto = new LinkTypeDto();
-
+        if(action.equals("Update")){
+            linkTypeDto.setId(ID);
+        }
         for (int i = 0; i < columnValues.length; i++) {
             linkTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
             linkTypeDto.setDiscriminator(columnValues[0]);

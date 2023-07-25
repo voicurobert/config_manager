@@ -17,6 +17,9 @@ import java.util.List;
 public class LinkTypeRulesGui extends TreeComposite {
 
     public static final String TREE_NAME = "Link Types Rules";
+
+    public static String ID = "";
+
     private final LinkTypeRulesService linkTypeRulesService = ConfigManagerContextProvider.getBean(LinkTypeRulesService.class);
 
     @Override
@@ -28,6 +31,11 @@ public class LinkTypeRulesGui extends TreeComposite {
     @Override
     public String treeName() {
         return TREE_NAME;
+    }
+
+    @Override
+    public String ID() {
+        return ID;
     }
 
     @Override
@@ -43,11 +51,10 @@ public class LinkTypeRulesGui extends TreeComposite {
 
         List<RecordDto> allByConfigId = linkTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
         for (RecordDto recordDto : allByConfigId) {
-
             LinkTypeRulesDto linkTypeRulesDto = (LinkTypeRulesDto) recordDto;
             String[] vec = new String[columns().length];
-//            vec[0] = linkTypeRulesDto.getId();
-//            vec[1] = linkTypeRulesDto.getConfigId();
+
+            ID = linkTypeRulesDto.getId();
             vec[0] = linkTypeRulesDto.getConsumer();
             vec[1] = linkTypeRulesDto.getProvider();
             vec[2] = linkTypeRulesDto.getRoutingPolicy();

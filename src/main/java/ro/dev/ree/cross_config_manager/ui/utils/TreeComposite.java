@@ -18,6 +18,8 @@ public abstract class TreeComposite implements Drawable {
 
     public abstract String treeName();
 
+    public abstract String ID();
+
     public abstract ServiceRepository getServiceRepository();
 
 
@@ -41,9 +43,9 @@ public abstract class TreeComposite implements Drawable {
         menu = new Menu(tree);
         tree.setMenu(menu);
         Menu fileMenu = new Menu(menu);
-        MenuItem menuHeadline = new MenuItem(menu, SWT.CASCADE);
-        menuHeadline.setText(treeName() + " Menu");
-        menuHeadline.setMenu(fileMenu);
+//        MenuItem menuHeadline = new MenuItem(menu, SWT.CASCADE);
+//        menuHeadline.setText(treeName() + " Menu");
+//        menuHeadline.setMenu(fileMenu);
         MenuItem addMenu = new MenuItem(fileMenu, SWT.PUSH);
         addMenu.setText("Add new " + treeName());
         MenuItem updateMenu = new MenuItem(fileMenu, SWT.NONE);
@@ -57,7 +59,7 @@ public abstract class TreeComposite implements Drawable {
         addMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree, "Add");
+                EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree, ID(), "Add");
                 dialog.setServiceRepository(getServiceRepository());
                 dialog.open();
             }
@@ -70,7 +72,7 @@ public abstract class TreeComposite implements Drawable {
         updateMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree, "Update");
+                EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree, ID(), "Update");
                 dialog.setServiceRepository(getServiceRepository());
                 dialog.open();
             }

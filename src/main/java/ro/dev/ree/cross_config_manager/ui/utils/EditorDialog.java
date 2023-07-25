@@ -6,10 +6,8 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
@@ -23,7 +21,6 @@ import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class EditorDialog extends Dialog {
 
@@ -32,12 +29,15 @@ public class EditorDialog extends Dialog {
     private Text[] inputTexts;
     private final String action;
 
+    private final String ID;
+
     private ServiceRepository serviceRepository;
 
-    public EditorDialog(Shell parent, Composite composite, String action) {
+    public EditorDialog(Shell parent, Composite composite, String ID, String action) {
         super(parent, SWT.APPLICATION_MODAL);
         this.control = composite;
         this.action = action;
+        this.ID = ID;
     }
 
     public void setServiceRepository(ServiceRepository serviceRepository) {
@@ -105,84 +105,64 @@ public class EditorDialog extends Dialog {
     }
 
     private void handleAction(Widget selectedItem, String action) {
+        String[] items = new String[(control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount()];
         if (action.equals("Add")) {
-            String[] items = new String[(control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount()];
+            Widget newItem;
             for (int i = 0; i < inputTexts.length; i++) {
                 items[i] = inputTexts[i].getText().trim();
             }
-            Widget newItem;
             if (control instanceof Table) {
                 newItem = ((TableItem) selectedItem).getText().equals("") ? (TableItem) selectedItem : new TableItem((Table) control, SWT.NONE);
                 ((TableItem) newItem).setText(items);
-                for (TableColumn column : ((Table) control).getColumns()) {
-                    column.pack();
-                }
             } else {
                 newItem = ((TreeItem) selectedItem).getText().equals("") ? (TreeItem) selectedItem : new TreeItem((Tree) control, SWT.NONE);
                 ((TreeItem) newItem).setText(items);
-                for (TreeColumn column : ((Tree) control).getColumns()) {
-                    column.pack();
-                }
             }
-            insertRecord(items);
         } else {
-            String[] items = new String[(control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount()];
-            String[] old_items = new String[(control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount()];
-            for (int i = 0; i < inputTexts.length; i++) {
-                if (selectedItem instanceof TableItem) {
-                    old_items[i] = ((TableItem) selectedItem).getText(i);
-                } else {
-                    old_items[i] = ((TreeItem) selectedItem).getText(i);
-                }
-            }
             for (int i = 0; i < inputTexts.length; i++) {
                 items[i] = inputTexts[i].getText().trim();
-                if (selectedItem instanceof TableItem) {
+                if (control instanceof Table) {
                     ((TableItem) selectedItem).setText(i, items[i]);
                 } else {
                     ((TreeItem) selectedItem).setText(i, items[i]);
                 }
             }
-            if (control instanceof Table) {
-                for (TableColumn column : ((Table) control).getColumns()) {
-                    column.pack();
-                }
-            } else {
-                for (TreeColumn column : ((Tree) control).getColumns()) {
-                    column.pack();
-                }
-            }
-            updateRecord(items, old_items);
         }
+        if (control instanceof Table) {
+            for (TableColumn column : ((Table) control).getColumns()) {
+                column.pack();
+            }
+        } else {
+            for (TreeColumn column : ((Tree) control).getColumns()) {
+                column.pack();
+            }
+        }
+        insertOrUpdateRecord(items);
     }
 
-    private void insertRecord(String[] columnValues) {
+    private void insertOrUpdateRecord(String[] columnValues) {
         switch (control.getToolTipText()) {
             case ClassTypeGui.TABLE_NAME:
-                serviceRepository.insert(ClassTypeDto.newFromItems(columnValues));
+                serviceRepository.insertOrUpdate(ClassTypeDto.NewOrUpdateFromItems(columnValues, action, ID));
                 break;
             case NodeTypeGui.TABLE_NAME:
-                serviceRepository.insert(NodeTypeDto.newFromItems(columnValues));
+                serviceRepository.insertOrUpdate(NodeTypeDto.NewOrUpdateFromItems(columnValues, action, ID));
                 break;
             case LinkTypeGui.TABLE_NAME:
-                serviceRepository.insert(LinkTypeDto.newFromItems(columnValues));
+                serviceRepository.insertOrUpdate(LinkTypeDto.NewOrUpdateFromItems(columnValues, action, ID));
                 break;
             case NodeTypeRulesGui.TREE_NAME:
-                serviceRepository.insert(NodeTypeRulesDto.newFromItems(columnValues));
+                serviceRepository.insertOrUpdate(NodeTypeRulesDto.NewOrUpdateFromItems(columnValues, action, ID));
                 break;
             case LinkTypeRulesGui.TREE_NAME:
-                serviceRepository.insert(LinkTypeRulesDto.newFromItems(columnValues));
+                serviceRepository.insertOrUpdate(LinkTypeRulesDto.NewOrUpdateFromItems(columnValues, action, ID));
                 break;
             case LinkTypeNodeTypeRulesGui.TREE_NAME:
-                serviceRepository.insert(LinkTypeNodeTypeRulesDto.newFromItems(columnValues));
+                serviceRepository.insertOrUpdate(LinkTypeNodeTypeRulesDto.NewOrUpdateFromItems(columnValues, action, ID));
                 break;
             default:
                 break;
         }
     }
 
-    private void updateRecord(String[] columnValues, String[] old_columnValues) {
-        List<RecordDto> all = serviceRepository.findAll(columnValues, old_columnValues);
-        serviceRepository.update(all.get(0));
-    }
 }

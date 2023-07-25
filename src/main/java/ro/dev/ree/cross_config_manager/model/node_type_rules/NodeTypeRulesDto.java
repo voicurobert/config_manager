@@ -21,9 +21,11 @@ public class NodeTypeRulesDto extends RecordDto {
 
     private String mandatoryParent;
 
-    public static NodeTypeRulesDto newFromItems(String[] columnValues) {
+    public static NodeTypeRulesDto NewOrUpdateFromItems(String[] columnValues, String action, String ID) {
         var nodeTypeRulesDto = new NodeTypeRulesDto();
-
+        if(action.equals("Update")){
+            nodeTypeRulesDto.setId(ID);
+        }
         for (int i = 0; i < columnValues.length; i++) {
             nodeTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
             nodeTypeRulesDto.setChild(columnValues[0]);

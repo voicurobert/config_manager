@@ -24,9 +24,12 @@ public class LinkTypeRulesDto extends RecordDto {
 
     private String numberOfChannels;
 
-    public static LinkTypeRulesDto newFromItems(String[] columnValues) {
+    public static LinkTypeRulesDto NewOrUpdateFromItems(String[] columnValues, String action, String ID) {
         var linkTypeRulesDto = new LinkTypeRulesDto();
-
+        if(action.equals("Update"))
+        {
+            linkTypeRulesDto.setId(ID);
+        }
         for (int i = 0; i < columnValues.length; i++) {
             linkTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
             linkTypeRulesDto.setConsumer(columnValues[0]);
