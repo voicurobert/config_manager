@@ -40,9 +40,9 @@ public abstract class TableComposite implements Drawable {
         menu = new Menu(table);
         table.setMenu(menu);
         Menu fileMenu = new Menu(menu);
-//        MenuItem menuHeadline = new MenuItem(menu, SWT.CASCADE);
-//        menuHeadline.setText(tableName() + " Menu");
-//        menuHeadline.setMenu(fileMenu);
+        MenuItem menuHeadline = new MenuItem(menu, SWT.CASCADE);
+        menuHeadline.setText(tableName() + " Menu");
+        menuHeadline.setMenu(fileMenu);
         MenuItem addMenu = new MenuItem(fileMenu, SWT.PUSH);
         addMenu.setText("Add new " + tableName());
         MenuItem updateMenu = new MenuItem(fileMenu, SWT.PUSH);

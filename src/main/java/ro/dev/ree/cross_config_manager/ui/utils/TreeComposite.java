@@ -43,9 +43,9 @@ public abstract class TreeComposite implements Drawable {
         menu = new Menu(tree);
         tree.setMenu(menu);
         Menu fileMenu = new Menu(menu);
-//        MenuItem menuHeadline = new MenuItem(menu, SWT.CASCADE);
-//        menuHeadline.setText(treeName() + " Menu");
-//        menuHeadline.setMenu(fileMenu);
+        MenuItem menuHeadline = new MenuItem(menu, SWT.CASCADE);
+        menuHeadline.setText(treeName() + " Menu");
+        menuHeadline.setMenu(fileMenu);
         MenuItem addMenu = new MenuItem(fileMenu, SWT.PUSH);
         addMenu.setText("Add new " + treeName());
         MenuItem updateMenu = new MenuItem(fileMenu, SWT.NONE);
