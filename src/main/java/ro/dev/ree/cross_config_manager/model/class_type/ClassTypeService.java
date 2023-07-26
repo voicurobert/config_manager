@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -76,6 +77,18 @@ public class ClassTypeService implements ServiceRepository {
                     return dto;
                 }).
                 collect(Collectors.toList());
+    }
+
+    @Override
+    public RecordDto findById(String Id) {
+        return repository.findAll().stream().
+                filter(classType -> classType.getId().equals(Id)).
+                map(classType -> {
+                    ClassTypeDto dto = new ClassTypeDto();
+                    BeanUtils.copyProperties(classType, dto);
+                    return dto;
+                }).
+                findFirst().orElse(null);
     }
 
 //    public List<RecordDto> findAllByConfigIdNew(String configId) {

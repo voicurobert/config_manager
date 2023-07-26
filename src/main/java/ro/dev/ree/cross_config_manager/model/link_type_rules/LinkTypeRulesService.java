@@ -86,6 +86,17 @@ public class LinkTypeRulesService implements ServiceRepository {
                 collect(Collectors.toList());
     }
 
+    @Override
+    public RecordDto findById(String Id) {
+        return repository.findAll().stream().
+                filter(linkTypeRules -> linkTypeRules.getId().equals(Id)).
+                map(linkTypeRules -> {
+                    LinkTypeRulesDto dto = new LinkTypeRulesDto();
+                    BeanUtils.copyProperties(linkTypeRules, dto);
+                    return dto;
+                }).
+                findFirst().orElse(null);
+    }
 //    public List<RecordDto> findAllByConfigIdNew(String configId) {
 //        Query query = new Query();
 //        query.addCriteria(Criteria.where("configId").is(configId));

@@ -54,7 +54,7 @@ public abstract class TableComposite implements Drawable {
         addMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table,"Add");
+                EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, "Add");
                 dialog.setServiceRepository(getServiceRepository());
                 dialog.open();
             }
@@ -80,7 +80,9 @@ public abstract class TableComposite implements Drawable {
         deleteMenu.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                delete(table.getSelectionIndices());
+
+                delete(table.getSelection()[0].getText(0));
+
             }
 
             @Override
@@ -105,7 +107,8 @@ public abstract class TableComposite implements Drawable {
         button.setSelection(false);
     }
 
-    public void delete(int[] index) {
-        table.remove(index);
+    public void delete(String id) {
+
+        table.remove(table.getSelectionIndex());
     }
 }

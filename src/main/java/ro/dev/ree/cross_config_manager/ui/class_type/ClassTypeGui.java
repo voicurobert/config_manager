@@ -60,12 +60,10 @@ public class ClassTypeGui extends TableComposite {
     }
 
     @Override
-    public void delete(int[] index) {
-        super.delete(index);
-        List<RecordDto> allByConfigId = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        if (index.length != 0) {
-            classTypeService.delete(allByConfigId.get(index[0]));
-        }
+    public void delete(String id) {
+        RecordDto recordDto = classTypeService.findById(id);
+        classTypeService.delete(recordDto);
+        super.delete(id);
     }
 
 }

@@ -9,4 +9,6 @@ public interface ServiceRepository {
     void delete(RecordDto recordDto);
 
     List<RecordDto> findAllByConfigId(String configId);
+
+    RecordDto findById(String Id);
 }

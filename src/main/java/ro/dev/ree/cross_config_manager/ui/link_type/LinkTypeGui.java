@@ -68,11 +68,9 @@ public class LinkTypeGui extends TableComposite {
     }
 
     @Override
-    public void delete(int[] index) {
-        super.delete(index);
-        List<RecordDto> allByConfigId = linkTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        if (index.length != 0) {
-            linkTypeService.delete(allByConfigId.get(index[0]));
-        }
+    public void delete(String id) {
+        RecordDto recordDto = linkTypeService.findById(id);
+        linkTypeService.delete(recordDto);
+        super.delete(id);
     }
 }

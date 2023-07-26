@@ -94,6 +94,18 @@ public class NodeTypeService implements ServiceRepository {
                 collect(Collectors.toList());
     }
 
+    @Override
+    public RecordDto findById(String Id) {
+        return repository.findAll().stream().
+                filter(nodeType -> nodeType.getId().equals(Id)).
+                map(nodeType -> {
+                    NodeTypeDto dto = new NodeTypeDto();
+                    BeanUtils.copyProperties(nodeType, dto);
+                    return dto;
+                }).
+                findFirst().orElse(null);
+    }
+}
 //    public List<RecordDto> findAllByConfigIdNew(String configId) {
 //        Query query = new Query();
 //        query.addCriteria(Criteria.where("configId").is(configId));
@@ -106,4 +118,4 @@ public class NodeTypeService implements ServiceRepository {
 //                }).
 //                collect(Collectors.toList());
 //    }
-}
+

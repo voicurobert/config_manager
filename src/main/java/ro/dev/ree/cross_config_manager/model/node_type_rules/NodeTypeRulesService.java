@@ -80,6 +80,17 @@ public class NodeTypeRulesService implements ServiceRepository {
                 collect(Collectors.toList());
     }
 
+    @Override
+    public RecordDto findById(String Id) {
+        return repository.findAll().stream().
+                filter(nodeTypeRules -> nodeTypeRules.getId().equals(Id)).
+                map(nodeTypeRules -> {
+                    NodeTypeRulesDto dto = new NodeTypeRulesDto();
+                    BeanUtils.copyProperties(nodeTypeRules, dto);
+                    return dto;
+                }).
+                findFirst().orElse(null);
+    }
 //    public List<RecordDto> findAllByConfigIdNew(String configId) {
 //        Query query = new Query();
 //        query.addCriteria(Criteria.where("configId").is(configId));

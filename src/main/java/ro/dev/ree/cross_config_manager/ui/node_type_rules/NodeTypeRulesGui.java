@@ -62,12 +62,11 @@ public class NodeTypeRulesGui extends TreeComposite {
     }
 
     @Override
-    public void delete(int[] index) {
-        super.delete(index);
-        List<RecordDto> allByConfigId = nodeTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        if (index.length != 0) {
-            nodeTypeRulesService.delete(allByConfigId.get(index[0]));
-        }
+    public void delete(String id) {
+
+        RecordDto recordDto = nodeTypeRulesService.findById(id);
+        nodeTypeRulesService.delete(recordDto);
+        super.delete(id);
     }
 
 }

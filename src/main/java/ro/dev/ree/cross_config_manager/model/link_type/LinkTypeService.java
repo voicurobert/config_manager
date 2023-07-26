@@ -94,6 +94,17 @@ public class LinkTypeService implements ServiceRepository {
                 collect(Collectors.toList());
     }
 
+    @Override
+    public RecordDto findById(String Id) {
+        return repository.findAll().stream().
+                filter(linkType -> linkType.getId().equals(Id)).
+                map(linkType -> {
+                    LinkTypeDto dto = new LinkTypeDto();
+                    BeanUtils.copyProperties(linkType, dto);
+                    return dto;
+                }).
+                findFirst().orElse(null);
+    }
 //    public List<RecordDto> findAllByConfigIdNew(String configId) {
 //        Query query = new Query();
 //        query.addCriteria(Criteria.where("configId").is(configId));
