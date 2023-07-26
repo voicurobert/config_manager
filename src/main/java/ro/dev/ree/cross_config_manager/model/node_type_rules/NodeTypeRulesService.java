@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,13 +15,10 @@ public class NodeTypeRulesService implements ServiceRepository {
     private final NodeTypeRulesRepository repository;
     private final MongoTemplate mongoTemplate;
 
-    private final List<NodeTypeRulesDto> nodeTypeRulesDtoList;
-
-    public NodeTypeRulesService(NodeTypeRulesRepository repository, MongoTemplate mongoTemplate, List<NodeTypeRulesDto> nodeTypeRulesDtoList) {
+    public NodeTypeRulesService(NodeTypeRulesRepository repository, MongoTemplate mongoTemplate) {
 
         this.repository = repository;
         this.mongoTemplate = mongoTemplate;
-        this.nodeTypeRulesDtoList = nodeTypeRulesDtoList;
     }
 
 //    public void save(NodeTypeRulesDto nodeTypeRulesDto) {
@@ -32,26 +28,16 @@ public class NodeTypeRulesService implements ServiceRepository {
 //    }
 
     @Override
-    public void insertOrUpdate(String[] columnValues, String action, int index) {
+    public String insertOrUpdate(RecordDto recordDto) {
         NodeTypeRules nodeTypeRules = new NodeTypeRules();
-        NodeTypeRulesDto nodeTypeRulesDto = new NodeTypeRulesDto();
+        NodeTypeRulesDto nodeTypeRulesDto = (NodeTypeRulesDto) recordDto;
 
-        nodeTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        nodeTypeRulesDto.setChild(columnValues[0]);
-        nodeTypeRulesDto.setParent(columnValues[1]);
-        nodeTypeRulesDto.setCapacityCalculatorName(columnValues[2]);
-        nodeTypeRulesDto.setMandatoryParent(columnValues[3]);
-
-        if(action.equals("Update")){
-            nodeTypeRulesDto.setId(nodeTypeRulesDtoList.get(index).getId());
-        }
         BeanUtils.copyProperties(nodeTypeRulesDto, nodeTypeRules);
         NodeTypeRules insert = repository.save(nodeTypeRules);
 
-        if(action.equals("Add")){
-            nodeTypeRulesDto.setId(insert.getId());
-            nodeTypeRulesDtoList.add(nodeTypeRulesDto);
-        }
+        nodeTypeRulesDto.setId(insert.getId());
+
+        return nodeTypeRulesDto.getId();
     }
 
     @Override

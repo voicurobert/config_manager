@@ -22,7 +22,7 @@ public class NodeTypeRulesGui extends TreeComposite {
 
     @Override
     public String[] columns() {
-        return new String[]{"Child", "Parent",
+        return new String[]{"Id", "Child", "Parent",
                 "CapacityCalculatorName", "MandatoryParent"};
     }
 
@@ -48,10 +48,11 @@ public class NodeTypeRulesGui extends TreeComposite {
             NodeTypeRulesDto nodeTypeRulesDto = (NodeTypeRulesDto) recordDto;
             String[] vec = new String[columns().length];
 
-            vec[0] = nodeTypeRulesDto.getChild();
-            vec[1] = nodeTypeRulesDto.getParent();
-            vec[2] = nodeTypeRulesDto.getCapacityCalculatorName();
-            vec[3] = nodeTypeRulesDto.getMandatoryParent();
+            vec[0] =nodeTypeRulesDto.getId();
+            vec[1] = nodeTypeRulesDto.getChild();
+            vec[2] = nodeTypeRulesDto.getParent();
+            vec[3] = nodeTypeRulesDto.getCapacityCalculatorName();
+            vec[4] = nodeTypeRulesDto.getMandatoryParent();
 
             TreeItem item = new TreeItem(tree, SWT.NONE);
             item.setText(vec);

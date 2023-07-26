@@ -22,7 +22,7 @@ public class LinkTypeGui extends TableComposite {
 
     @Override
     public String[] columns() {
-        return new String[]{"Discriminator", "Name", "AppIcon", "MapIcon",
+        return new String[]{"Id", "Discriminator", "Name", "AppIcon", "MapIcon",
                 "CapacityFull", "CapacityUnitName", "TypeClassPath",
                 "System", "Unique"};
     }
@@ -49,15 +49,16 @@ public class LinkTypeGui extends TableComposite {
             LinkTypeDto linkTypeDto = (LinkTypeDto) recordDto;
             String[] vec = new String[columns().length];
 
-            vec[0] = linkTypeDto.getDiscriminator();
-            vec[1] = linkTypeDto.getName();
-            vec[2] = linkTypeDto.getAppIcon();
-            vec[3] = linkTypeDto.getMapIcon();
-            vec[4] = linkTypeDto.getCapacityFull();
-            vec[5] = linkTypeDto.getCapacityUnitName();
-            vec[6] = linkTypeDto.getTypeClassPath();
-            vec[7] = linkTypeDto.getSystem();
-            vec[8] = linkTypeDto.getUnique();
+            vec[0] = linkTypeDto.getId();
+            vec[1] = linkTypeDto.getDiscriminator();
+            vec[2] = linkTypeDto.getName();
+            vec[3] = linkTypeDto.getAppIcon();
+            vec[4] = linkTypeDto.getMapIcon();
+            vec[5] = linkTypeDto.getCapacityFull();
+            vec[6] = linkTypeDto.getCapacityUnitName();
+            vec[7] = linkTypeDto.getTypeClassPath();
+            vec[8] = linkTypeDto.getSystem();
+            vec[9] = linkTypeDto.getUnique();
 
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(vec);

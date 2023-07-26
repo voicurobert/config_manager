@@ -23,7 +23,7 @@ public class ClassTypeGui extends TableComposite {
 
     @Override
     public String[] columns() {
-        return new String[]{"Name", "Path", "ParentPath"};
+        return new String[]{"Id", "Name", "Path", "ParentPath"};
     }
 
     @Override
@@ -47,9 +47,10 @@ public class ClassTypeGui extends TableComposite {
             ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
             String[] vec = new String[columns().length];
 
-            vec[0] = classTypeDto.getName();
-            vec[1] = classTypeDto.getPath();
-            vec[2] = classTypeDto.getParentPath();
+            vec[0] = classTypeDto.getId();
+            vec[1] = classTypeDto.getName();
+            vec[2] = classTypeDto.getPath();
+            vec[3] = classTypeDto.getParentPath();
 
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(vec);

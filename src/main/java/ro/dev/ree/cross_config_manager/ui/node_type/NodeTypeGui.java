@@ -22,7 +22,7 @@ public class NodeTypeGui extends TableComposite {
 
     @Override
     public String[] columns() {
-        return new String[]{"Discriminator", "Name", "AppIcon", "MapIcon",
+        return new String[]{"Id", "Discriminator", "Name", "AppIcon", "MapIcon",
                 "CapacityFull", "CapacityUnitName", "TypeClassPath",
                 "RootType", "System", "MultiparentAllowed", "UniquenessType"};
     }
@@ -50,17 +50,18 @@ public class NodeTypeGui extends TableComposite {
             NodeTypeDto nodeTypeDto = (NodeTypeDto) recordDto;
             String[] vec = new String[columns().length];
 
-            vec[0] = nodeTypeDto.getDiscriminator();
-            vec[1] = nodeTypeDto.getName();
-            vec[2] = nodeTypeDto.getAppIcon();
-            vec[3] = nodeTypeDto.getMapIcon();
-            vec[4] = nodeTypeDto.getCapacityFull();
-            vec[5] = nodeTypeDto.getCapacityUnitName();
-            vec[6] = nodeTypeDto.getTypeClassPath();
-            vec[7] = nodeTypeDto.getRootType();
-            vec[8] = nodeTypeDto.getSystem();
-            vec[9] = nodeTypeDto.getMultiparentAllowed();
-            vec[10] = nodeTypeDto.getUniquenessType();
+            vec[0] = nodeTypeDto.getId();
+            vec[1] = nodeTypeDto.getDiscriminator();
+            vec[2] = nodeTypeDto.getName();
+            vec[3] = nodeTypeDto.getAppIcon();
+            vec[4] = nodeTypeDto.getMapIcon();
+            vec[5] = nodeTypeDto.getCapacityFull();
+            vec[6] = nodeTypeDto.getCapacityUnitName();
+            vec[7] = nodeTypeDto.getTypeClassPath();
+            vec[8] = nodeTypeDto.getRootType();
+            vec[9] = nodeTypeDto.getSystem();
+            vec[10] = nodeTypeDto.getMultiparentAllowed();
+            vec[11] = nodeTypeDto.getUniquenessType();
 
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(vec);

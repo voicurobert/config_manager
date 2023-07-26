@@ -22,7 +22,7 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite {
 
     @Override
     public String[] columns() {
-        return new String[]{"LinkType", "NodeType",
+        return new String[]{"Id", "LinkType", "NodeType",
                 "Quality"};
     }
 
@@ -48,9 +48,10 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite {
             LinkTypeNodeTypeRulesDto linkTypeNodeTypeRulesDto = (LinkTypeNodeTypeRulesDto) recordDto;
             String[] vec = new String[columns().length];
 
-            vec[0] = linkTypeNodeTypeRulesDto.getLinkType();
-            vec[1] = linkTypeNodeTypeRulesDto.getNodeType();
-            vec[2] = linkTypeNodeTypeRulesDto.getQuality();
+            vec[0] = linkTypeNodeTypeRulesDto.getId();
+            vec[1] = linkTypeNodeTypeRulesDto.getLinkType();
+            vec[2] = linkTypeNodeTypeRulesDto.getNodeType();
+            vec[3] = linkTypeNodeTypeRulesDto.getQuality();
 
             TreeItem item = new TreeItem(tree, SWT.NONE);
             item.setText(vec);
