@@ -2,8 +2,6 @@ package ro.dev.ree.cross_config_manager.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -41,18 +39,7 @@ public class ConfigViewGui {
         Button backToLoadConfigButton = new Button(composite, SWT.PUSH);
         backToLoadConfigButton.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
         backToLoadConfigButton.setText("Back to load config gui");
-
-        backToLoadConfigButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                shell.dispose();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
-        });
+        backToLoadConfigButton.addListener(SWT.Selection, event -> shell.dispose());
 
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);

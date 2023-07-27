@@ -1,8 +1,6 @@
 package ro.dev.ree.cross_config_manager.ui;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -25,60 +23,17 @@ public class ConfigManagerGui {
         Button newConfigButton = new Button(parent, SWT.PUSH);
         newConfigButton.setLayoutData(new RowData(width, height));
         newConfigButton.setText("New config");
-
-        newConfigButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                newConfigButtonClicked();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
-        });
+        newConfigButton.addListener(SWT.Selection, event -> newConfigButtonClicked());
 
         Button loadConfigButton = new Button(parent, SWT.PUSH);
         loadConfigButton.setLayoutData(new RowData(width, height));
         loadConfigButton.setText("Load config");
-
-        loadConfigButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                loadConfigButtonClicked();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
-        });
-        //String var=NewConfigGui.a[0];
-
+        loadConfigButton.addListener(SWT.Selection, event ->  loadConfigButtonClicked());
 
         Button viewConfigsButton = new Button(parent, SWT.PUSH);
         viewConfigsButton.setLayoutData(new RowData(width, height));
         viewConfigsButton.setText("View configs");
-        // Label lblText = new Label(parent, SWT.NONE );
-        viewConfigsButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-//                if(var==null){
-//
-//                    lblText.setText( "make a new config " );
-//
-//                }else {
-
-                viewConfigsButtonClicked();
-//                }
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
-        });
-
+        viewConfigsButton.addListener(SWT.Selection, event -> viewConfigsButtonClicked());
 
         mainLayout.marginLeft = (Display.getCurrent().getBounds().width / 2) - 50;
         mainLayout.marginTop = (Display.getCurrent().getBounds().height / 2) - height * 3;
@@ -101,92 +56,3 @@ public class ConfigManagerGui {
     }
 
 }
-//public void createContents(Composite parent) {
-//        var mainLayout = new GridLayout();
-//        mainLayout.numColumns = 3;
-//
-//        parent.setLayout(mainLayout);
-//
-//        Button newConfigButton = new Button(parent, SWT.PUSH);
-//        newConfigButton.setText("New config");
-//
-//        newConfigButton.addSelectionListener(new SelectionListener() {
-//            @Override
-//            public void widgetSelected(SelectionEvent e) {
-//                NewConfigGui newConfigGui = new NewConfigGui();
-//                newConfigGui.open();
-//                //configNewConfigView.createContents(parent);
-//
-////                NodeTypeDto nodeTypeDto = new NodeTypeDto();
-////                nodeTypeDto.setDiscriminator("test");
-////                nodeTypeDto.setConfigId("123");
-////                nodeTypeService.save(nodeTypeDto);
-////
-////                LinkTypeDto linkTypeDto = new LinkTypeDto();
-////                linkTypeDto.setDiscriminator("test");
-////                linkTypeDto.setConfigId("123");
-////                linkTypeService.save(linkTypeDto);
-//            }
-//
-//            @Override
-//            public void widgetDefaultSelected(SelectionEvent e) {
-//
-//            }
-//        });
-//
-//        Button loadConfigButton = new Button(parent, SWT.PUSH);
-//        loadConfigButton.setText("Load config");
-//
-//        loadConfigButton.addSelectionListener(new SelectionListener() {
-//            @Override
-//            public void widgetSelected(SelectionEvent e) {
-//                LoadConfigGui loadConfigGui = new LoadConfigGui();
-//                loadConfigGui.open();
-//            }
-//
-//            @Override
-//            public void widgetDefaultSelected(SelectionEvent e) {
-//
-//            }
-//        });
-//
-//        Button viewConfigsButton = new Button(parent, SWT.PUSH);
-//        viewConfigsButton.setText("View configs");
-//
-//        viewConfigsButton.addSelectionListener(new SelectionListener() {
-//            @Override
-//            public void widgetSelected(SelectionEvent e) {
-//                ConfigListViewGui configListViewGui = new ConfigListViewGui();
-//                configListViewGui.open();
-//
-//            }
-//
-//            @Override
-//            public void widgetDefaultSelected(SelectionEvent e) {
-//
-//            }
-//        });
-//
-//        var menu = new Menu(parent);
-//        parent.setMenu(menu);
-//
-//        var fileMenu = new Menu(menu);
-//
-//        var menuItem = new MenuItem(menu, SWT.CASCADE);
-//        menuItem.setText("File");
-//        menuItem.setMenu(fileMenu);
-//
-//        var menuItem2 = new MenuItem(fileMenu, SWT.NONE);
-//        menuItem2.setText("haha2");
-//
-//        var menuItem3 = new MenuItem(fileMenu, SWT.NONE);
-//        menuItem3.setText("haha2");
-//
-//        menu.setVisible(true);
-//
-//
-//        var label = new Label(parent, SWT.NONE);
-//        label.setText("I'm an RWT standalone app running on Spring Boot. Pretty neat!");
-//    }
-//
-//}

@@ -3,7 +3,6 @@ package ro.dev.ree.cross_config_manager.ui.utils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
@@ -55,57 +54,26 @@ public abstract class TreeComposite implements Drawable {
         menu.setEnabled(false);
         tree.setEnabled(false);
 
-        addMenu.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree, "Add");
-                dialog.setServiceRepository(getServiceRepository());
-                dialog.open();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-        });
-
-        updateMenu.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree, "Update");
-                dialog.setServiceRepository(getServiceRepository());
-                dialog.open();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-        });
-
-        deleteMenu.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                TreeItem[] treeItems = tree.getSelection();
-
-//                int[] selectedIndices = new int[treeItems.length];
-//                for (int i = 0; i < treeItems.length; i++) {
-//                    selectedIndices[i] = tree.indexOf(treeItems[i]);
-//                }
-                delete(treeItems[0].getText(0));
-                for (TreeItem treeitem : treeItems) {
-
-                    treeitem.removeAll(); // Remove all childrens
-                    treeitem.dispose();   // Remove actual parent
-                }
-
-
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-        });
+        addMenu.addListener(SWT.Selection, event -> openDialogEditor("Add"));
+        updateMenu.addListener(SWT.Selection, event -> openDialogEditor("Update"));
+        deleteMenu.addListener(SWT.Selection, event -> deleteSelection());
 
         return tree;
+    }
+
+    private void deleteSelection() {
+        TreeItem[] treeItems = tree.getSelection();
+        delete(treeItems[0].getText(0));
+        for (TreeItem treeitem : treeItems) {
+            treeitem.removeAll(); // Remove all childrens
+            treeitem.dispose();   // Remove actual parent
+        }
+    }
+
+    private void openDialogEditor(String action) {
+        EditorDialog dialog = new EditorDialog(tree.getParent().getShell(), tree, action);
+        dialog.setServiceRepository(getServiceRepository());
+        dialog.open();
     }
 
     protected void createCheckbox(Composite parent) {

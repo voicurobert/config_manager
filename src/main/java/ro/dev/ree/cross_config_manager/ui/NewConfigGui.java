@@ -1,8 +1,6 @@
 package ro.dev.ree.cross_config_manager.ui;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
@@ -59,44 +57,27 @@ public class NewConfigGui {
         Button cancelButton = new Button(buttonComposite, SWT.PUSH);
         cancelButton.setLayoutData(new RowData(width, height));
         cancelButton.setText("Back");
-        cancelButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                shell.dispose();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
-        });
-
+        cancelButton.addListener(SWT.Selection, event -> shell.dispose());
+        
         Button saveButton = new Button(buttonComposite, SWT.PUSH);
         saveButton.setLayoutData(new RowData(width, height));
         saveButton.setText("Save");
-        saveButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
+        saveButton.addListener(SWT.Selection, event -> saveNewConfig(text, secondLblText));
+    }
 
-                if (text.getText().equals("")) {
-                    secondLblText.setText("You have to set the config name in order to save it!");
+    private void saveNewConfig(Text text, Label secondLblText) {
+        if (text.getText().equals("")) {
+            secondLblText.setText("You have to set the config name in order to save it!");
 
-                } else {
-                    ConfigDto configDto = new ConfigDto();
-                    configDto.setName(text.getText());
-                    configDto = configTypeService.save(configDto);
-                    ConfigSingleton.getSingleton().setConfigDto(configDto);
-                    text.setText("");
-                    ConfigViewGui configViewGUI = new ConfigViewGui();
-                    configViewGUI.open();
-                }
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
-        });
+        } else {
+            ConfigDto configDto = new ConfigDto();
+            configDto.setName(text.getText());
+            configDto = configTypeService.save(configDto);
+            ConfigSingleton.getSingleton().setConfigDto(configDto);
+            text.setText("");
+            ConfigViewGui configViewGUI = new ConfigViewGui();
+            configViewGUI.open();
+        }
         shell.open();
     }
 

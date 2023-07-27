@@ -1,6 +1,5 @@
 package ro.dev.ree.cross_config_manager.ui.utils;
 
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -145,29 +144,20 @@ public class EditorDialog extends Dialog {
     }
 
     private String insertOrUpdateRecord(String[] columnValues) {
-        String id = "";
-        switch (control.getToolTipText()) {
-            case ClassTypeGui.TABLE_NAME:
-                id = serviceRepository.insertOrUpdate(ClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
-                break;
-            case NodeTypeGui.TABLE_NAME:
-                id = serviceRepository.insertOrUpdate(NodeTypeDto.InsertOrUpdateFromItems(columnValues, action));
-                break;
-            case LinkTypeGui.TABLE_NAME:
-                id = serviceRepository.insertOrUpdate(LinkTypeDto.InsertOrUpdateFromItems(columnValues, action));
-                break;
-            case NodeTypeRulesGui.TREE_NAME:
-                id = serviceRepository.insertOrUpdate(NodeTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
-                break;
-            case LinkTypeRulesGui.TREE_NAME:
-                id = serviceRepository.insertOrUpdate(LinkTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
-                break;
-            case LinkTypeNodeTypeRulesGui.TREE_NAME:
-                id = serviceRepository.insertOrUpdate(LinkTypeNodeTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
-                break;
-            default:
-                break;
-        }
-        return id;
+        return switch (control.getToolTipText()) {
+            case ClassTypeGui.TABLE_NAME ->
+                    serviceRepository.insertOrUpdate(ClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
+            case NodeTypeGui.TABLE_NAME ->
+                    serviceRepository.insertOrUpdate(NodeTypeDto.InsertOrUpdateFromItems(columnValues, action));
+            case LinkTypeGui.TABLE_NAME ->
+                    serviceRepository.insertOrUpdate(LinkTypeDto.InsertOrUpdateFromItems(columnValues, action));
+            case NodeTypeRulesGui.TREE_NAME ->
+                    serviceRepository.insertOrUpdate(NodeTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
+            case LinkTypeRulesGui.TREE_NAME ->
+                    serviceRepository.insertOrUpdate(LinkTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
+            case LinkTypeNodeTypeRulesGui.TREE_NAME ->
+                    serviceRepository.insertOrUpdate(LinkTypeNodeTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
+            default -> "";
+        };
     }
 }
