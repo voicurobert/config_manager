@@ -24,6 +24,7 @@ public abstract class TreeComposite implements Drawable {
     @Override
     public Composite createContents(Composite parent) {
 
+        
         tree = new Tree(parent, SWT.BORDER | SWT.CENTER);
         GridData gd_tree = new GridData(-1, 150);
         gd_tree.horizontalAlignment = 2;
@@ -122,6 +123,6 @@ public abstract class TreeComposite implements Drawable {
     }
 
     public void delete(String id) {
-        
+
     }
 }

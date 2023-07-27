@@ -1,8 +1,6 @@
 package ro.dev.ree.cross_config_manager.ui;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
@@ -25,11 +23,6 @@ public class ConfigListViewGui {
 
     public void open() {
         List<Config> listConfigName = configTypeService.findAll();
-//        Config[] v = new Config[listConfigName.size()];
-//
-//        for (int i = 0; i < listConfigName.size(); i++) {
-//            v[i] = listConfigName.get(i);
-//        }
 
         shell.setMaximized(true);
         var mainLayout = new RowLayout();
@@ -40,7 +33,6 @@ public class ConfigListViewGui {
         int width = 150;
         int height = 40;
         shell.setLayout(mainLayout);
-
 
         Table configTypeTable = new Table(shell, SWT.BORDER | SWT.CENTER);
 
@@ -66,58 +58,38 @@ public class ConfigListViewGui {
         var menuItem = new MenuItem(menu, SWT.NONE);
         menuItem.setText("Config detail");
 
-
-        menuItem.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent selectionEvent) {
-                // TODO get table selection and save config object to ConfigSingleton
-                TableItem selection = configTypeTable.getSelection()[0];
-                List<RecordDto> list = configTypeService.findByConfigName(selection.getText());
-
-                ConfigSingleton.getSingleton().setConfigDto((ConfigDto) list.get(0));
-
-
-                configView();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent selectionEvent) {
-
-            }
-
-        });
+        menuItem.addListener(SWT.Selection, event -> loadConfigView(configTypeTable));
 
         for (TableColumn column : configTypeTable.getColumns()) {
             column.pack();
-
         }
-
 
         Button backToMainButton = new Button(shell, SWT.PUSH);
         backToMainButton.setLayoutData(new RowData(width, height));
         backToMainButton.setText("Back to main menu");
-        backToMainButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                shell.dispose();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
-        });
-
+        backToMainButton.addListener(SWT.Selection, event -> dispose());
 
         mainLayout.marginLeft = (Display.getCurrent().getBounds().width / 2) - 150;
         mainLayout.marginTop = (Display.getCurrent().getBounds().height / 2) - height * 3;
         shell.open();
     }
 
+    private void loadConfigView(Table configTypeTable) {
+        TableItem selection = configTypeTable.getSelection()[0];
+        List<RecordDto> list = configTypeService.findByConfigName(selection.getText());
+
+        ConfigSingleton.getSingleton().setConfigDto((ConfigDto) list.get(0));
+
+        configView();
+    }
+
+    private void dispose() {
+        shell.dispose();
+    }
+
     public void configView() {
         ConfigViewGui viewGui = new ConfigViewGui();
         viewGui.open();
-
     }
 
 
