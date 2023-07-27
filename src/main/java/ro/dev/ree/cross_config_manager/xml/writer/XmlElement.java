@@ -3,7 +3,7 @@ package ro.dev.ree.cross_config_manager.xml.writer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public interface XmlWriter {
+public interface XmlElement {
 
-    void xmlElements(Document document, Element rootElement);
+    void asXml(Document document, Element rootElement);
 }

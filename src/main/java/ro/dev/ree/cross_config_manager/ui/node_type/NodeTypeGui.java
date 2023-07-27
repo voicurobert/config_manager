@@ -4,6 +4,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
@@ -11,10 +13,11 @@ import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
+import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import java.util.List;
 
-public class NodeTypeGui extends TableComposite {
+public class NodeTypeGui extends TableComposite implements XmlWriter {
 
     public static final String TABLE_NAME = "Node Type";
 
@@ -75,5 +78,20 @@ public class NodeTypeGui extends TableComposite {
         RecordDto recordDto = nodeTypeService.findById(id);
         nodeTypeService.delete(recordDto);
         super.delete(id);
+    }
+
+    @Override
+    public void xmlElements(Document document, Element rootElement) {
+
+        List<RecordDto> allByConfigId = nodeTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+
+        // root element
+        Element nodeTypes = document.createElement("nodeTypes");
+        rootElement.appendChild(nodeTypes);
+
+        for (RecordDto recordDto : allByConfigId) {
+            NodeTypeDto nodeTypeDto = (NodeTypeDto) recordDto;
+            nodeTypeDto.asXml(document, nodeTypes);
+        }
     }
 }

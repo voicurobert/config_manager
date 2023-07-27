@@ -4,6 +4,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
@@ -11,10 +13,11 @@ import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
 import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
+import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import java.util.List;
 
-public class ClassTypeGui extends TableComposite {
+public class ClassTypeGui extends TableComposite implements XmlWriter {
 
     public static final String TABLE_NAME = "Class Type";
 
@@ -66,4 +69,18 @@ public class ClassTypeGui extends TableComposite {
         super.delete(id);
     }
 
+    @Override
+    public void xmlElements(Document document, Element rootElement) {
+
+        List<RecordDto> allByConfigId = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+
+        // root element
+        Element classTypes = document.createElement("classTypes");
+        rootElement.appendChild(classTypes);
+
+        for (RecordDto recordDto : allByConfigId) {
+            ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
+            classTypeDto.asXml(document,classTypes);
+        }
+    }
 }
