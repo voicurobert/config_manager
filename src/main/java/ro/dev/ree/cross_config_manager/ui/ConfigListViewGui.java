@@ -29,6 +29,8 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.List;
@@ -153,20 +155,37 @@ public class ConfigListViewGui {
         LinkTypeNodeTypeRulesGui linkTypeNodeTypeRulesGui = new LinkTypeNodeTypeRulesGui();
         linkTypeNodeTypeRulesGui.xmlElements(document, rootElement);
 
-        writeXml(document, System.out);
+        // Aici trebuie creat un fisier text si modificat cu calea spre el
+        try (FileOutputStream output =
+                     new FileOutputStream("C:\\Users\\Bianca\\OneDrive - Universitatea Politehnica Bucuresti\\Desktop\\test")) {
+            writeXml(document, output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //writeXml(document, System.out);
     }
 
     private void writeXml(Document document, OutputStream output) throws TransformerException {
+
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
-
-        // pretty print
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-
         DOMSource source = new DOMSource(document);
         StreamResult result = new StreamResult(output);
 
         transformer.transform(source, result);
+
+//        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+//        Transformer transformer = transformerFactory.newTransformer();
+//
+//        // pretty print
+//        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+//
+//        DOMSource source = new DOMSource(document);
+//        StreamResult result = new StreamResult(output);
+//
+//        transformer.transform(source, result);
 
     }
 
