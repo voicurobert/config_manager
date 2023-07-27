@@ -3,7 +3,6 @@ package ro.dev.ree.cross_config_manager.ui.utils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
@@ -50,47 +49,22 @@ public abstract class TableComposite implements Drawable {
 
         menu.setEnabled(false);
         table.setEnabled(false);
-
-        addMenu.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, "Add");
-                dialog.setServiceRepository(getServiceRepository());
-                dialog.open();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-        });
-
-        updateMenu.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, "Update");
-                dialog.setServiceRepository(getServiceRepository());
-                dialog.open();
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-        });
-
-        deleteMenu.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-
-                delete(table.getSelection()[0].getText(0));
-
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-        });
+        addMenu.addListener(SWT.Selection, event -> openDialogEditor("Add"));
+        updateMenu.addListener(SWT.Selection, event -> openDialogEditor("Update"));
+        deleteMenu.addListener(SWT.Selection, event -> deleteSelection());
 
         return table;
+    }
+
+    private void openDialogEditor(String action) {
+        EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, action);
+        dialog.setServiceRepository(getServiceRepository());
+        dialog.open();
+    }
+
+
+    private void deleteSelection() {
+        delete(table.getSelection()[0].getText(0));
     }
 
     protected void createCheckbox(Composite parent) {
