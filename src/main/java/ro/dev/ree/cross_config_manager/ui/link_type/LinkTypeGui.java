@@ -12,12 +12,12 @@ import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeService;
+import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
-import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import java.util.List;
 
-public class LinkTypeGui extends TableComposite implements XmlWriter {
+public class LinkTypeGui extends TableComposite implements ManageableComponent {
 
     public static final String TABLE_NAME = "Link Type";
 
@@ -87,7 +87,7 @@ public class LinkTypeGui extends TableComposite implements XmlWriter {
 
         for (RecordDto recordDto : allByConfigId) {
             LinkTypeDto linkTypeDto = (LinkTypeDto) recordDto;
-            linkTypeDto.asXml(document,linkTypes);
+            linkTypeDto.asXml(document, linkTypes);
         }
     }
 }

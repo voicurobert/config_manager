@@ -12,12 +12,12 @@ import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
+import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
-import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import java.util.List;
 
-public class NodeTypeGui extends TableComposite implements XmlWriter {
+public class NodeTypeGui extends TableComposite implements ManageableComponent {
 
     public static final String TABLE_NAME = "Node Type";
 

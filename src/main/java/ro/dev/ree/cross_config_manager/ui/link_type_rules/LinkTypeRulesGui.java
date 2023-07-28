@@ -12,12 +12,12 @@ import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesService;
+import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TreeComposite;
-import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import java.util.List;
 
-public class LinkTypeRulesGui extends TreeComposite implements XmlWriter {
+public class LinkTypeRulesGui extends TreeComposite implements ManageableComponent {
 
     public static final String TREE_NAME = "Link Types Rules";
 
@@ -83,7 +83,7 @@ public class LinkTypeRulesGui extends TreeComposite implements XmlWriter {
 
         for (RecordDto recordDto : allByConfigId) {
             LinkTypeRulesDto linkTypeRulesDto = (LinkTypeRulesDto) recordDto;
-            linkTypeRulesDto.asXml(document,linkTypeRules);
+            linkTypeRulesDto.asXml(document, linkTypeRules);
         }
     }
 }

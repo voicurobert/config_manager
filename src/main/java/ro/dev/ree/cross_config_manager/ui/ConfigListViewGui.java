@@ -12,12 +12,7 @@ import ro.dev.ree.cross_config_manager.model.config_type.Config;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigDto;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigTypeService;
-import ro.dev.ree.cross_config_manager.ui.class_type.ClassTypeGui;
-import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
-import ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules.LinkTypeNodeTypeRulesGui;
-import ro.dev.ree.cross_config_manager.ui.link_type_rules.LinkTypeRulesGui;
-import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
-import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
+import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -123,39 +118,25 @@ public class ConfigListViewGui {
 
         ConfigSingleton.getSingleton().setConfigDto((ConfigDto) list.get(0));
 
-        exportAsXml();
+        exportAsXml(((ConfigDto) list.get(0)).getName());
     }
 
-    private void exportAsXml() throws ParserConfigurationException, TransformerException {
+    private void exportAsXml(String name) throws ParserConfigurationException, TransformerException {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Document document = documentBuilder.newDocument();
 
         // root element
-        Element rootElement = document.createElement("Types");
+        Element rootElement = document.createElement("crossConfiguration");
         document.appendChild(rootElement);
 
-        ClassTypeGui classTypeGui = new ClassTypeGui();
-        classTypeGui.xmlElements(document, rootElement);
+        ConfigManagerComposites composites = new ConfigManagerComposites();
+        for (XmlWriter xmlWriter : composites.getComposites()) {
+            xmlWriter.xmlElements(document, rootElement);
+        }
 
-        NodeTypeGui nodeTypeGui = new NodeTypeGui();
-        nodeTypeGui.xmlElements(document, rootElement);
-
-        LinkTypeGui linkTypeGui = new LinkTypeGui();
-        linkTypeGui.xmlElements(document, rootElement);
-
-        NodeTypeRulesGui nodeTypeRulesGui = new NodeTypeRulesGui();
-        nodeTypeRulesGui.xmlElements(document, rootElement);
-
-        LinkTypeRulesGui linkTypeRulesGui = new LinkTypeRulesGui();
-        linkTypeRulesGui.xmlElements(document, rootElement);
-
-        LinkTypeNodeTypeRulesGui linkTypeNodeTypeRulesGui = new LinkTypeNodeTypeRulesGui();
-        linkTypeNodeTypeRulesGui.xmlElements(document, rootElement);
-
-        // Aici trebuie creat un fisier text si modificat cu calea spre el
-        try (FileOutputStream output =
-                     new FileOutputStream("D:\\desktop\\Desktop\\New Text Document.txt")) {
+        String path = System.getProperty("user.home") + "//" + name + ".xml";
+        try (FileOutputStream output = new FileOutputStream(path)) {
             writeXml(document, output);
         } catch (IOException e) {
             e.printStackTrace();

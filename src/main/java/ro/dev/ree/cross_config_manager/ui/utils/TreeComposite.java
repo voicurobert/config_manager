@@ -6,8 +6,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
-public abstract class TreeComposite implements Drawable {
+public abstract class TreeComposite implements Drawable, XmlWriter {
 
     private Tree tree;
 
@@ -23,7 +24,7 @@ public abstract class TreeComposite implements Drawable {
     @Override
     public Composite createContents(Composite parent) {
 
-        
+
         tree = new Tree(parent, SWT.BORDER | SWT.CENTER);
         GridData gd_tree = new GridData(-1, 150);
         gd_tree.horizontalAlignment = 2;

@@ -6,14 +6,14 @@ import ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules.LinkTypeNode
 import ro.dev.ree.cross_config_manager.ui.link_type_rules.LinkTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
-import ro.dev.ree.cross_config_manager.ui.utils.Drawable;
+import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigManagerComposites {
 
-    private final List<Drawable> composites = new ArrayList<>();
+    private final List<ManageableComponent> composites = new ArrayList<>();
 
     public ConfigManagerComposites() {
         composites.add(new ClassTypeGui());
@@ -24,7 +24,7 @@ public class ConfigManagerComposites {
         composites.add(new LinkTypeNodeTypeRulesGui());
     }
 
-    public List<Drawable> getComposites() {
+    public List<ManageableComponent> getComposites() {
         return composites;
     }
 }

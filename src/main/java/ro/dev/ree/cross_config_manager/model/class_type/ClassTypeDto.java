@@ -24,8 +24,7 @@ public class ClassTypeDto extends RecordDto implements XmlElement {
 
     public static ClassTypeDto InsertOrUpdateFromItems(String[] columnValues, String action) {
         var classTypeDto = new ClassTypeDto();
-        if(action.equals("Update"))
-        {
+        if (action.equals("Update")) {
             classTypeDto.setId(columnValues[0]);
         }
         classTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
@@ -45,6 +44,15 @@ public class ClassTypeDto extends RecordDto implements XmlElement {
         rootElement.appendChild(classType);
         // add xml attribute
         classType.setAttribute("id", getId());
+
+        // TODO create elements using java reflection. call getters using class
+//        Field[] fields = getClass().getFields();
+//        for (int i = 0; i < fields.length; i++) {
+//            Field f = fields[i];
+//            Element name = document.createElement(f.getName());
+//            name.setTextContent(getClass().);
+//            classType.appendChild(name);
+//        }
 
         Element name = document.createElement("name");
         name.setTextContent(this.name);

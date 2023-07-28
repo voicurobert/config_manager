@@ -12,12 +12,12 @@ import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesService;
+import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TreeComposite;
-import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import java.util.List;
 
-public class NodeTypeRulesGui extends TreeComposite implements XmlWriter {
+public class NodeTypeRulesGui extends TreeComposite implements ManageableComponent {
 
     public static final String TREE_NAME = "Node Type Rules";
 
@@ -51,7 +51,7 @@ public class NodeTypeRulesGui extends TreeComposite implements XmlWriter {
             NodeTypeRulesDto nodeTypeRulesDto = (NodeTypeRulesDto) recordDto;
             String[] vec = new String[columns().length];
 
-            vec[0] =nodeTypeRulesDto.getId();
+            vec[0] = nodeTypeRulesDto.getId();
             vec[1] = nodeTypeRulesDto.getChild();
             vec[2] = nodeTypeRulesDto.getParent();
             vec[3] = nodeTypeRulesDto.getCapacityCalculatorName();
@@ -83,7 +83,7 @@ public class NodeTypeRulesGui extends TreeComposite implements XmlWriter {
 
         for (RecordDto recordDto : allByConfigId) {
             NodeTypeRulesDto nodeTypeRulesDto = (NodeTypeRulesDto) recordDto;
-            nodeTypeRulesDto.asXml(document,nodeTypeRules);
+            nodeTypeRulesDto.asXml(document, nodeTypeRules);
         }
     }
 }

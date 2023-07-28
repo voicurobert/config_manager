@@ -6,8 +6,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
-public abstract class TableComposite implements Drawable {
+public abstract class TableComposite implements Drawable, XmlWriter {
 
     private Table table;
 
