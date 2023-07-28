@@ -9,6 +9,8 @@ import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
 
+import java.lang.reflect.Field;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -67,52 +69,26 @@ public class NodeTypeDto extends RecordDto implements XmlElement {
         Element nodeType = document.createElement("nodeType");
         // add classType to root
         rootElement.appendChild(nodeType);
-        // add xml attribute
-        nodeType.setAttribute("id", getId());
 
-        Element discriminator = document.createElement("discriminator");
-        discriminator.setTextContent(this.discriminator);
-        nodeType.appendChild(discriminator);
-
-        Element name = document.createElement("name");
-        name.setTextContent(this.name);
-        nodeType.appendChild(name);
-
-        Element appIcon = document.createElement("appIcon");
-        appIcon.setTextContent(this.appIcon);
-        nodeType.appendChild(appIcon);
-
-        Element mapIcon = document.createElement("mapIcon");
-        mapIcon.setTextContent(this.mapIcon);
-        nodeType.appendChild(mapIcon);
-
-        Element capacityFull = document.createElement("capacityFull");
-        capacityFull.setTextContent(this.capacityFull);
-        nodeType.appendChild(capacityFull);
-
-        Element capacityUnitName = document.createElement("capacityUnitName");
-        capacityUnitName.setTextContent(this.capacityUnitName);
-        nodeType.appendChild(capacityUnitName);
-
-        Element typeClassPath = document.createElement("typeClassPath");
-        typeClassPath.setTextContent(this.typeClassPath);
-        nodeType.appendChild(typeClassPath);
-
-        Element rootType = document.createElement("rootType");
-        rootType.setTextContent(this.rootType);
-        nodeType.appendChild(rootType);
-
-        Element system = document.createElement("system");
-        system.setTextContent(this.system);
-        nodeType.appendChild(system);
-
-        Element multiparentAllowed = document.createElement("multiparentAllowed");
-        multiparentAllowed.setTextContent(this.multiparentAllowed);
-        nodeType.appendChild(multiparentAllowed);
-
-        Element uniquenessType = document.createElement("uniquenessType");
-        uniquenessType.setTextContent(this.uniquenessType);
-        nodeType.appendChild(uniquenessType);
-
+        Field[] fields = getClass().getDeclaredFields();
+        for (int i = 1; i < fields.length; i++) {
+            Element name = document.createElement(fields[i].getName());
+            switch (fields[i].getName()) {
+                case "discriminator" -> name.setTextContent(this.discriminator);
+                case "name" -> name.setTextContent(this.name);
+                case "appIcon" -> name.setTextContent(this.appIcon);
+                case "mapIcon" -> name.setTextContent(this.mapIcon);
+                case "capacityFull" -> name.setTextContent(this.capacityFull);
+                case "capacityUnitName" -> name.setTextContent(this.capacityUnitName);
+                case "typeClassPath" -> name.setTextContent(this.typeClassPath);
+                case "rootType" -> name.setTextContent(this.rootType);
+                case "system" -> name.setTextContent(this.system);
+                case "multiparentAllowed" -> name.setTextContent(this.multiparentAllowed);
+                case "uniquenessType" -> name.setTextContent(this.uniquenessType);
+                default -> {
+                }
+            }
+            nodeType.appendChild(name);
+        }
     }
 }

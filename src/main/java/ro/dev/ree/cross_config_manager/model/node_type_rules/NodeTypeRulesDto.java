@@ -9,6 +9,8 @@ import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
 
+import java.lang.reflect.Field;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,24 +48,19 @@ public class NodeTypeRulesDto extends RecordDto implements XmlElement {
         Element nodeTypeRule = document.createElement("nodeTypeRule");
         // add classType to root
         rootElement.appendChild(nodeTypeRule);
-        // add xml attribute
-        nodeTypeRule.setAttribute("id", getId());
 
-        Element child = document.createElement("child");
-        child.setTextContent(this.child);
-        nodeTypeRule.appendChild(child);
-
-        Element parent = document.createElement("parent");
-        parent.setTextContent(this.parent);
-        nodeTypeRule.appendChild(parent);
-
-        Element capacityCalculatorName = document.createElement("capacityCalculatorName");
-        capacityCalculatorName.setTextContent(this.capacityCalculatorName);
-        nodeTypeRule.appendChild(capacityCalculatorName);
-
-        Element mandatoryParent = document.createElement("mandatoryParent");
-        mandatoryParent.setTextContent(this.mandatoryParent);
-        nodeTypeRule.appendChild(mandatoryParent);
-
+        Field[] fields = getClass().getDeclaredFields();
+        for (int i = 1; i < fields.length; i++) {
+            Element name = document.createElement(fields[i].getName());
+            switch (fields[i].getName()) {
+                case "child" -> name.setTextContent(this.child);
+                case "parent" -> name.setTextContent(this.parent);
+                case "capacityCalculatorName" -> name.setTextContent(this.capacityCalculatorName);
+                case "mandatoryParent" -> name.setTextContent(this.mandatoryParent);
+                default -> {
+                }
+            }
+            nodeTypeRule.appendChild(name);
+        }
     }
 }

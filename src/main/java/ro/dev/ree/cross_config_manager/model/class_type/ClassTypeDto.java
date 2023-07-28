@@ -9,6 +9,8 @@ import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
 
+import java.lang.reflect.Field;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,29 +44,18 @@ public class ClassTypeDto extends RecordDto implements XmlElement {
         Element classType = document.createElement("classType");
         // add classType to root
         rootElement.appendChild(classType);
-        // add xml attribute
-        classType.setAttribute("id", getId());
 
-        // TODO create elements using java reflection. call getters using class
-//        Field[] fields = getClass().getFields();
-//        for (int i = 0; i < fields.length; i++) {
-//            Field f = fields[i];
-//            Element name = document.createElement(f.getName());
-//            name.setTextContent(getClass().);
-//            classType.appendChild(name);
-//        }
-
-        Element name = document.createElement("name");
-        name.setTextContent(this.name);
-        classType.appendChild(name);
-
-        Element path = document.createElement("name");
-        path.setTextContent(this.path);
-        classType.appendChild(path);
-
-        Element parentPath = document.createElement("name");
-        parentPath.setTextContent(this.parentPath);
-        classType.appendChild(parentPath);
-
+        Field[] fields = getClass().getDeclaredFields();
+        for (int i = 1; i < fields.length; i++) {
+            Element name = document.createElement(fields[i].getName());
+            switch (fields[i].getName()) {
+                case "name" -> name.setTextContent(this.name);
+                case "path" -> name.setTextContent(this.path);
+                case "parentPath" -> name.setTextContent(this.parentPath);
+                default -> {
+                }
+            }
+            classType.appendChild(name);
+        }
     }
 }

@@ -9,6 +9,8 @@ import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
 
+import java.lang.reflect.Field;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,22 +42,21 @@ public class LinkTypeNodeTypeRulesDto extends RecordDto implements XmlElement {
     public void asXml(Document document, Element rootElement) {
 
         // add xml elements
-        Element linkTypeNodeTypeRules = document.createElement("linkTypeNodeTypeRule");
+        Element linkTypeNodeTypeRule = document.createElement("linkTypeNodeTypeRule");
         // add classType to root
-        rootElement.appendChild(linkTypeNodeTypeRules);
-        // add xml attribute
-        linkTypeNodeTypeRules.setAttribute("id", getId());
+        rootElement.appendChild(linkTypeNodeTypeRule);
 
-        Element linkType = document.createElement("linkType");
-        linkType.setTextContent(this.linkType);
-        linkTypeNodeTypeRules.appendChild(linkType);
-
-        Element nodeType = document.createElement("nodeType");
-        nodeType.setTextContent(this.nodeType);
-        linkTypeNodeTypeRules.appendChild(nodeType);
-
-        Element quality = document.createElement("quality");
-        quality.setTextContent(this.quality);
-        linkTypeNodeTypeRules.appendChild(quality);
+        Field[] fields = getClass().getDeclaredFields();
+        for (int i = 1; i < fields.length; i++) {
+            Element name = document.createElement(fields[i].getName());
+            switch (fields[i].getName()) {
+                case "linkType" -> name.setTextContent(this.linkType);
+                case "nodeType" -> name.setTextContent(this.nodeType);
+                case "quality" -> name.setTextContent(this.quality);
+                default -> {
+                }
+            }
+            linkTypeNodeTypeRule.appendChild(name);
+        }
     }
 }

@@ -135,14 +135,16 @@ public class ConfigListViewGui {
             xmlWriter.xmlElements(document, rootElement);
         }
 
-        String path = System.getProperty("user.home") + "//" + name + ".xml";
+        String path = System.getProperty("user.home") + "\\" + name + ".xml";
         try (FileOutputStream output = new FileOutputStream(path)) {
             writeXml(document, output);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //writeXml(document, System.out);
+        MessageBox messageBox = new MessageBox(shell);
+        messageBox.setMessage("You exported XML file in " + path + "!");
+        messageBox.open();
     }
 
     private void writeXml(Document document, OutputStream output) throws TransformerException {
@@ -154,18 +156,6 @@ public class ConfigListViewGui {
         StreamResult result = new StreamResult(output);
 
         transformer.transform(source, result);
-
-//        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-//        Transformer transformer = transformerFactory.newTransformer();
-//
-//        // pretty print
-//        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-//
-//        DOMSource source = new DOMSource(document);
-//        StreamResult result = new StreamResult(output);
-//
-//        transformer.transform(source, result);
-
     }
 
     private void dispose() {
