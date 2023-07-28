@@ -12,27 +12,25 @@ import ro.dev.ree.cross_config_manager.model.config_type.Config;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigDto;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigTypeService;
-import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
 import ro.dev.ree.cross_config_manager.ui.class_type.ClassTypeGui;
 import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
 import ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules.LinkTypeNodeTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.link_type_rules.LinkTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
-import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
-import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.List;
 
 public class ConfigListViewGui {
@@ -157,7 +155,7 @@ public class ConfigListViewGui {
 
         // Aici trebuie creat un fisier text si modificat cu calea spre el
         try (FileOutputStream output =
-                     new FileOutputStream("C:\\Users\\Bianca\\OneDrive - Universitatea Politehnica Bucuresti\\Desktop\\test")) {
+                     new FileOutputStream("D:\\desktop\\Desktop\\New Text Document.txt")) {
             writeXml(document, output);
         } catch (IOException e) {
             e.printStackTrace();
@@ -192,8 +190,6 @@ public class ConfigListViewGui {
     private void dispose() {
         shell.dispose();
     }
-
-
 
 
 }

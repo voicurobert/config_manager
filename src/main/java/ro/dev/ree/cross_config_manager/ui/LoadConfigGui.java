@@ -30,12 +30,11 @@ public class LoadConfigGui {
         backtoMainButton.setLayoutData(new RowData(width, height));
         backtoMainButton.setText("Back to main menu");
 
-        backtoMainButton.addListener(SWT.Selection, event -> shell.dispose());
-
         mainLayout.marginLeft = (Display.getCurrent().getBounds().width / 2) - 50;
         mainLayout.marginTop = (Display.getCurrent().getBounds().height / 2) - height * 3;
 
         shell.open();
     }
+
 
 }

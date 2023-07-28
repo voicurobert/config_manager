@@ -6,6 +6,9 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import ro.dev.ree.cross_config_manager.xml.reader.XmlReader;
+
+import java.io.IOException;
 
 public class ConfigManagerGui {
     public void createContents(Composite parent) {
@@ -28,7 +31,13 @@ public class ConfigManagerGui {
         Button loadConfigButton = new Button(parent, SWT.PUSH);
         loadConfigButton.setLayoutData(new RowData(width, height));
         loadConfigButton.setText("Load config");
-        loadConfigButton.addListener(SWT.Selection, event ->  loadConfigButtonClicked());
+        loadConfigButton.addListener(SWT.Selection, event -> {
+            try {
+                xmlReader();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         Button viewConfigsButton = new Button(parent, SWT.PUSH);
         viewConfigsButton.setLayoutData(new RowData(width, height));
@@ -44,9 +53,9 @@ public class ConfigManagerGui {
         newConfigGui.open();
     }
 
-    public void loadConfigButtonClicked() {
-        LoadConfigGui loadConfigGui = new LoadConfigGui();
-        loadConfigGui.open();
+    public void xmlReader() throws IOException {
+        XmlReader xmlReader = new XmlReader();
+        xmlReader.open();
     }
 
     public void viewConfigsButtonClicked() {
