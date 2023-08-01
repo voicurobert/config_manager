@@ -5,12 +5,17 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
+import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
+import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
+import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
 import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.ui.class_type.ClassTypeGui;
 import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
@@ -20,6 +25,8 @@ import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EditorDialog extends Dialog {
 
@@ -85,14 +92,43 @@ public class EditorDialog extends Dialog {
             Label label = new Label(composite, SWT.NONE);
             label.setText((control instanceof Table) ? ((Table) control).getColumn(i).getText() + ":" : ((Tree) control).getColumn(i).getText() + ":");
 
-            inputTexts[i] = new Text(composite, SWT.BORDER);
-            inputTexts[i].setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+            if ((control instanceof Table) ? ((Table) control).getColumn(i).getText().equals("TypeClassPath") : ((Tree) control).getColumn(i).getText().equals("TypeClassPath")) {
+                Label label1 = new Label(composite, SWT.NONE);
+                label1.setText("Select one option:");
+                inputTexts[i] = new Text(composite, SWT.BORDER);
+                inputTexts[i].setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+                Combo combo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
+                combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-            // Set initial value for Text Input
-            if (action.equals("Update"))
-                inputTexts[i].setText((selectedItem instanceof TableItem) ? ((TableItem) selectedItem).getText(i) : ((TreeItem) selectedItem).getText(i));
-            else
-                inputTexts[i].setText("");
+                ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
+                List<ClassTypeDto> classTypeDtos = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+                        map(recordDto -> (ClassTypeDto) recordDto).toList();
+
+                // Add options to the Combo
+                for(ClassTypeDto classTypeDto: classTypeDtos)
+                {
+                    combo.add(classTypeDto.getName());
+                }
+
+                // Set initial selection based on the existing value in the selected item
+                if (action.equals("Update")) {
+                    inputTexts[i].setText((selectedItem instanceof TableItem) ? ((TableItem) selectedItem).getText(i) : ((TreeItem) selectedItem).getText(i));
+                    String selectedValue = (selectedItem instanceof TableItem) ? ((TableItem) selectedItem).getText(i) : ((TreeItem) selectedItem).getText(i);
+                    combo.select(combo.indexOf(selectedValue));
+                }
+
+                // Add a selection listener to handle user selection
+                int finalI = i;
+                combo.addListener(SWT.Selection, event -> inputTexts[finalI].setText(combo.getText()));
+
+            } else {
+                inputTexts[i] = new Text(composite, SWT.BORDER);
+                inputTexts[i].setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
+                // Set initial value for Text Input
+                if (action.equals("Update"))
+                    inputTexts[i].setText((selectedItem instanceof TableItem) ? ((TableItem) selectedItem).getText(i) : ((TreeItem) selectedItem).getText(i));
+            }
         }
 
         Button actionButton = new Button(composite, SWT.PUSH);
