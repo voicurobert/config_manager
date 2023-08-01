@@ -62,10 +62,10 @@ public class EditorDialog extends Dialog {
         Widget selectedItem;
         int numColumns = (control instanceof Table) ? ((Table) control).getColumnCount() : ((Tree) control).getColumnCount();
 
-        if((control instanceof Table) ? ((Table) control).getSelection().length == 0 : ((Tree) control).getSelection().length == 0) {
+        if ((control instanceof Table) ? ((Table) control).getSelection().length == 0 : ((Tree) control).getSelection().length == 0) {
             Widget newItem;
             newItem = (control instanceof Table) ? new TableItem((Table) control, SWT.NONE) : new TreeItem((Tree) control, SWT.NONE);
-            String[]text = new String[numColumns];
+            String[] text = new String[numColumns];
             Arrays.fill(text, "");
             if ((control instanceof Table)) {
                 ((TableItem) newItem).setText(text);

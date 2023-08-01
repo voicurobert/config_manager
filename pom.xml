@@ -58,7 +58,12 @@
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
-        
+        <dependency>
+            <groupId>org.eclipse.rap</groupId>
+            <artifactId>org.eclipse.rap.filedialog</artifactId>
+            <version>3.24.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

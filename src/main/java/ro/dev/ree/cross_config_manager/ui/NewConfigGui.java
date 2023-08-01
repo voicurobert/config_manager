@@ -58,11 +58,12 @@ public class NewConfigGui {
         cancelButton.setLayoutData(new RowData(width, height));
         cancelButton.setText("Back");
         cancelButton.addListener(SWT.Selection, event -> shell.dispose());
-        
+
         Button saveButton = new Button(buttonComposite, SWT.PUSH);
         saveButton.setLayoutData(new RowData(width, height));
         saveButton.setText("Save");
         saveButton.addListener(SWT.Selection, event -> saveNewConfig(text, secondLblText));
+        shell.open();
     }
 
     private void saveNewConfig(Text text, Label secondLblText) {

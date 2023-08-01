@@ -6,11 +6,25 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import ro.dev.ree.cross_config_manager.xml.reader.XmlReader;
+import org.eclipse.swt.widgets.FileDialog;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigDto;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigTypeService;
+import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
 
 public class ConfigManagerGui {
+    private final ConfigTypeService configTypeService = ConfigManagerContextProvider.getBean(ConfigTypeService.class);
+
     public void createContents(Composite parent) {
         var mainLayout = new RowLayout();
         mainLayout.type = SWT.VERTICAL;
@@ -28,16 +42,22 @@ public class ConfigManagerGui {
         newConfigButton.setText("New config");
         newConfigButton.addListener(SWT.Selection, event -> newConfigButtonClicked());
 
+
         Button loadConfigButton = new Button(parent, SWT.PUSH);
         loadConfigButton.setLayoutData(new RowData(width, height));
         loadConfigButton.setText("Load config");
         loadConfigButton.addListener(SWT.Selection, event -> {
             try {
-                xmlReader();
+                loadConfigButtonClicked(parent);
+            } catch (ParserConfigurationException e) {
+                throw new RuntimeException(e);
             } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (SAXException e) {
                 throw new RuntimeException(e);
             }
         });
+
 
         Button viewConfigsButton = new Button(parent, SWT.PUSH);
         viewConfigsButton.setLayoutData(new RowData(width, height));
@@ -53,9 +73,29 @@ public class ConfigManagerGui {
         newConfigGui.open();
     }
 
-    public void xmlReader() throws IOException {
-        XmlReader xmlReader = new XmlReader();
-        xmlReader.open();
+    public void loadConfigButtonClicked(Composite parent) throws ParserConfigurationException, IOException, SAXException {
+        final FileDialog fileDialog = new FileDialog(parent.getShell(), SWT.APPLICATION_MODAL);
+        System.out.println("Stored file: " + fileDialog.open());
+        File file = new File(fileDialog.getFileName());
+        String name = file.getName();
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(file);
+        doc.getDocumentElement().normalize();
+        Element rootElement = doc.getDocumentElement();
+        if (name.indexOf(".") > 0)
+            name = name.substring(0, name.lastIndexOf("."));
+
+        ConfigDto configDto = new ConfigDto();
+        configDto.setName(name);
+        configDto = configTypeService.save(configDto);
+        ConfigSingleton.getSingleton().setConfigDto(configDto);
+
+//        ClassTypeGui classTypeGui = new ClassTypeGui();
+//        classTypeGui.readElement(doc);
+        LinkTypeGui linkTypeGui = new LinkTypeGui();
+        linkTypeGui.readElement(rootElement);
     }
 
     public void viewConfigsButtonClicked() {
@@ -64,4 +104,28 @@ public class ConfigManagerGui {
 
     }
 
+//    private void addToViewConfigs(FileUpload fileUpload) {
+//        try {
+//
+//            File file = new File(System.getProperty("user.home") + "\\Downloads\\" + fileUpload.getFileName());
+//            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder db = dbf.newDocumentBuilder();
+//            Document doc = db.parse(file);
+//            doc.getDocumentElement().normalize();
+//
+//            ConfigDto configDto = new ConfigDto();
+//
+//            configDto.setName(fileUpload.getFileName());
+//            configDto = configTypeService.save(configDto);
+//            ConfigSingleton.getSingleton().setConfigDto(configDto);
+//            ClassTypeGui classTypeGui = new ClassTypeGui();
+//            // classTypeGui.readElement(doc);
+//
+//        } catch (Exception e) {
+//            //  System.out.println(e);
+//        }
+//    }
+
 }
+
+
