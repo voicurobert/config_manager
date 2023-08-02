@@ -18,6 +18,8 @@ import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
 import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 public class ClassTypeGui extends TableComposite implements ManageableComponent, XmlRead {
@@ -88,47 +90,44 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
     }
 
     @Override
-    public void readElement(Element document) {
-        ClassTypeDto classTypeDto = new ClassTypeDto();
-        classTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+    public void readElement(Element element) {
 
 
-        NodeList nodeList = document.getElementsByTagName("classTypes");
-        for (int i = 0; i < nodeList.getLength(); i++) {
+        Node header = element.getElementsByTagName("classTypes").item(0);
+        if (header != null) {
+            NodeList nodeList = ((Element) header).getElementsByTagName("classType");
 
-            Node node = nodeList.item(i);
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                ClassTypeDto classTypeDto = new ClassTypeDto();
+                classTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+                Node node = nodeList.item(i);
 
-            System.out.println("\nnode name:" + node.getNodeName());
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element eElement = (Element) node;
-                for (int idx = 1; idx < columns().length; idx++) {
-                    // String textContent = eElement.getElementsByTagName(columns()[1]).item(0).getTextContent();
-                    // call method columns[1] on classTypeDto using reflection
-                    switch (columns()[idx]) {
-                        case "name" ->
-                                classTypeDto.setName(eElement.getElementsByTagName("name").item(0).getTextContent());
-                        case "path" ->
-                                classTypeDto.setPath(eElement.getElementsByTagName("path").item(0).getTextContent());
-                        case "parentPath" ->
-                                classTypeDto.setParentPath(eElement.getElementsByTagName("parentPath").item(0).getTextContent());
-                        default -> {
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) node;
+
+                    for (int idx = 1; idx < columns().length; idx++) {
+
+                        for (Method declaredMethod : classTypeDto.getClass().getDeclaredMethods()) {
+                            if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
+                                try {
+                                    if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
+                                        break;
+                                    }
+                                    declaredMethod.invoke(classTypeDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
+                                    break;
+                                } catch (IllegalAccessException | InvocationTargetException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
                         }
+
                     }
+                    classTypeService.insertOrUpdate(classTypeDto);
                 }
-                System.out.println("name" + eElement.getElementsByTagName("name").item(0).getTextContent());
-                System.out.println("path " + eElement.getElementsByTagName("path").item(0).getTextContent());
-                System.out.println("parentPath " + eElement.getElementsByTagName("parentPath").item(0).getTextContent());
-
-
             }
 
 
         }
-        classTypeService.insertOrUpdate(classTypeDto);
-
-        System.out.println("root element: ");
-
-
     }
 }
 

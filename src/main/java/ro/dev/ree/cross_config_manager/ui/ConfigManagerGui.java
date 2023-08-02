@@ -14,7 +14,7 @@ import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigDto;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigTypeService;
-import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
+import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -75,9 +75,12 @@ public class ConfigManagerGui {
 
     public void loadConfigButtonClicked(Composite parent) throws ParserConfigurationException, IOException, SAXException {
         final FileDialog fileDialog = new FileDialog(parent.getShell(), SWT.APPLICATION_MODAL);
-        System.out.println("Stored file: " + fileDialog.open());
+        fileDialog.open();
         File file = new File(fileDialog.getFileName());
         String name = file.getName();
+        if (name.equals("")) {
+            return;
+        }
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -92,10 +95,11 @@ public class ConfigManagerGui {
         configDto = configTypeService.save(configDto);
         ConfigSingleton.getSingleton().setConfigDto(configDto);
 
-//        ClassTypeGui classTypeGui = new ClassTypeGui();
-//        classTypeGui.readElement(doc);
-        LinkTypeGui linkTypeGui = new LinkTypeGui();
-        linkTypeGui.readElement(rootElement);
+
+        ConfigManagerComposites composites = new ConfigManagerComposites();
+        for (XmlRead xmlRead : composites.getComposites()) {
+            xmlRead.readElement(rootElement);
+        }
     }
 
     public void viewConfigsButtonClicked() {
@@ -104,27 +108,6 @@ public class ConfigManagerGui {
 
     }
 
-//    private void addToViewConfigs(FileUpload fileUpload) {
-//        try {
-//
-//            File file = new File(System.getProperty("user.home") + "\\Downloads\\" + fileUpload.getFileName());
-//            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-//            DocumentBuilder db = dbf.newDocumentBuilder();
-//            Document doc = db.parse(file);
-//            doc.getDocumentElement().normalize();
-//
-//            ConfigDto configDto = new ConfigDto();
-//
-//            configDto.setName(fileUpload.getFileName());
-//            configDto = configTypeService.save(configDto);
-//            ConfigSingleton.getSingleton().setConfigDto(configDto);
-//            ClassTypeGui classTypeGui = new ClassTypeGui();
-//            // classTypeGui.readElement(doc);
-//
-//        } catch (Exception e) {
-//            //  System.out.println(e);
-//        }
-//    }
 
 }
 

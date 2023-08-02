@@ -99,81 +99,41 @@ public class LinkTypeGui extends TableComposite implements ManageableComponent, 
     @Override
     public void readElement(Element element) {
 
-        NodeList nodeList = element.getElementsByTagName("linkType");
-        System.out.println(nodeList.getLength());
-        for (int i = 0; i < 21; i++) {
-            LinkTypeDto linkTypeDto = new LinkTypeDto();
-            linkTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-            Node node = nodeList.item(i);
 
-            System.out.println("\nnode name:" + node.getNodeName());
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element eElement = (Element) node;
-                for (int idx = 1; idx < columns().length; idx++) {
-                    // String textContent = eElement.getElementsByTagName(columns()[1]).item(0).getTextContent();
-                    // call method columns[1] on classTypeDto using reflection
+        Node header = element.getElementsByTagName("linkTypes").item(0);
+        if (header != null) {
+            NodeList nodeList = ((Element) header).getElementsByTagName("linkType");
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                LinkTypeDto linkTypeDto = new LinkTypeDto();
+                linkTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+                Node node = nodeList.item(i);
 
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) node;
 
-                    for (Method declaredMethod : linkTypeDto.getClass().getDeclaredMethods()) {
-                        if (declaredMethod.getName().toLowerCase().contains(columns()[idx])) {
-                            try {
-                                if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
-                                    return;
+                    for (int idx = 1; idx < columns().length; idx++) {
+
+                        for (Method declaredMethod : linkTypeDto.getClass().getDeclaredMethods()) {
+                            if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
+                                try {
+                                    if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
+                                        break;
+                                    }
+                                    declaredMethod.invoke(linkTypeDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
+                                    break;
+                                } catch (IllegalAccessException | InvocationTargetException e) {
+                                    throw new RuntimeException(e);
                                 }
-                                String var = eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent();
-                                declaredMethod.invoke(linkTypeDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
-                                break;
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                throw new RuntimeException(e);
                             }
                         }
 
                     }
-
-//                    switch (columns()[idx]) {
-//                        case "discriminator" ->
-//                                linkTypeDto.setDiscriminator(eElement.getElementsByTagName("discriminator").item(0).getTextContent());
-//                        case "name" ->
-//                                linkTypeDto.setName(eElement.getElementsByTagName("name").item(0).getTextContent());
-//                        case "appIcon" ->
-//                                linkTypeDto.setAppIcon(eElement.getElementsByTagName("appIcon").item(0).getTextContent());
-//                        case "mapIcon" ->
-//                                linkTypeDto.setMapIcon(eElement.getElementsByTagName("mapIcon").item(0).getTextContent());
-//                        case "capacityFull" ->
-//                                linkTypeDto.setCapacityFull(eElement.getElementsByTagName("capacityFull").item(0).getTextContent());
-//                        case "capacityUnitName" -> {
-//                            if (eElement.getElementsByTagName("capacityUnitName").item(0).getTextContent() == null) {
-//                                //linkTypeDto.setCapacityUnitName(eElement.getElementsByTagName("capacityUnitName").item(0).getTextContent());
-//                            } else {
-//                                linkTypeDto.setCapacityUnitName(eElement.getElementsByTagName("capacityUnitName").item(0).getTextContent());
-//                            }
-//                        }
-//                        case "typeClassPath" ->
-//                                linkTypeDto.setTypeClassPath(eElement.getElementsByTagName("typeClassPath").item(0).getTextContent());
-//
-//                        case "system" ->
-//                                linkTypeDto.setSystem(eElement.getElementsByTagName("system").item(0).getTextContent());
-//                        case "unique" ->
-//                                linkTypeDto.setUnique(eElement.getElementsByTagName("unique").item(0).getTextContent());
-//                        default -> {
-//
-//                        }
-//                    }
                     linkTypeService.insertOrUpdate(linkTypeDto);
                 }
-                System.out.println("name" + eElement.getElementsByTagName("name").item(0).getTextContent());
-                System.out.println("path " + eElement.getElementsByTagName("appIcon").item(0).getTextContent());
-                System.out.println("parentPath " + eElement.getElementsByTagName("mapIcon").item(0).getTextContent());
-
-
             }
 
 
         }
-
-
-        System.out.println("root element: " + element.getNodeName());
-
-
     }
+
 }
