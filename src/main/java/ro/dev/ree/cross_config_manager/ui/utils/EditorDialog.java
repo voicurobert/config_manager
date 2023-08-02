@@ -29,7 +29,7 @@ public class EditorDialog extends Dialog {
 
     private final Composite control; // either tree or table
     private Shell shell;
-    private Text[] inputTexts;
+    private Control[] inputTexts;
     private final String action;
 
     private ServiceRepository serviceRepository;
@@ -83,17 +83,13 @@ public class EditorDialog extends Dialog {
         selectedItem = (control instanceof Table) ? ((Table) control).getSelection()[0] : ((Tree) control).getSelection()[0];
 
         // Create an array of Text for each column of the selected item
-        inputTexts = new Text[numColumns];
+        inputTexts = new Control[numColumns];
 
         for (int i = 1; i < numColumns; i++) {
             Label label = new Label(composite, SWT.NONE);
             label.setText((control instanceof Table) ? ((Table) control).getColumn(i).getText() + ":" : ((Tree) control).getColumn(i).getText() + ":");
 
             if ((control instanceof Table) ? ((Table) control).getColumn(i).getText().equals("typeClassPath") : ((Tree) control).getColumn(i).getText().equals("typeClassPath")) {
-                Label label1 = new Label(composite, SWT.NONE);
-                label1.setText("Select one option:");
-                inputTexts[i] = new Text(composite, SWT.BORDER);
-                inputTexts[i].setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
                 Combo combo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
                 combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
@@ -108,22 +104,21 @@ public class EditorDialog extends Dialog {
 
                 // Set initial selection based on the existing value in the selected item
                 if (action.equals("Update")) {
-                    inputTexts[i].setText((selectedItem instanceof TableItem) ? ((TableItem) selectedItem).getText(i) : ((TreeItem) selectedItem).getText(i));
                     String selectedValue = (selectedItem instanceof TableItem) ? ((TableItem) selectedItem).getText(i) : ((TreeItem) selectedItem).getText(i);
                     combo.select(combo.indexOf(selectedValue));
                 }
 
-                // Add a selection listener to handle user selection
-                int finalI = i;
-                combo.addListener(SWT.Selection, event -> inputTexts[finalI].setText(combo.getText()));
+                inputTexts[i] = combo;
 
             } else {
-                inputTexts[i] = new Text(composite, SWT.BORDER);
-                inputTexts[i].setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+                Text text = new Text(composite, SWT.BORDER);
+                text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
                 // Set initial value for Text Input
                 if (action.equals("Update"))
-                    inputTexts[i].setText((selectedItem instanceof TableItem) ? ((TableItem) selectedItem).getText(i) : ((TreeItem) selectedItem).getText(i));
+                    text.setText((selectedItem instanceof TableItem) ? ((TableItem) selectedItem).getText(i) : ((TreeItem) selectedItem).getText(i));
+
+                inputTexts[i] = text;
             }
         }
 
@@ -141,7 +136,11 @@ public class EditorDialog extends Dialog {
         if (action.equals("Add")) {
             Widget newItem;
             for (int i = 1; i < inputTexts.length; i++) {
-                items[i] = inputTexts[i].getText().trim();
+                if (inputTexts[i] instanceof Text) {
+                    items[i] = ((Text) inputTexts[i]).getText().trim();
+                } else if (inputTexts[i] instanceof Combo) {
+                    items[i] = ((Combo) inputTexts[i]).getText().trim();
+                }
             }
             items[0] = insertOrUpdateRecord(items);
             if (selectedItem instanceof TableItem && control instanceof Table) {
@@ -154,7 +153,11 @@ public class EditorDialog extends Dialog {
         } else {
             items[0] = (selectedItem instanceof TableItem) ? ((TableItem) selectedItem).getText(0) : ((TreeItem) selectedItem).getText(0);
             for (int i = 1; i < inputTexts.length; i++) {
-                items[i] = inputTexts[i].getText().trim();
+                if (inputTexts[i] instanceof Text) {
+                    items[i] = ((Text) inputTexts[i]).getText().trim();
+                } else if (inputTexts[i] instanceof Combo) {
+                    items[i] = ((Combo) inputTexts[i]).getText().trim();
+                }
                 if (selectedItem instanceof TableItem && control instanceof Table) {
                     ((TableItem) selectedItem).setText(i, items[i]);
                 } else if (selectedItem instanceof TreeItem && control instanceof Tree) {
