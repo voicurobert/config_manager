@@ -183,7 +183,7 @@ public class EditorDialog extends Dialog {
             case ClassTypeGui.TABLE_NAME ->
                     serviceRepository.insertOrUpdate(ClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
             case NodeTypeGui.TABLE_NAME ->
-                    serviceRepository.insertOrUpdate(NodeTypeDto.InsertOrUpdateFromItems(columnValues, action));
+                    serviceRepository.insertOrUpdate(NodeTypeDto.insertOrUpdateFromItems(columnValues, action));
             case LinkTypeGui.TABLE_NAME ->
                     serviceRepository.insertOrUpdate(LinkTypeDto.InsertOrUpdateFromItems(columnValues, action));
             case NodeTypeRulesGui.TREE_NAME ->

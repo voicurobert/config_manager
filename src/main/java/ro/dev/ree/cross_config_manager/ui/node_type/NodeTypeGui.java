@@ -1,9 +1,7 @@
 package ro.dev.ree.cross_config_manager.ui.node_type;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -20,7 +18,9 @@ import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NodeTypeGui extends TableComposite implements ManageableComponent, XmlRead {
 
@@ -33,6 +33,52 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
         return new String[]{"id", "discriminator", "name", "appIcon", "mapIcon",
                 "capacityFull", "capacityUnitName", "typeClassPath",
                 "rootType", "system", "multiparentAllowed", "uniquenessType"};
+    }
+
+    public Map<String, Widget> columnsMap() {
+        var map = new HashMap<String, Widget>();
+
+        map.put("id", null);
+        map.put("discriminator", new Text(parent, SWT.BORDER));
+        map.put("name", new Text(parent, SWT.BORDER));
+        map.put("appIcon", new Text(parent, SWT.BORDER));
+        map.put("mapIcon", new Text(parent, SWT.BORDER));
+        map.put("capacityFull", new Text(parent, SWT.BORDER));
+        map.put("capacityUnitName", new Text(parent, SWT.BORDER));
+        map.put("typeClassPath", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
+        map.put("rootType", new Text(parent, SWT.BORDER));
+        map.put("system", new Text(parent, SWT.BORDER));
+        map.put("multiparentAllowed", new Text(parent, SWT.BORDER));
+        map.put("uniquenessType", new Text(parent, SWT.BORDER));
+
+        return map;
+    }
+
+    public Map<String, Object> values(String action) {
+        var map = new HashMap<String, Object>();
+
+        TableItem[] selection = table.getSelection();
+
+        if (table.getSelection().length == 0) {
+
+        } else {
+
+        }
+
+        map.put("id", null);
+        map.put("discriminator", null);
+//        map.put("name", new Text(parent, SWT.BORDER));
+//        map.put("appIcon", new Text(parent, SWT.BORDER));
+//        map.put("mapIcon", new Text(parent, SWT.BORDER));
+//        map.put("capacityFull", new Text(parent, SWT.BORDER));
+//        map.put("capacityUnitName", new Text(parent, SWT.BORDER));
+//        map.put("typeClassPath", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
+//        map.put("rootType", new Text(parent, SWT.BORDER));
+//        map.put("system", new Text(parent, SWT.BORDER));
+//        map.put("multiparentAllowed", new Text(parent, SWT.BORDER));
+//        map.put("uniquenessType", new Text(parent, SWT.BORDER));
+
+        return map;
     }
 
     @Override

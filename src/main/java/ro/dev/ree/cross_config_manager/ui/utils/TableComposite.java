@@ -6,21 +6,45 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
+import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
+import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
+import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
+import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
+import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
+import ro.dev.ree.cross_config_manager.ui.class_type.ClassTypeGui;
+import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
+import ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules.LinkTypeNodeTypeRulesGui;
+import ro.dev.ree.cross_config_manager.ui.link_type_rules.LinkTypeRulesGui;
+import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
+import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class TableComposite implements Drawable, XmlWriter {
 
-    private Table table;
+    protected Composite parent;
+
+    protected Table table;
 
     private Menu menu;
 
     public abstract String[] columns();
+
+    public abstract Map<String, Widget> columnsMap();
+
+    public Map<String, Object> values(String action) {
+        return new HashMap<>();
+    }
 
     public abstract String tableName();
 
     public abstract ServiceRepository getServiceRepository();
 
     public Composite createContents(Composite parent) {
+        this.parent = parent;
         table = new Table(parent, SWT.BORDER | SWT.CENTER);
         GridData gd_table = new GridData(-1, 150);
         gd_table.horizontalAlignment = 2;
@@ -58,10 +82,43 @@ public abstract class TableComposite implements Drawable, XmlWriter {
     }
 
     private void openDialogEditor(String action) {
-        EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, action);
+        GenericEditorDialog dialog = new GenericEditorDialog(table.getParent().getShell(), action);
+        dialog.setInputData(columnsMap());
+        dialog.setDataValues(values(action));
+
+        dialog.setActionPerformed(updatedValues -> {
+            // insert or update
+//            private String insertOrUpdateRecord(String[] columnValues) {
+//                return switch (control.getToolTipText()) {
+//                    case ClassTypeGui.TABLE_NAME ->
+//                            serviceRepository.insertOrUpdate(ClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
+//                    case NodeTypeGui.TABLE_NAME ->
+//                            serviceRepository.insertOrUpdate(NodeTypeDto.InsertOrUpdateFromItems(columnValues, action));
+//                    case LinkTypeGui.TABLE_NAME ->
+//                            serviceRepository.insertOrUpdate(LinkTypeDto.InsertOrUpdateFromItems(columnValues, action));
+//                    case NodeTypeRulesGui.TREE_NAME ->
+//                            serviceRepository.insertOrUpdate(NodeTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
+//                    case LinkTypeRulesGui.TREE_NAME ->
+//                            serviceRepository.insertOrUpdate(LinkTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
+//                    case LinkTypeNodeTypeRulesGui.TREE_NAME ->
+//                            serviceRepository.insertOrUpdate(LinkTypeNodeTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
+//                    default -> "";
+//                };
+//            }
+            //serviceRepository.insertOrUpdate(ClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
+
+            // add a new row and set items to this table
+
+        });
+
         dialog.setServiceRepository(getServiceRepository());
         dialog.open();
+//        EditorDialog dialog = new EditorDialog(table.getParent().getShell(), table, action);
+//
+//        dialog.setServiceRepository(getServiceRepository());
+//        dialog.open();
     }
+
 
 
     private void deleteSelection() {

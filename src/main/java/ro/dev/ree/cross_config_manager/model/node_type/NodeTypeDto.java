@@ -40,7 +40,9 @@ public class NodeTypeDto extends RecordDto implements XmlElement {
 
     private String uniquenessType;
 
-    public static NodeTypeDto InsertOrUpdateFromItems(String[] columnValues, String action) {
+    // add a new method similar to insertOrUpdateFromItems by accepting List instead of String; get rid of action
+
+    public static NodeTypeDto insertOrUpdateFromItems(String[] columnValues, String action) {
         var nodeTypeDto = new NodeTypeDto();
         if(action.equals("Update"))
         {

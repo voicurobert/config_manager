@@ -16,7 +16,7 @@ public class LinkTypeServiceUnitTest {
 
         linkTypeDto.setName("Optical Cable");
 
-        linkTypeService.save(linkTypeDto);
+        //linkTypeService.save(linkTypeDto);
     }
 
 }

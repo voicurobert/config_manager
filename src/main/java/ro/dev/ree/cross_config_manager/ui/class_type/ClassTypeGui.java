@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Widget;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -21,6 +22,7 @@ import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 public class ClassTypeGui extends TableComposite implements ManageableComponent, XmlRead {
 
@@ -32,6 +34,11 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
     @Override
     public String[] columns() {
         return new String[]{"id", "name", "path", "parentPath"};
+    }
+
+    @Override
+    public Map<String, Widget> columnsMap() {
+        return null;
     }
 
     @Override
