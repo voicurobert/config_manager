@@ -6,18 +6,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
-import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
-import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
-import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
-import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
-import ro.dev.ree.cross_config_manager.ui.class_type.ClassTypeGui;
-import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
-import ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules.LinkTypeNodeTypeRulesGui;
-import ro.dev.ree.cross_config_manager.ui.link_type_rules.LinkTypeRulesGui;
-import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
-import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import java.util.HashMap;
@@ -118,7 +106,6 @@ public abstract class TableComposite implements Drawable, XmlWriter {
 //        dialog.setServiceRepository(getServiceRepository());
 //        dialog.open();
     }
-
 
 
     private void deleteSelection() {

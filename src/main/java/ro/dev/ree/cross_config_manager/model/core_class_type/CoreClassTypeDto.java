@@ -1,4 +1,4 @@
-package ro.dev.ree.cross_config_manager.model.class_type;
+package ro.dev.ree.cross_config_manager.model.core_class_type;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.lang.reflect.Field;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassTypeDto extends RecordDto implements XmlElement {
+public class CoreClassTypeDto extends RecordDto implements XmlElement {
 
     private String configId;
 
@@ -24,8 +24,8 @@ public class ClassTypeDto extends RecordDto implements XmlElement {
 
     private String parentPath;
 
-    public static ClassTypeDto InsertOrUpdateFromItems(String[] columnValues, String action) {
-        var classTypeDto = new ClassTypeDto();
+    public static CoreClassTypeDto InsertOrUpdateFromItems(String[] columnValues, String action) {
+        var classTypeDto = new CoreClassTypeDto();
         if (action.equals("Update")) {
             classTypeDto.setId(columnValues[0]);
         }

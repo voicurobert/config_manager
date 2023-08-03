@@ -7,20 +7,28 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
+import ro.dev.ree.cross_config_manager.model.component_status.ComponentStatusDto;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
+import ro.dev.ree.cross_config_manager.model.link_status.LinkStatusDto;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
+import ro.dev.ree.cross_config_manager.model.node_status.NodeStatusDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
-import ro.dev.ree.cross_config_manager.ui.class_type.ClassTypeGui;
+import ro.dev.ree.cross_config_manager.model.service_status.ServiceStatusDto;
+import ro.dev.ree.cross_config_manager.ui.component_status.ComponentStatusGui;
+import ro.dev.ree.cross_config_manager.ui.core_class_type.CoreClassTypeGui;
+import ro.dev.ree.cross_config_manager.ui.link_status.LinkStatusGui;
 import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
 import ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules.LinkTypeNodeTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.link_type_rules.LinkTypeRulesGui;
+import ro.dev.ree.cross_config_manager.ui.node_status.NodeStatusGui;
 import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
+import ro.dev.ree.cross_config_manager.ui.service_status.ServiceStatusGui;
 
 import java.util.Arrays;
 import java.util.List;
@@ -93,13 +101,13 @@ public class EditorDialog extends Dialog {
                 Combo combo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
                 combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-                ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
-                List<ClassTypeDto> classTypeDtos = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
-                        map(recordDto -> (ClassTypeDto) recordDto).toList();
+                CoreClassTypeService coreClassTypeService = ConfigManagerContextProvider.getBean(CoreClassTypeService.class);
+                List<CoreClassTypeDto> coreClassTypeDtos = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+                        map(recordDto -> (CoreClassTypeDto) recordDto).toList();
 
                 // Add options to the Combo
-                for (ClassTypeDto classTypeDto : classTypeDtos) {
-                    combo.add(classTypeDto.getName());
+                for (CoreClassTypeDto coreClassTypeDto : coreClassTypeDtos) {
+                    combo.add(coreClassTypeDto.getName());
                 }
 
                 // Set initial selection based on the existing value in the selected item
@@ -180,18 +188,26 @@ public class EditorDialog extends Dialog {
 
     private String insertOrUpdateRecord(String[] columnValues) {
         return switch (control.getToolTipText()) {
-            case ClassTypeGui.TABLE_NAME ->
-                    serviceRepository.insertOrUpdate(ClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
+            case CoreClassTypeGui.TABLE_NAME ->
+                    serviceRepository.insertOrUpdate(CoreClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
             case NodeTypeGui.TABLE_NAME ->
                     serviceRepository.insertOrUpdate(NodeTypeDto.insertOrUpdateFromItems(columnValues, action));
             case LinkTypeGui.TABLE_NAME ->
                     serviceRepository.insertOrUpdate(LinkTypeDto.InsertOrUpdateFromItems(columnValues, action));
+            case LinkStatusGui.TABLE_NAME ->
+                    serviceRepository.insertOrUpdate(LinkStatusDto.InsertOrUpdateFromItems(columnValues, action));
+            case NodeStatusGui.TABLE_NAME ->
+                    serviceRepository.insertOrUpdate(NodeStatusDto.InsertOrUpdateFromItems(columnValues, action));
             case NodeTypeRulesGui.TREE_NAME ->
                     serviceRepository.insertOrUpdate(NodeTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
             case LinkTypeRulesGui.TREE_NAME ->
                     serviceRepository.insertOrUpdate(LinkTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
             case LinkTypeNodeTypeRulesGui.TREE_NAME ->
                     serviceRepository.insertOrUpdate(LinkTypeNodeTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
+            case ServiceStatusGui.TABLE_NAME ->
+                    serviceRepository.insertOrUpdate(ServiceStatusDto.InsertOrUpdateFromItems(columnValues, action));
+            case ComponentStatusGui.TABLE_NAME ->
+                    serviceRepository.insertOrUpdate(ComponentStatusDto.InsertOrUpdateFromItems(columnValues, action));
             default -> "";
         };
     }

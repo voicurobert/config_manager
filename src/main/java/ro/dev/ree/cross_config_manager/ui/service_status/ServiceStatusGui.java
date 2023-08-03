@@ -1,4 +1,4 @@
-package ro.dev.ree.cross_config_manager.ui.class_type;
+package ro.dev.ree.cross_config_manager.ui.service_status;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -12,9 +12,9 @@ import org.w3c.dom.NodeList;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
+import ro.dev.ree.cross_config_manager.model.service_status.ServiceStatusDto;
+import ro.dev.ree.cross_config_manager.model.service_status.ServiceStatusService;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
 import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
@@ -24,16 +24,15 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-public class ClassTypeGui extends TableComposite implements ManageableComponent, XmlRead {
+public class ServiceStatusGui extends TableComposite implements ManageableComponent, XmlRead {
 
-    public static final String TABLE_NAME = "Class Type";
+    public static final String TABLE_NAME = "Service Status";
 
-    private final ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
-
+    private final ServiceStatusService serviceStatusService = ConfigManagerContextProvider.getBean(ServiceStatusService.class);
 
     @Override
     public String[] columns() {
-        return new String[]{"id", "name", "path", "parentPath"};
+        return new String[]{"id", "name", "description", "color"};
     }
 
     @Override
@@ -48,7 +47,7 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
 
     @Override
     public ServiceRepository getServiceRepository() {
-        return classTypeService;
+        return serviceStatusService;
     }
 
     @Override
@@ -56,16 +55,18 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
         createCheckbox(parent);
 
         Table table = (Table) super.createContents(parent);
-        List<RecordDto> allByConfigId = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+
+        List<RecordDto> allByConfigId = serviceStatusService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
         for (RecordDto recordDto : allByConfigId) {
-            ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
+            ServiceStatusDto serviceStatusDto = (ServiceStatusDto) recordDto;
             String[] vec = new String[columns().length];
 
-            vec[0] = classTypeDto.getId();
-            vec[1] = classTypeDto.getName();
-            vec[2] = classTypeDto.getPath();
-            vec[3] = classTypeDto.getParentPath();
+            vec[0] = serviceStatusDto.getId();
+            vec[1] = serviceStatusDto.getName();
+            vec[2] = serviceStatusDto.getDescription();
+            vec[3] = serviceStatusDto.getColor();
+
 
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(vec);
@@ -76,23 +77,22 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
 
     @Override
     public void delete(String id) {
-        RecordDto recordDto = classTypeService.findById(id);
-        classTypeService.delete(recordDto);
+        RecordDto recordDto = serviceStatusService.findById(id);
+        serviceStatusService.delete(recordDto);
         super.delete(id);
     }
 
     @Override
     public void xmlElements(Document document, Element rootElement) {
-
-        List<RecordDto> allByConfigId = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        List<RecordDto> allByConfigId = serviceStatusService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
         // root element
-        Element classTypes = document.createElement("classTypes");
-        rootElement.appendChild(classTypes);
+        Element nodeStatus = document.createElement("nodeStatuses");
+        rootElement.appendChild(nodeStatus);
 
         for (RecordDto recordDto : allByConfigId) {
-            ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
-            classTypeDto.asXml(document, classTypes);
+            ServiceStatusDto serviceStatusDto = (ServiceStatusDto) recordDto;
+            serviceStatusDto.asXml(document, nodeStatus);
         }
     }
 
@@ -100,13 +100,12 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
     public void readElement(Element element) {
 
 
-        Node header = element.getElementsByTagName("classTypes").item(0);
+        Node header = element.getElementsByTagName("serviceStatuses").item(0);
         if (header != null) {
-            NodeList nodeList = ((Element) header).getElementsByTagName("classType");
-
+            NodeList nodeList = ((Element) header).getElementsByTagName("serviceStatus");
             for (int i = 0; i < nodeList.getLength(); i++) {
-                ClassTypeDto classTypeDto = new ClassTypeDto();
-                classTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+                ServiceStatusDto serviceStatusDto = new ServiceStatusDto();
+                serviceStatusDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
                 Node node = nodeList.item(i);
 
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -114,13 +113,13 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
 
                     for (int idx = 1; idx < columns().length; idx++) {
 
-                        for (Method declaredMethod : classTypeDto.getClass().getDeclaredMethods()) {
+                        for (Method declaredMethod : serviceStatusDto.getClass().getDeclaredMethods()) {
                             if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
                                 try {
                                     if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
                                         break;
                                     }
-                                    declaredMethod.invoke(classTypeDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
+                                    declaredMethod.invoke(serviceStatusDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
                                     break;
                                 } catch (IllegalAccessException | InvocationTargetException e) {
                                     throw new RuntimeException(e);
@@ -129,12 +128,13 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
                         }
 
                     }
-                    classTypeService.insertOrUpdate(classTypeDto);
+                    serviceStatusService.insertOrUpdate(serviceStatusDto);
                 }
             }
 
 
         }
     }
+
 }
 

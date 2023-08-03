@@ -1,4 +1,4 @@
-package ro.dev.ree.cross_config_manager.model.class_type;
+package ro.dev.ree.cross_config_manager.model.node_status;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,16 +9,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "class_types")
-public class ClassType {
+@Document(collection = "node_statuses")
+public class NodeStatus {
     @Id
     private String id;
 
     private String configId;
-
+    private String discriminator;
     private String name;
+    private String colorCode;
+    private String capacityConsumer;
 
-    private String path;
-
-    private String parentPath;
 }
