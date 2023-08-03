@@ -6,10 +6,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
-import ro.dev.ree.cross_config_manager.ui.class_type.ClassTypeGui;
+import ro.dev.ree.cross_config_manager.ui.core_class_type.CoreClassTypeGui;
 import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
 import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
@@ -95,8 +95,8 @@ public abstract class TableComposite implements Drawable, XmlWriter {
 
     private String insertOrUpdateRecord(List<String> columnValues, String action) {
         return switch (table.getToolTipText()) {
-            case ClassTypeGui.TABLE_NAME ->
-                    getServiceRepository().insertOrUpdate(ClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
+            case CoreClassTypeGui.TABLE_NAME ->
+                    getServiceRepository().insertOrUpdate(CoreClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
             case NodeTypeGui.TABLE_NAME ->
                     getServiceRepository().insertOrUpdate(NodeTypeDto.InsertOrUpdateFromItems(columnValues, action));
             case LinkTypeGui.TABLE_NAME ->

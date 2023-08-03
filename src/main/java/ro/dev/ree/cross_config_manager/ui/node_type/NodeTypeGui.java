@@ -9,9 +9,9 @@ import org.w3c.dom.NodeList;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
@@ -74,13 +74,13 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
                     ((Text)widget).setText(table.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
-                ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
-                List<ClassTypeDto> classTypeDtos = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
-                        map(recordDto -> (ClassTypeDto) recordDto).toList();
+                CoreClassTypeService coreClassTypeService = ConfigManagerContextProvider.getBean(CoreClassTypeService.class);
+                List<CoreClassTypeDto> coreClassTypeDtos = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+                        map(recordDto -> (CoreClassTypeDto) recordDto).toList();
 
                 // Add options to the Combo
-                for (ClassTypeDto classTypeDto : classTypeDtos) {
-                    ((Combo)widget).add(classTypeDto.getName());
+                for (CoreClassTypeDto coreClassTypeDto : coreClassTypeDtos) {
+                    ((Combo)widget).add(coreClassTypeDto.getName());
                 }
                 if (action.equals("Update") && !(table.getSelection().length == 0)) {
                     ((Combo)widget).select(((Combo)widget).indexOf(table.getSelection()[0].getText(i.get())));

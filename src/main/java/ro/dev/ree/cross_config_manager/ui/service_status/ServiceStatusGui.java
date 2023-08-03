@@ -41,6 +41,11 @@ public class ServiceStatusGui extends TableComposite implements ManageableCompon
     }
 
     @Override
+    public Map<String, Object> values(String action, Map<String, Widget> columns) {
+        return null;
+    }
+
+    @Override
     public String tableName() {
         return TABLE_NAME;
     }

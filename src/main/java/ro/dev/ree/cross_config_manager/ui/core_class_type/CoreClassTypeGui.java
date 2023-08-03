@@ -1,4 +1,4 @@
-package ro.dev.ree.cross_config_manager.ui.class_type;
+package ro.dev.ree.cross_config_manager.ui.core_class_type;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
@@ -38,7 +38,7 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
     public Map<String, Widget> columnsMap() {
         var map = new LinkedHashMap<String, Widget>();
 
-        map.put("id", null);
+        map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
         map.put("name", new Text(parent, SWT.BORDER));
         map.put("path", new Text(parent, SWT.BORDER));
         // parentPath probabil facut cu Combo si el
@@ -63,13 +63,13 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
                     ((Text)widget).setText(table.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
-                ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
-                List<ClassTypeDto> classTypeDtos = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
-                        map(recordDto -> (ClassTypeDto) recordDto).toList();
+                CoreClassTypeService coreClassTypeService = ConfigManagerContextProvider.getBean(CoreClassTypeService.class);
+                List<CoreClassTypeDto> coreClassTypeDtos = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+                        map(recordDto -> (CoreClassTypeDto) recordDto).toList();
 
                 // Add options to the Combo
-                for (ClassTypeDto classTypeDto : classTypeDtos) {
-                    ((Combo)widget).add(classTypeDto.getName());
+                for (CoreClassTypeDto coreClassTypeDto : coreClassTypeDtos) {
+                    ((Combo)widget).add(coreClassTypeDto.getName());
                 }
                 if (action.equals("Update") && !(table.getSelection().length == 0)) {
                     ((Combo)widget).select(((Combo)widget).indexOf(table.getSelection()[0].getText(i.get())));

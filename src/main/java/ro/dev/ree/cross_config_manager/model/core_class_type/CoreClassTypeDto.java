@@ -1,4 +1,4 @@
-package ro.dev.ree.cross_config_manager.model.class_type;
+package ro.dev.ree.cross_config_manager.model.core_class_type;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,16 +26,16 @@ public class CoreClassTypeDto extends RecordDto implements XmlElement {
     private String parentPath;
 
     public static CoreClassTypeDto InsertOrUpdateFromItems(List<String> columnValues, String action) {
-        var classTypeDto = new CoreClassTypeDto();
+        var coreClassTypeDto = new CoreClassTypeDto();
         if (action.equals("Update")) {
-            classTypeDto.setId(columnValues.get(0));
+            coreClassTypeDto.setId(columnValues.get(0));
         }
-        classTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        classTypeDto.setName(columnValues.get(1));
-        classTypeDto.setPath(columnValues.get(2));
-        classTypeDto.setParentPath(columnValues.get(3));
+        coreClassTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        coreClassTypeDto.setName(columnValues.get(1));
+        coreClassTypeDto.setPath(columnValues.get(2));
+        coreClassTypeDto.setParentPath(columnValues.get(3));
 
-        return classTypeDto;
+        return coreClassTypeDto;
     }
 
     @Override

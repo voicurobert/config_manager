@@ -9,9 +9,9 @@ import org.w3c.dom.NodeList;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeService;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
@@ -41,7 +41,7 @@ public class LinkTypeGui extends TableComposite implements ManageableComponent, 
     public Map<String, Widget> columnsMap() {
         var map = new LinkedHashMap<String, Widget>();
 
-        map.put("id", null);
+        map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
         map.put("discriminator", new Text(parent, SWT.BORDER));
         map.put("name", new Text(parent, SWT.BORDER));
         map.put("appIcon", new Text(parent, SWT.BORDER));
@@ -72,13 +72,13 @@ public class LinkTypeGui extends TableComposite implements ManageableComponent, 
                     ((Text)widget).setText(table.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
-                ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
-                List<ClassTypeDto> classTypeDtos = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
-                        map(recordDto -> (ClassTypeDto) recordDto).toList();
+                CoreClassTypeService coreClassTypeService = ConfigManagerContextProvider.getBean(CoreClassTypeService.class);
+                List<CoreClassTypeDto> coreClassTypeDtos = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+                        map(recordDto -> (CoreClassTypeDto) recordDto).toList();
 
                 // Add options to the Combo
-                for (ClassTypeDto classTypeDto : classTypeDtos) {
-                    ((Combo)widget).add(classTypeDto.getName());
+                for (CoreClassTypeDto coreClassTypeDto : coreClassTypeDtos) {
+                    ((Combo)widget).add(coreClassTypeDto.getName());
                 }
                 if (action.equals("Update") && !(table.getSelection().length == 0)) {
                     ((Combo)widget).select(((Combo)widget).indexOf(table.getSelection()[0].getText(i.get())));
