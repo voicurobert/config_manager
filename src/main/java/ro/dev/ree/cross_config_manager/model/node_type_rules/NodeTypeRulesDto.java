@@ -10,6 +10,7 @@ import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -26,17 +27,17 @@ public class NodeTypeRulesDto extends RecordDto implements XmlElement {
 
     private String mandatoryParent;
 
-    public static NodeTypeRulesDto InsertOrUpdateFromItems(String[] columnValues, String action) {
+    public static NodeTypeRulesDto InsertOrUpdateFromItems(List<String> columnValues, String action) {
         var nodeTypeRulesDto = new NodeTypeRulesDto();
         if(action.equals("Update"))
         {
-            nodeTypeRulesDto.setId(columnValues[0]);
+            nodeTypeRulesDto.setId(columnValues.get(0));
         }
         nodeTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        nodeTypeRulesDto.setChild(columnValues[1]);
-        nodeTypeRulesDto.setParent(columnValues[2]);
-        nodeTypeRulesDto.setCapacityCalculatorName(columnValues[3]);
-        nodeTypeRulesDto.setMandatoryParent(columnValues[4]);
+        nodeTypeRulesDto.setChild(columnValues.get(1));
+        nodeTypeRulesDto.setParent(columnValues.get(2));
+        nodeTypeRulesDto.setCapacityCalculatorName(columnValues.get(3));
+        nodeTypeRulesDto.setMandatoryParent(columnValues.get(4));
 
         return nodeTypeRulesDto;
     }

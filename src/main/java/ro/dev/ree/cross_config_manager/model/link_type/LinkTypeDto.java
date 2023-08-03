@@ -10,6 +10,7 @@ import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -36,22 +37,22 @@ public class LinkTypeDto extends RecordDto implements XmlElement {
 
     private String unique;
 
-    public static LinkTypeDto InsertOrUpdateFromItems(String[] columnValues, String action) {
+    public static LinkTypeDto InsertOrUpdateFromItems(List<String> columnValues, String action) {
         var linkTypeDto = new LinkTypeDto();
         if(action.equals("Update"))
         {
-            linkTypeDto.setId(columnValues[0]);
+            linkTypeDto.setId(columnValues.get(0));
         }
         linkTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        linkTypeDto.setDiscriminator(columnValues[1]);
-        linkTypeDto.setName(columnValues[2]);
-        linkTypeDto.setAppIcon(columnValues[3]);
-        linkTypeDto.setMapIcon(columnValues[4]);
-        linkTypeDto.setCapacityFull(columnValues[5]);
-        linkTypeDto.setCapacityUnitName(columnValues[6]);
-        linkTypeDto.setTypeClassPath(columnValues[7]);
-        linkTypeDto.setSystem(columnValues[8]);
-        linkTypeDto.setUnique(columnValues[9]);
+        linkTypeDto.setDiscriminator(columnValues.get(1));
+        linkTypeDto.setName(columnValues.get(2));
+        linkTypeDto.setAppIcon(columnValues.get(3));
+        linkTypeDto.setMapIcon(columnValues.get(4));
+        linkTypeDto.setCapacityFull(columnValues.get(5));
+        linkTypeDto.setCapacityUnitName(columnValues.get(6));
+        linkTypeDto.setTypeClassPath(columnValues.get(7));
+        linkTypeDto.setSystem(columnValues.get(8));
+        linkTypeDto.setUnique(columnValues.get(9));
 
         return linkTypeDto;
     }

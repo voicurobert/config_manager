@@ -10,6 +10,7 @@ import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -42,24 +43,24 @@ public class NodeTypeDto extends RecordDto implements XmlElement {
 
     // add a new method similar to insertOrUpdateFromItems by accepting List instead of String; get rid of action
 
-    public static NodeTypeDto insertOrUpdateFromItems(String[] columnValues, String action) {
+    public static NodeTypeDto InsertOrUpdateFromItems(List<String> columnValues, String action) {
         var nodeTypeDto = new NodeTypeDto();
         if(action.equals("Update"))
         {
-            nodeTypeDto.setId(columnValues[0]);
+            nodeTypeDto.setId(columnValues.get(0));
         }
         nodeTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        nodeTypeDto.setDiscriminator(columnValues[1]);
-        nodeTypeDto.setName(columnValues[2]);
-        nodeTypeDto.setAppIcon(columnValues[3]);
-        nodeTypeDto.setMapIcon(columnValues[4]);
-        nodeTypeDto.setCapacityFull(columnValues[5]);
-        nodeTypeDto.setCapacityUnitName(columnValues[6]);
-        nodeTypeDto.setTypeClassPath(columnValues[7]);
-        nodeTypeDto.setRootType(columnValues[8]);
-        nodeTypeDto.setSystem(columnValues[9]);
-        nodeTypeDto.setMultiparentAllowed(columnValues[10]);
-        nodeTypeDto.setUniquenessType(columnValues[11]);
+        nodeTypeDto.setDiscriminator(columnValues.get(1));
+        nodeTypeDto.setName(columnValues.get(2));
+        nodeTypeDto.setAppIcon(columnValues.get(3));
+        nodeTypeDto.setMapIcon(columnValues.get(4));
+        nodeTypeDto.setCapacityFull(columnValues.get(5));
+        nodeTypeDto.setCapacityUnitName(columnValues.get(6));
+        nodeTypeDto.setTypeClassPath(columnValues.get(7));
+        nodeTypeDto.setRootType(columnValues.get(8));
+        nodeTypeDto.setSystem(columnValues.get(9));
+        nodeTypeDto.setMultiparentAllowed(columnValues.get(10));
+        nodeTypeDto.setUniquenessType(columnValues.get(11));
 
         return nodeTypeDto;
     }

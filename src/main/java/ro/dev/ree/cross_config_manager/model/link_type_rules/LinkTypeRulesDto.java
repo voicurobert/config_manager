@@ -10,6 +10,7 @@ import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,18 +29,18 @@ public class LinkTypeRulesDto extends RecordDto implements XmlElement {
 
     private String numberOfChannels;
 
-    public static LinkTypeRulesDto InsertOrUpdateFromItems(String[] columnValues, String action) {
+    public static LinkTypeRulesDto InsertOrUpdateFromItems(List<String> columnValues, String action) {
         var linkTypeRulesDto = new LinkTypeRulesDto();
         if(action.equals("Update"))
         {
-            linkTypeRulesDto.setId(columnValues[0]);
+            linkTypeRulesDto.setId(columnValues.get(0));
         }
         linkTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        linkTypeRulesDto.setConsumer(columnValues[1]);
-        linkTypeRulesDto.setProvider(columnValues[2]);
-        linkTypeRulesDto.setRoutingPolicy(columnValues[3]);
-        linkTypeRulesDto.setCapacityCalculatorName(columnValues[4]);
-        linkTypeRulesDto.setNumberOfChannels(columnValues[5]);
+        linkTypeRulesDto.setConsumer(columnValues.get(1));
+        linkTypeRulesDto.setProvider(columnValues.get(2));
+        linkTypeRulesDto.setRoutingPolicy(columnValues.get(3));
+        linkTypeRulesDto.setCapacityCalculatorName(columnValues.get(4));
+        linkTypeRulesDto.setNumberOfChannels(columnValues.get(5));
 
         return linkTypeRulesDto;
     }

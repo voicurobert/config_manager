@@ -9,6 +9,8 @@ import org.w3c.dom.NodeList;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
+import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
@@ -18,9 +20,9 @@ import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class NodeTypeGui extends TableComposite implements ManageableComponent, XmlRead {
 
@@ -35,10 +37,11 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
                 "rootType", "system", "multiparentAllowed", "uniquenessType"};
     }
 
+    @Override
     public Map<String, Widget> columnsMap() {
-        var map = new HashMap<String, Widget>();
+        var map = new LinkedHashMap<String, Widget>();
 
-        map.put("id", null);
+        map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
         map.put("discriminator", new Text(parent, SWT.BORDER));
         map.put("name", new Text(parent, SWT.BORDER));
         map.put("appIcon", new Text(parent, SWT.BORDER));
@@ -54,29 +57,44 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
         return map;
     }
 
-    public Map<String, Object> values(String action) {
-        var map = new HashMap<String, Object>();
+    @Override
+    public Map<String, Object> values(String action, Map<String, Widget> columns) {
+        var map = new LinkedHashMap<String, Object>();
 
-        TableItem[] selection = table.getSelection();
+        AtomicInteger i = new AtomicInteger();
 
-        if (table.getSelection().length == 0) {
+        for (String name : columns.keySet()) {
+            Widget widget = columns.get(name);
+            if (widget instanceof Text) {
+                // Sau sa las fara action.equals("Add") si sa ia totusi componentele de la el selectat
+                if(table.getSelection().length == 0 || action.equals("Add")){
+                    ((Text)widget).setText("");
+                }
+                else{
+                    ((Text)widget).setText(table.getSelection()[0].getText(i.get()));
+                }
+            } else if (widget instanceof Combo) {
+                ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
+                List<ClassTypeDto> classTypeDtos = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+                        map(recordDto -> (ClassTypeDto) recordDto).toList();
 
-        } else {
+                // Add options to the Combo
+                for (ClassTypeDto classTypeDto : classTypeDtos) {
+                    ((Combo)widget).add(classTypeDto.getName());
+                }
+                if (action.equals("Update") && !(table.getSelection().length == 0)) {
+                    ((Combo)widget).select(((Combo)widget).indexOf(table.getSelection()[0].getText(i.get())));
+                }
+            }
+            if(table.getSelection().length == 0){
+                map.put(name, "");
+            }
+            else {
+                map.put(name, table.getSelection()[0].getText(i.get()));
+            }
 
+            i.getAndIncrement();
         }
-
-        map.put("id", null);
-        map.put("discriminator", null);
-//        map.put("name", new Text(parent, SWT.BORDER));
-//        map.put("appIcon", new Text(parent, SWT.BORDER));
-//        map.put("mapIcon", new Text(parent, SWT.BORDER));
-//        map.put("capacityFull", new Text(parent, SWT.BORDER));
-//        map.put("capacityUnitName", new Text(parent, SWT.BORDER));
-//        map.put("typeClassPath", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
-//        map.put("rootType", new Text(parent, SWT.BORDER));
-//        map.put("system", new Text(parent, SWT.BORDER));
-//        map.put("multiparentAllowed", new Text(parent, SWT.BORDER));
-//        map.put("uniquenessType", new Text(parent, SWT.BORDER));
 
         return map;
     }

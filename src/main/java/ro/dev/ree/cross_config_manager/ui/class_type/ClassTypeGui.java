@@ -1,10 +1,7 @@
 package ro.dev.ree.cross_config_manager.ui.class_type;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -21,8 +18,9 @@ import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClassTypeGui extends TableComposite implements ManageableComponent, XmlRead {
 
@@ -38,7 +36,56 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
 
     @Override
     public Map<String, Widget> columnsMap() {
-        return null;
+        var map = new LinkedHashMap<String, Widget>();
+
+        map.put("id", null);
+        map.put("name", new Text(parent, SWT.BORDER));
+        map.put("path", new Text(parent, SWT.BORDER));
+        // parentPath probabil facut cu Combo si el
+        map.put("parentPath", new Text(parent, SWT.BORDER));
+
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> values(String action, Map<String, Widget> columns) {
+        var map = new LinkedHashMap<String, Object>();
+        AtomicInteger i = new AtomicInteger();
+
+        for (String name : columns.keySet()) {
+            Widget widget = columns.get(name);
+            if (widget instanceof Text) {
+                // Sau sa las fara action.equals("Add") si sa ia totusi componentele de la el selectat
+                if(table.getSelection().length == 0 || action.equals("Add")){
+                    ((Text)widget).setText("");
+                }
+                else{
+                    ((Text)widget).setText(table.getSelection()[0].getText(i.get()));
+                }
+            } else if (widget instanceof Combo) {
+                ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
+                List<ClassTypeDto> classTypeDtos = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+                        map(recordDto -> (ClassTypeDto) recordDto).toList();
+
+                // Add options to the Combo
+                for (ClassTypeDto classTypeDto : classTypeDtos) {
+                    ((Combo)widget).add(classTypeDto.getName());
+                }
+                if (action.equals("Update") && !(table.getSelection().length == 0)) {
+                    ((Combo)widget).select(((Combo)widget).indexOf(table.getSelection()[0].getText(i.get())));
+                }
+            }
+            if(table.getSelection().length == 0){
+                map.put(name, "");
+            }
+            else {
+                map.put(name, table.getSelection()[0].getText(i.get()));
+            }
+
+            i.getAndIncrement();
+        }
+
+        return map;
     }
 
     @Override
@@ -60,7 +107,7 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
 
         for (RecordDto recordDto : allByConfigId) {
             ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
-            String[] vec = new String[columns().length];
+            String[] vec = new String[columnsMap().size()];
 
             vec[0] = classTypeDto.getId();
             vec[1] = classTypeDto.getName();
@@ -112,7 +159,8 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) node;
 
-                    for (int idx = 1; idx < columns().length; idx++) {
+
+                    for (int idx = 1; idx < columnsMap().size(); idx++) {
 
                         for (Method declaredMethod : classTypeDto.getClass().getDeclaredMethods()) {
                             if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {

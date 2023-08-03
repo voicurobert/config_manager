@@ -10,6 +10,7 @@ import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,16 +25,16 @@ public class LinkTypeNodeTypeRulesDto extends RecordDto implements XmlElement {
 
     private String quality;
 
-    public static LinkTypeNodeTypeRulesDto InsertOrUpdateFromItems(String[] columnValues, String action) {
+    public static LinkTypeNodeTypeRulesDto InsertOrUpdateFromItems(List<String> columnValues, String action) {
         var linkTypeNodeTypeRulesDto = new LinkTypeNodeTypeRulesDto();
         if(action.equals("Update"))
         {
-            linkTypeNodeTypeRulesDto.setId(columnValues[0]);
+            linkTypeNodeTypeRulesDto.setId(columnValues.get(0));
         }
         linkTypeNodeTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        linkTypeNodeTypeRulesDto.setLinkType(columnValues[1]);
-        linkTypeNodeTypeRulesDto.setNodeType(columnValues[2]);
-        linkTypeNodeTypeRulesDto.setQuality(columnValues[3]);
+        linkTypeNodeTypeRulesDto.setLinkType(columnValues.get(1));
+        linkTypeNodeTypeRulesDto.setNodeType(columnValues.get(2));
+        linkTypeNodeTypeRulesDto.setQuality(columnValues.get(3));
 
         return linkTypeNodeTypeRulesDto;
     }
