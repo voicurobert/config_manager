@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassTypeDto extends RecordDto implements XmlElement {
+public class CoreClassTypeDto extends RecordDto implements XmlElement {
 
     private String configId;
 
@@ -25,8 +25,8 @@ public class ClassTypeDto extends RecordDto implements XmlElement {
 
     private String parentPath;
 
-    public static ClassTypeDto InsertOrUpdateFromItems(List<String> columnValues, String action) {
-        var classTypeDto = new ClassTypeDto();
+    public static CoreClassTypeDto InsertOrUpdateFromItems(List<String> columnValues, String action) {
+        var classTypeDto = new CoreClassTypeDto();
         if (action.equals("Update")) {
             classTypeDto.setId(columnValues.get(0));
         }

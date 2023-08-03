@@ -9,9 +9,9 @@ import org.w3c.dom.NodeList;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.class_type.ClassTypeService;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
 import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
@@ -22,11 +22,11 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ClassTypeGui extends TableComposite implements ManageableComponent, XmlRead {
+public class CoreClassTypeGui extends TableComposite implements ManageableComponent, XmlRead {
 
-    public static final String TABLE_NAME = "Class Type";
+    public static final String TABLE_NAME = "Core Class Type";
 
-    private final ClassTypeService classTypeService = ConfigManagerContextProvider.getBean(ClassTypeService.class);
+    private final CoreClassTypeService coreClassTypeService = ConfigManagerContextProvider.getBean(CoreClassTypeService.class);
 
 
     @Override
@@ -95,7 +95,7 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
 
     @Override
     public ServiceRepository getServiceRepository() {
-        return classTypeService;
+        return coreClassTypeService;
     }
 
     @Override
@@ -103,16 +103,16 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
         createCheckbox(parent);
 
         Table table = (Table) super.createContents(parent);
-        List<RecordDto> allByConfigId = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        List<RecordDto> allByConfigId = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
         for (RecordDto recordDto : allByConfigId) {
-            ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
-            String[] vec = new String[columnsMap().size()];
+            CoreClassTypeDto coreClassTypeDto = (CoreClassTypeDto) recordDto;
+            String[] vec = new String[columns().length];
 
-            vec[0] = classTypeDto.getId();
-            vec[1] = classTypeDto.getName();
-            vec[2] = classTypeDto.getPath();
-            vec[3] = classTypeDto.getParentPath();
+            vec[0] = coreClassTypeDto.getId();
+            vec[1] = coreClassTypeDto.getName();
+            vec[2] = coreClassTypeDto.getPath();
+            vec[3] = coreClassTypeDto.getParentPath();
 
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(vec);
@@ -123,23 +123,23 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
 
     @Override
     public void delete(String id) {
-        RecordDto recordDto = classTypeService.findById(id);
-        classTypeService.delete(recordDto);
+        RecordDto recordDto = coreClassTypeService.findById(id);
+        coreClassTypeService.delete(recordDto);
         super.delete(id);
     }
 
     @Override
     public void xmlElements(Document document, Element rootElement) {
 
-        List<RecordDto> allByConfigId = classTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        List<RecordDto> allByConfigId = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
         // root element
         Element classTypes = document.createElement("classTypes");
         rootElement.appendChild(classTypes);
 
         for (RecordDto recordDto : allByConfigId) {
-            ClassTypeDto classTypeDto = (ClassTypeDto) recordDto;
-            classTypeDto.asXml(document, classTypes);
+            CoreClassTypeDto coreClassTypeDto = (CoreClassTypeDto) recordDto;
+            coreClassTypeDto.asXml(document, classTypes);
         }
     }
 
@@ -147,28 +147,27 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
     public void readElement(Element element) {
 
 
-        Node header = element.getElementsByTagName("classTypes").item(0);
+        Node header = element.getElementsByTagName("coreTypeClasses").item(0);
         if (header != null) {
-            NodeList nodeList = ((Element) header).getElementsByTagName("classType");
+            NodeList nodeList = ((Element) header).getElementsByTagName("coreTypeClass");
 
             for (int i = 0; i < nodeList.getLength(); i++) {
-                ClassTypeDto classTypeDto = new ClassTypeDto();
-                classTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+                CoreClassTypeDto coreClassTypeDto = new CoreClassTypeDto();
+                coreClassTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
                 Node node = nodeList.item(i);
 
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) node;
 
+                    for (int idx = 1; idx < columns().length; idx++) {
 
-                    for (int idx = 1; idx < columnsMap().size(); idx++) {
-
-                        for (Method declaredMethod : classTypeDto.getClass().getDeclaredMethods()) {
+                        for (Method declaredMethod : coreClassTypeDto.getClass().getDeclaredMethods()) {
                             if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
                                 try {
                                     if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
                                         break;
                                     }
-                                    declaredMethod.invoke(classTypeDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
+                                    declaredMethod.invoke(coreClassTypeDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
                                     break;
                                 } catch (IllegalAccessException | InvocationTargetException e) {
                                     throw new RuntimeException(e);
@@ -177,7 +176,7 @@ public class ClassTypeGui extends TableComposite implements ManageableComponent,
                         }
 
                     }
-                    classTypeService.insertOrUpdate(classTypeDto);
+                    coreClassTypeService.insertOrUpdate(coreClassTypeDto);
                 }
             }
 
