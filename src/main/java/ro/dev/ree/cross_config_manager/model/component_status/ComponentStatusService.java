@@ -1,10 +1,13 @@
 package ro.dev.ree.cross_config_manager.model.component_status;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,13 +16,10 @@ import java.util.stream.Collectors;
 public class ComponentStatusService implements ServiceRepository {
 
     private final ComponentStatusRepository repository;
-    private final MongoTemplate mongoTemplate;
 
-    public ComponentStatusService(ComponentStatusRepository repository, MongoTemplate mongoTemplate) {
+    public ComponentStatusService(ComponentStatusRepository repository) {
         this.repository = repository;
-        this.mongoTemplate = mongoTemplate;
     }
-
 
     @Override
     public String insertOrUpdate(RecordDto recordDto) {

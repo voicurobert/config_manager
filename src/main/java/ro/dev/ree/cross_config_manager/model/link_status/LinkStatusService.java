@@ -1,10 +1,13 @@
 package ro.dev.ree.cross_config_manager.model.link_status;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,13 +16,10 @@ import java.util.stream.Collectors;
 public class LinkStatusService implements ServiceRepository {
 
     private final LinkStatusRepository repository;
-    private final MongoTemplate mongoTemplate;
 
-    public LinkStatusService(LinkStatusRepository repository, MongoTemplate mongoTemplate) {
+    public LinkStatusService(LinkStatusRepository repository) {
         this.repository = repository;
-        this.mongoTemplate = mongoTemplate;
     }
-
 
     @Override
     public String insertOrUpdate(RecordDto recordDto) {

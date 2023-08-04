@@ -1,10 +1,11 @@
 package ro.dev.ree.cross_config_manager.model.node_status;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,13 +14,10 @@ import java.util.stream.Collectors;
 public class NodeStatusService implements ServiceRepository {
 
     private final NodeStatusRepository repository;
-    private final MongoTemplate mongoTemplate;
 
-    public NodeStatusService(NodeStatusRepository repository, MongoTemplate mongoTemplate) {
+    public NodeStatusService(NodeStatusRepository repository) {
         this.repository = repository;
-        this.mongoTemplate = mongoTemplate;
     }
-
 
     @Override
     public String insertOrUpdate(RecordDto recordDto) {

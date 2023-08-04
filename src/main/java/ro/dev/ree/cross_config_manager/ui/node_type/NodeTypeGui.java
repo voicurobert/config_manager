@@ -11,7 +11,6 @@ import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
@@ -49,9 +48,9 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
         map.put("capacityFull", new Text(parent, SWT.BORDER));
         map.put("capacityUnitName", new Text(parent, SWT.BORDER));
         map.put("typeClassPath", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
-        map.put("rootType", new Text(parent, SWT.BORDER));
-        map.put("system", new Text(parent, SWT.BORDER));
-        map.put("multiparentAllowed", new Text(parent, SWT.BORDER));
+        map.put("rootType", new Button(parent, SWT.CHECK));
+        map.put("system", new Button(parent, SWT.CHECK));
+        map.put("multiparentAllowed", new Button(parent, SWT.CHECK));
         map.put("uniquenessType", new Text(parent, SWT.BORDER));
 
         return map;
@@ -66,7 +65,6 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
             if (widget instanceof Text) {
-                // Sau sa las fara action.equals("Add") si sa ia totusi componentele de la el selectat
                 if(table.getSelection().length == 0 || action.equals("Add")){
                     ((Text)widget).setText("");
                 }
@@ -74,19 +72,25 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
                     ((Text)widget).setText(table.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
-                CoreClassTypeService coreClassTypeService = ConfigManagerContextProvider.getBean(CoreClassTypeService.class);
-                List<CoreClassTypeDto> coreClassTypeDtos = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
-                        map(recordDto -> (CoreClassTypeDto) recordDto).toList();
-
                 // Add options to the Combo
-                for (CoreClassTypeDto coreClassTypeDto : coreClassTypeDtos) {
-                    ((Combo)widget).add(coreClassTypeDto.getName());
+                for (CoreClassTypeDto coreClassTypeDto : nodeTypeService.listOfCoreClassTypeDtos()) {
+                        ((Combo)widget).add(coreClassTypeDto.getPath());
                 }
                 if (action.equals("Update") && !(table.getSelection().length == 0)) {
                     ((Combo)widget).select(((Combo)widget).indexOf(table.getSelection()[0].getText(i.get())));
                 }
+            } else if (widget instanceof Button) {
+                if(table.getSelection().length == 0 || action.equals("Add")){
+                    ((Button)widget).setText("");
+                }
+                else {
+                    ((Button)widget).setText(table.getSelection()[0].getText(i.get()));
+                    if(table.getSelection()[0].getText(i.get()).equals("true")){
+                        ((Button)widget).setSelection(true);
+                    }
+                }
             }
-            if(table.getSelection().length == 0){
+            if(table.getSelection().length == 0 || action.equals("Add")){
                 map.put(name, "");
             }
             else {
@@ -98,6 +102,7 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
 
         return map;
     }
+
 
     @Override
     public String tableName() {

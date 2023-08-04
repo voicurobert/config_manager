@@ -10,7 +10,6 @@ import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
-import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
 import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeService;
@@ -49,8 +48,8 @@ public class LinkTypeGui extends TableComposite implements ManageableComponent, 
         map.put("capacityFull", new Text(parent, SWT.BORDER));
         map.put("capacityUnitName", new Text(parent, SWT.BORDER));
         map.put("typeClassPath", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
-        map.put("system", new Text(parent, SWT.BORDER));
-        map.put("unique", new Text(parent, SWT.BORDER));
+        map.put("system", new Button(parent, SWT.CHECK));
+        map.put("unique", new Button(parent, SWT.CHECK));
 
         return map;
     }
@@ -72,19 +71,25 @@ public class LinkTypeGui extends TableComposite implements ManageableComponent, 
                     ((Text)widget).setText(table.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
-                CoreClassTypeService coreClassTypeService = ConfigManagerContextProvider.getBean(CoreClassTypeService.class);
-                List<CoreClassTypeDto> coreClassTypeDtos = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
-                        map(recordDto -> (CoreClassTypeDto) recordDto).toList();
-
                 // Add options to the Combo
-                for (CoreClassTypeDto coreClassTypeDto : coreClassTypeDtos) {
-                    ((Combo)widget).add(coreClassTypeDto.getName());
+                for (CoreClassTypeDto coreClassTypeDto : linkTypeService.listOfCoreClassTypeDtos()) {
+                    ((Combo)widget).add(coreClassTypeDto.getPath());
                 }
                 if (action.equals("Update") && !(table.getSelection().length == 0)) {
                     ((Combo)widget).select(((Combo)widget).indexOf(table.getSelection()[0].getText(i.get())));
                 }
+            } else if (widget instanceof Button) {
+                if(table.getSelection().length == 0 || action.equals("Add")){
+                    ((Button)widget).setText("");
+                }
+                else {
+                    ((Button)widget).setText(table.getSelection()[0].getText(i.get()));
+                    if(table.getSelection()[0].getText(i.get()).equals("true")){
+                        ((Button)widget).setSelection(true);
+                    }
+                }
             }
-            if(table.getSelection().length == 0){
+            if(table.getSelection().length == 0 || action.equals("Add")){
                 map.put(name, "");
             }
             else {

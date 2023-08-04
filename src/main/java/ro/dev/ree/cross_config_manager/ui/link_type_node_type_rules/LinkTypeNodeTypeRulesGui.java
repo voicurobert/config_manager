@@ -9,11 +9,11 @@ import org.w3c.dom.NodeList;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
+import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesService;
+import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TreeComposite;
 import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
@@ -41,8 +41,8 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
         var map = new LinkedHashMap<String, Widget>();
 
         map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
-        map.put("linkType", new Text(parent, SWT.BORDER));
-        map.put("nodeType", new Text(parent, SWT.BORDER));
+        map.put("linkType", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
+        map.put("nodeType", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
         map.put("quality", new Text(parent, SWT.BORDER));
 
         return map;
@@ -57,7 +57,6 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
             if (widget instanceof Text) {
-                // Sau sa las fara action.equals("Add") si sa ia totusi componentele de la el selectat
                 if(tree.getSelection().length == 0 || action.equals("Add")){
                     ((Text)widget).setText("");
                 }
@@ -65,19 +64,21 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
                     ((Text)widget).setText(tree.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
-                CoreClassTypeService coreClassTypeService = ConfigManagerContextProvider.getBean(CoreClassTypeService.class);
-                List<CoreClassTypeDto> coreClassTypeDtos = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
-                        map(recordDto -> (CoreClassTypeDto) recordDto).toList();
-
                 // Add options to the Combo
-                for (CoreClassTypeDto coreClassTypeDto : coreClassTypeDtos) {
-                    ((Combo)widget).add(coreClassTypeDto.getName());
+                if(name.equals("nodeType")){
+                    for (NodeTypeDto nodeTypeDto : linkTypeNodeTypeRulesService.listOfNodeTypeDtos()) {
+                        ((Combo)widget).add(nodeTypeDto.getDiscriminator());
+                    }
+                } else if (name.equals("linkType")) {
+                    for (LinkTypeDto linkTypeDto : linkTypeNodeTypeRulesService.listOfLinkTypeDtos()) {
+                        ((Combo)widget).add(linkTypeDto.getDiscriminator());
+                    }
                 }
                 if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Combo)widget).select(((Combo)widget).indexOf(tree.getSelection()[0].getText(i.get())));
                 }
             }
-            if(tree.getSelection().length == 0){
+            if(tree.getSelection().length == 0 || action.equals("Add")){
                 map.put(name, "");
             }
             else {

@@ -10,8 +10,7 @@ import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
-import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
+import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesService;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
@@ -41,10 +40,10 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
         var map = new LinkedHashMap<String, Widget>();
 
         map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
-        map.put("child", new Text(parent, SWT.BORDER));
-        map.put("parent", new Text(parent, SWT.BORDER));
+        map.put("child", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
+        map.put("parent", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
         map.put("capacityCalculatorName", new Text(parent, SWT.BORDER));
-        map.put("mandatoryParent", new Text(parent, SWT.BORDER));
+        map.put("mandatoryParent", new Button(parent, SWT.CHECK));
 
         return map;
     }
@@ -58,7 +57,6 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
             if (widget instanceof Text) {
-                // Sau sa las fara action.equals("Add") si sa ia totusi componentele de la el selectat
                 if(tree.getSelection().length == 0 || action.equals("Add")){
                     ((Text)widget).setText("");
                 }
@@ -66,19 +64,25 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
                     ((Text)widget).setText(tree.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
-                CoreClassTypeService coreClassTypeService = ConfigManagerContextProvider.getBean(CoreClassTypeService.class);
-                List<CoreClassTypeDto> coreClassTypeDtos = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
-                        map(recordDto -> (CoreClassTypeDto) recordDto).toList();
-
                 // Add options to the Combo
-                for (CoreClassTypeDto coreClassTypeDto : coreClassTypeDtos) {
-                    ((Combo)widget).add(coreClassTypeDto.getName());
+                for (NodeTypeDto nodeTypeDto : nodeTypeRulesService.listOfNodeTypeDtos()) {
+                    ((Combo)widget).add(nodeTypeDto.getDiscriminator());
                 }
                 if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Combo)widget).select(((Combo)widget).indexOf(tree.getSelection()[0].getText(i.get())));
                 }
+            } else if (widget instanceof Button) {
+                if(tree.getSelection().length == 0 || action.equals("Add")){
+                    ((Button)widget).setText("");
+                }
+                else {
+                    ((Button)widget).setText(tree.getSelection()[0].getText(i.get()));
+                    if(tree.getSelection()[0].getText(i.get()).equals("true")){
+                        ((Button)widget).setSelection(true);
+                    }
+                }
             }
-            if(tree.getSelection().length == 0){
+            if(tree.getSelection().length == 0 || action.equals("Add")){
                 map.put(name, "");
             }
             else {

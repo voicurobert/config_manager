@@ -55,27 +55,14 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
             if (widget instanceof Text) {
-                // Sau sa las fara action.equals("Add") si sa ia totusi componentele de la el selectat
                 if(table.getSelection().length == 0 || action.equals("Add")){
                     ((Text)widget).setText("");
                 }
                 else{
                     ((Text)widget).setText(table.getSelection()[0].getText(i.get()));
                 }
-            } else if (widget instanceof Combo) {
-                CoreClassTypeService coreClassTypeService = ConfigManagerContextProvider.getBean(CoreClassTypeService.class);
-                List<CoreClassTypeDto> coreClassTypeDtos = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
-                        map(recordDto -> (CoreClassTypeDto) recordDto).toList();
-
-                // Add options to the Combo
-                for (CoreClassTypeDto coreClassTypeDto : coreClassTypeDtos) {
-                    ((Combo)widget).add(coreClassTypeDto.getName());
-                }
-                if (action.equals("Update") && !(table.getSelection().length == 0)) {
-                    ((Combo)widget).select(((Combo)widget).indexOf(table.getSelection()[0].getText(i.get())));
-                }
             }
-            if(table.getSelection().length == 0){
+            if(table.getSelection().length == 0 || action.equals("Add")){
                 map.put(name, "");
             }
             else {

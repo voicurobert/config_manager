@@ -12,6 +12,7 @@ import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
 import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
+import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesService;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
@@ -41,8 +42,8 @@ public class LinkTypeRulesGui extends TreeComposite implements ManageableCompone
         var map = new LinkedHashMap<String, Widget>();
 
         map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
-        map.put("consumer", new Text(parent, SWT.BORDER));
-        map.put("provider", new Text(parent, SWT.BORDER));
+        map.put("consumer", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
+        map.put("provider", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
         map.put("routingPolicy", new Text(parent, SWT.BORDER));
         map.put("capacityCalculatorName", new Text(parent, SWT.BORDER));
         map.put("numberOfChannels", new Text(parent, SWT.BORDER));
@@ -59,7 +60,6 @@ public class LinkTypeRulesGui extends TreeComposite implements ManageableCompone
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
             if (widget instanceof Text) {
-                // Sau sa las fara action.equals("Add") si sa ia totusi componentele de la el selectat
                 if(tree.getSelection().length == 0 || action.equals("Add")){
                     ((Text)widget).setText("");
                 }
@@ -67,19 +67,15 @@ public class LinkTypeRulesGui extends TreeComposite implements ManageableCompone
                     ((Text)widget).setText(tree.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
-                CoreClassTypeService coreClassTypeService = ConfigManagerContextProvider.getBean(CoreClassTypeService.class);
-                List<CoreClassTypeDto> coreClassTypeDtos = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
-                        map(recordDto -> (CoreClassTypeDto) recordDto).toList();
-
                 // Add options to the Combo
-                for (CoreClassTypeDto coreClassTypeDto : coreClassTypeDtos) {
-                    ((Combo)widget).add(coreClassTypeDto.getName());
+                for (LinkTypeDto linkTypeDto : linkTypeRulesService.listOfLinkTypeDtos()) {
+                    ((Combo)widget).add(linkTypeDto.getDiscriminator());
                 }
                 if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Combo)widget).select(((Combo)widget).indexOf(tree.getSelection()[0].getText(i.get())));
                 }
             }
-            if(tree.getSelection().length == 0){
+            if(tree.getSelection().length == 0 || action.equals("Add")){
                 map.put(name, "");
             }
             else {

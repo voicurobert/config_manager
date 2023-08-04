@@ -1,10 +1,11 @@
 package ro.dev.ree.cross_config_manager.model.service_status;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,19 +14,11 @@ import java.util.stream.Collectors;
 public class ServiceStatusService implements ServiceRepository {
 
     private final ServiceStatusRepository repository;
-    private final MongoTemplate mongoTemplate;
 
-    public ServiceStatusService(ServiceStatusRepository repository, MongoTemplate mongoTemplate) {
+    public ServiceStatusService(ServiceStatusRepository repository) {
 
         this.repository = repository;
-        this.mongoTemplate = mongoTemplate;
     }
-
-//    public void save(NodeTypeRulesDto nodeTypeRulesDto) {
-//        NodeTypeRules nodeTypeRules = new NodeTypeRules();
-//        BeanUtils.copyProperties(nodeTypeRulesDto, nodeTypeRules);
-//        repository.save(nodeTypeRules);
-//    }
 
     @Override
     public String insertOrUpdate(RecordDto recordDto) {
@@ -50,25 +43,6 @@ public class ServiceStatusService implements ServiceRepository {
         repository.delete(serviceStatus);
     }
 
-//    @Override
-//    public List<RecordDto> findAll(String[] columns, String[] old_columns) {
-//        return repository.findAll().stream().
-//                filter(nodeTypeRules -> nodeTypeRules.getChild().equals(old_columns[0])
-//                        && nodeTypeRules.getParent().equals(old_columns[1])
-//                        && nodeTypeRules.getCapacityCalculatorName().equals(old_columns[2])
-//                        && nodeTypeRules.getMandatoryParent().equals(old_columns[3])).
-//                map(nodeTypeRules -> {
-//                    nodeTypeRules.setChild(columns[0]);
-//                    nodeTypeRules.setParent(columns[1]);
-//                    nodeTypeRules.setCapacityCalculatorName(columns[2]);
-//                    nodeTypeRules.setMandatoryParent(columns[3]);
-//                    NodeTypeRulesDto dto = new NodeTypeRulesDto();
-//                    BeanUtils.copyProperties(nodeTypeRules, dto);
-//                    return dto;
-//                }).
-//                collect(Collectors.toList());
-//    }
-
     public List<RecordDto> findAllByConfigId(String configId) {
         return repository.findAll().stream().
                 filter(serviceStatus -> serviceStatus.getConfigId().equals(configId)).
@@ -91,16 +65,4 @@ public class ServiceStatusService implements ServiceRepository {
                 }).
                 findFirst().orElse(null);
     }
-//    public List<RecordDto> findAllByConfigIdNew(String configId) {
-//        Query query = new Query();
-//        query.addCriteria(Criteria.where("configId").is(configId));
-//
-//        return mongoTemplate.find(query, NodeTypeRules.class).stream().
-//                map(nodeTypeRules -> {
-//                    NodeTypeRulesDto dto = new NodeTypeRulesDto();
-//                    BeanUtils.copyProperties(nodeTypeRules, dto);
-//                    return dto;
-//                }).
-//                collect(Collectors.toList());
-//    }
 }

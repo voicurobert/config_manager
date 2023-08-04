@@ -78,6 +78,12 @@ public class GenericEditorDialog extends Dialog {
             } else if (widget instanceof Combo) {
                 ((Combo)widget).setParent(composite);
                 ((Combo)widget).setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+            } else if (widget instanceof Button) {
+                ((Button)widget).setParent(composite);
+                ((Button)widget).setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+                ((Button)widget).addListener(SWT.Selection, event ->  {
+                    checkBoxSelected(((Button) widget));
+                });
             }
         }
 
@@ -88,6 +94,16 @@ public class GenericEditorDialog extends Dialog {
         Button cancelButton = new Button(composite, SWT.PUSH);
         cancelButton.setText("Cancel");
         cancelButton.addListener(SWT.Selection, event -> shell.close());
+    }
+
+    private void checkBoxSelected(Button checkBox) {
+        if(checkBox.getSelection())
+        {
+            checkBox.setText("true");
+        }
+        else {
+            checkBox.setText("false");
+        }
     }
 
     private void handleAction() {
@@ -101,13 +117,14 @@ public class GenericEditorDialog extends Dialog {
                 newValues.add(((Text) widget).getText());
             } else if (widget instanceof Combo) {
                 newValues.add(((Combo) widget).getText());
+            } else if (widget instanceof Button) {
+                newValues.add(((Button) widget).getText());
             }
         }
 
         if (actionPerformed != null) {
             actionPerformed.actionPerformed(newValues);
         }
-
     }
 
     public void setActionPerformed(EditorDialogActionPerformed actionPerformed) {
