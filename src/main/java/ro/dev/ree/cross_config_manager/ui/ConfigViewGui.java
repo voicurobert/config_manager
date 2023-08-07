@@ -25,7 +25,6 @@ public class ConfigViewGui {
 
         composite.setLayout(new GridLayout(1, true));
         composite.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
-        scrolledComposite.setAlwaysShowScrollBars(true);
 
         Label title = new Label(composite, SWT.CENTER);
         title.setText("CROSS Config - " + ConfigSingleton.getSingleton().getConfigDto().getName());
@@ -41,6 +40,7 @@ public class ConfigViewGui {
         backToLoadConfigButton.setText("Back to load config gui");
         backToLoadConfigButton.addListener(SWT.Selection, event -> shell.dispose());
 
+        scrolledComposite.setAlwaysShowScrollBars(true);
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);
         scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));

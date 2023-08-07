@@ -120,6 +120,10 @@ public class LinkTypeRulesGui extends TreeComposite implements ManageableCompone
             item.setText(vec);
         }
 
+        for (TreeColumn column : tree.getColumns()) {
+            column.pack();
+        }
+
         return tree;
     }
 
@@ -149,7 +153,6 @@ public class LinkTypeRulesGui extends TreeComposite implements ManageableCompone
     @Override
     public void readElement(Element element) {
 
-
         Node header = element.getElementsByTagName("linkTypeRules").item(0);
         if (header != null) {
             NodeList nodeList = ((Element) header).getElementsByTagName("linkTypeRule");
@@ -176,13 +179,10 @@ public class LinkTypeRulesGui extends TreeComposite implements ManageableCompone
                                 }
                             }
                         }
-
                     }
                     linkTypeRulesService.insertOrUpdate(linkTypeRulesDto);
                 }
             }
-
-
         }
     }
 }

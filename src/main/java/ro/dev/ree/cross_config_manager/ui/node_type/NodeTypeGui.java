@@ -144,6 +144,10 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
             item.setText(vec);
         }
 
+        for (TableColumn column : table.getColumns()) {
+            column.pack();
+        }
+
         return table;
     }
 
@@ -172,7 +176,6 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
     @Override
     public void readElement(Element element) {
 
-
         Node header = element.getElementsByTagName("nodeTypes").item(0);
         if (header != null) {
             NodeList nodeList = ((Element) header).getElementsByTagName("nodeType");
@@ -199,13 +202,10 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
                                 }
                             }
                         }
-
                     }
                     nodeTypeService.insertOrUpdate(nodeTypeDto);
                 }
             }
-
-
         }
     }
 }

@@ -40,8 +40,8 @@ public abstract class TreeComposite implements Drawable, XmlWriter {
     public Composite createContents(Composite parent) {
         this.parent = parent;
         tree = new Tree(parent, SWT.BORDER | SWT.CENTER);
-        GridData gd_tree = new GridData(-1, 150);
-        gd_tree.horizontalAlignment = 2;
+        GridData gd_tree = new GridData(1000, 150);
+        gd_tree.horizontalAlignment = SWT.CENTER;
         tree.setLayoutData(gd_tree);
         tree.setToolTipText(treeName());
         tree.setHeaderVisible(true);
@@ -99,6 +99,9 @@ public abstract class TreeComposite implements Drawable, XmlWriter {
                 TreeItem treeItem = new TreeItem(tree, SWT.NONE);
                 treeItem.setText(updatedValues.toArray(new String[]{}));
                 tree.setSelection(treeItem);
+            }
+            for (TreeColumn column : tree.getColumns()) {
+                column.pack();
             }
         });
 

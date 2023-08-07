@@ -1,6 +1,9 @@
 package ro.dev.ree.cross_config_manager.ui;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
@@ -8,10 +11,25 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
+import ro.dev.ree.cross_config_manager.model.component_status.ComponentStatus;
+import ro.dev.ree.cross_config_manager.model.component_status.ComponentStatusDto;
+import ro.dev.ree.cross_config_manager.model.component_status.ComponentStatusService;
 import ro.dev.ree.cross_config_manager.model.config_type.Config;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigDto;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigTypeService;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassType;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
+import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
+import ro.dev.ree.cross_config_manager.model.link_status.LinkStatusService;
+import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeService;
+import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesService;
+import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesService;
+import ro.dev.ree.cross_config_manager.model.node_status.NodeStatusService;
+import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
+import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesService;
+import ro.dev.ree.cross_config_manager.model.service_status.ServiceStatusService;
+import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -59,7 +77,6 @@ public class ConfigListViewGui {
         for (String header : headerListView) {
             TableColumn column = new TableColumn(configTypeTable, SWT.BORDER);
             column.setText(header);
-            column.pack();
         }
 
 
@@ -74,6 +91,8 @@ public class ConfigListViewGui {
         ConfigDetailMenuItem.setText("Config detail");
         var ExportConfigMenuItem = new MenuItem(menu, SWT.PUSH);
         ExportConfigMenuItem.setText("Export as XML file");
+        var DeleteMenuItem = new MenuItem(menu, SWT.PUSH);
+        DeleteMenuItem.setText("Delete config");
 
         ConfigDetailMenuItem.addListener(SWT.Selection, event -> loadConfigView(configTypeTable));
         ExportConfigMenuItem.addListener(SWT.Selection, event -> {
@@ -83,6 +102,8 @@ public class ConfigListViewGui {
                 throw new RuntimeException(e);
             }
         });
+
+        DeleteMenuItem.addListener(SWT.Selection, event -> deleteConfig(configTypeTable));
 
         for (TableColumn column : configTypeTable.getColumns()) {
             column.pack();
@@ -156,6 +177,12 @@ public class ConfigListViewGui {
         StreamResult result = new StreamResult(output);
 
         transformer.transform(source, result);
+    }
+
+    private void deleteConfig(Table configTypeTable) {
+        List<RecordDto> list = configTypeService.findByConfigName(configTypeTable.getSelection()[0].getText());
+        configTypeService.delete((ConfigDto) list.get(0));
+        configTypeTable.remove(configTypeTable.getSelectionIndices());
     }
 
     private void dispose() {

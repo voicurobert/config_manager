@@ -139,6 +139,10 @@ public class LinkTypeGui extends TableComposite implements ManageableComponent, 
             item.setText(vec);
         }
 
+        for (TableColumn column : table.getColumns()) {
+            column.pack();
+        }
+
         return table;
     }
 
@@ -166,7 +170,6 @@ public class LinkTypeGui extends TableComposite implements ManageableComponent, 
     @Override
     public void readElement(Element element) {
 
-
         Node header = element.getElementsByTagName("linkTypes").item(0);
         if (header != null) {
             NodeList nodeList = ((Element) header).getElementsByTagName("linkType");
@@ -193,14 +196,10 @@ public class LinkTypeGui extends TableComposite implements ManageableComponent, 
                                 }
                             }
                         }
-
                     }
                     linkTypeService.insertOrUpdate(linkTypeDto);
                 }
             }
-
-
         }
     }
-
 }

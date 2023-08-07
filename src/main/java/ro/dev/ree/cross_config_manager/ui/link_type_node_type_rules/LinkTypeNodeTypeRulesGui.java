@@ -122,6 +122,9 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
             item.setText(vec);
         }
 
+        for (TreeColumn column : tree.getColumns()) {
+            column.pack();
+        }
 
         return tree;
     }
@@ -151,7 +154,6 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
     @Override
     public void readElement(Element element) {
 
-
         Node header = element.getElementsByTagName("linkTypeNodeTypeRules").item(0);
         if (header != null) {
             NodeList nodeList = ((Element) header).getElementsByTagName("linkTypeNodeTypeRule");
@@ -178,13 +180,10 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
                                 }
                             }
                         }
-
                     }
                     linkTypeNodeTypeRulesService.insertOrUpdate(linkTypeNodeTypeRulesDto);
                 }
             }
-
-
         }
     }
 }

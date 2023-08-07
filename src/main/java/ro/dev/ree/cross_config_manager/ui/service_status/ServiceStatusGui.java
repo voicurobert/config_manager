@@ -1,10 +1,7 @@
 package ro.dev.ree.cross_config_manager.ui.service_status;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -72,9 +69,12 @@ public class ServiceStatusGui extends TableComposite implements ManageableCompon
             vec[2] = serviceStatusDto.getDescription();
             vec[3] = serviceStatusDto.getColor();
 
-
             TableItem item = new TableItem(table, SWT.NONE);
             item.setText(vec);
+        }
+
+        for (TableColumn column : table.getColumns()) {
+            column.pack();
         }
 
         return table;
@@ -103,7 +103,6 @@ public class ServiceStatusGui extends TableComposite implements ManageableCompon
 
     @Override
     public void readElement(Element element) {
-
 
         Node header = element.getElementsByTagName("serviceStatuses").item(0);
         if (header != null) {
@@ -136,10 +135,7 @@ public class ServiceStatusGui extends TableComposite implements ManageableCompon
                     serviceStatusService.insertOrUpdate(serviceStatusDto);
                 }
             }
-
-
         }
     }
-
 }
 

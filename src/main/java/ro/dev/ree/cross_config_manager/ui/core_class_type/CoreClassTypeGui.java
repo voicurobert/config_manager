@@ -105,6 +105,10 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
             item.setText(vec);
         }
 
+        for (TableColumn column : table.getColumns()) {
+            column.pack();
+        }
+
         return table;
     }
 
@@ -133,7 +137,6 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
     @Override
     public void readElement(Element element) {
 
-
         Node header = element.getElementsByTagName("coreTypeClasses").item(0);
         if (header != null) {
             NodeList nodeList = ((Element) header).getElementsByTagName("coreTypeClass");
@@ -161,13 +164,10 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
                                 }
                             }
                         }
-
                     }
                     coreClassTypeService.insertOrUpdate(coreClassTypeDto);
                 }
             }
-
-
         }
     }
 }

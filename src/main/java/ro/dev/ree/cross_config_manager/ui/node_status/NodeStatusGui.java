@@ -1,10 +1,7 @@
 package ro.dev.ree.cross_config_manager.ui.node_status;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -78,6 +75,10 @@ public class NodeStatusGui extends TableComposite implements ManageableComponent
             item.setText(vec);
         }
 
+        for (TableColumn column : table.getColumns()) {
+            column.pack();
+        }
+
         return table;
     }
 
@@ -105,7 +106,6 @@ public class NodeStatusGui extends TableComposite implements ManageableComponent
     @Override
     public void readElement(Element element) {
 
-
         Node header = element.getElementsByTagName("nodeStatuses").item(0);
         if (header != null) {
             NodeList nodeList = ((Element) header).getElementsByTagName("nodeStatus");
@@ -132,14 +132,10 @@ public class NodeStatusGui extends TableComposite implements ManageableComponent
                                 }
                             }
                         }
-
                     }
                     nodeStatusService.insertOrUpdate(nodeStatusDto);
                 }
             }
-
-
         }
     }
-
 }

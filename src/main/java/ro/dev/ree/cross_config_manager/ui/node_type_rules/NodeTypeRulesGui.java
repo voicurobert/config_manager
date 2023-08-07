@@ -127,6 +127,10 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
             item.setText(vec);
         }
 
+        for (TreeColumn column : tree.getColumns()) {
+            column.pack();
+        }
+
         return tree;
     }
 
@@ -156,7 +160,6 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
     @Override
     public void readElement(Element element) {
 
-
         Node header = element.getElementsByTagName("nodeTypeRules").item(0);
         if (header != null) {
             NodeList nodeList = ((Element) header).getElementsByTagName("nodeTypeRule");
@@ -183,13 +186,10 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
                                 }
                             }
                         }
-
                     }
                     nodeTypeRulesService.insertOrUpdate(nodeTypeRulesDto);
                 }
             }
-
-
         }
     }
 }

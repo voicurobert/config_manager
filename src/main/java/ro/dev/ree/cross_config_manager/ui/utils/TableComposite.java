@@ -38,8 +38,8 @@ public abstract class TableComposite implements Drawable, XmlWriter {
     public Composite createContents(Composite parent) {
         this.parent = parent;
         table = new Table(parent, SWT.BORDER | SWT.CENTER);
-        GridData gd_table = new GridData(-1, 150);
-        gd_table.horizontalAlignment = 2;
+        GridData gd_table = new GridData(1000, 150);
+        gd_table.horizontalAlignment = SWT.CENTER;
         table.setLayoutData(gd_table);
         table.setToolTipText(tableName());
         table.setHeaderVisible(true);
@@ -88,6 +88,9 @@ public abstract class TableComposite implements Drawable, XmlWriter {
                 tableItem.setText(updatedValues.toArray(new String[]{}));
                 table.setSelection(tableItem);
             }
+            for (TableColumn column : table.getColumns()) {
+                column.pack();
+            }
         });
 
         dialog.open();
@@ -125,7 +128,6 @@ public abstract class TableComposite implements Drawable, XmlWriter {
     }
 
     public void delete(String id) {
-
         table.remove(table.getSelectionIndex());
     }
 }
