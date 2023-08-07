@@ -1,13 +1,12 @@
 package ro.dev.ree.cross_config_manager.model.component_status;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
-import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,9 +15,11 @@ import java.util.stream.Collectors;
 public class ComponentStatusService implements ServiceRepository {
 
     private final ComponentStatusRepository repository;
+    private final MongoTemplate mongoTemplate;
 
-    public ComponentStatusService(ComponentStatusRepository repository) {
+    public ComponentStatusService(ComponentStatusRepository repository, MongoTemplate mongoTemplate) {
         this.repository = repository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @Override
@@ -45,16 +46,16 @@ public class ComponentStatusService implements ServiceRepository {
     }
 
 
-    public List<RecordDto> findAllByConfigId(String configId) {
-        return repository.findAll().stream().
-                filter(componentStatus -> componentStatus.getConfigId().equals(configId)).
-                map(componentStatus -> {
-                    ComponentStatusDto dto = new ComponentStatusDto();
-                    BeanUtils.copyProperties(componentStatus, dto);
-                    return dto;
-                }).
-                collect(Collectors.toList());
-    }
+//    public List<RecordDto> findAllByConfigId(String configId) {
+//        return repository.findAll().stream().
+//                filter(componentStatus -> componentStatus.getConfigId().equals(configId)).
+//                map(componentStatus -> {
+//                    ComponentStatusDto dto = new ComponentStatusDto();
+//                    BeanUtils.copyProperties(componentStatus, dto);
+//                    return dto;
+//                }).
+//                collect(Collectors.toList());
+//    }
 
     @Override
     public RecordDto findById(String Id) {
@@ -66,5 +67,35 @@ public class ComponentStatusService implements ServiceRepository {
                     return dto;
                 }).
                 findFirst().orElse(null);
+    }
+
+    //    @Override
+//    public List<RecordDto> findAllByConfigIdNew(String configId) {
+//
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where("configId").is(configId));
+//        List<ComponentStatus> filteredComponentStatuses = mongoTemplate.find(query, ComponentStatus.class);
+//
+//        List<RecordDto> dtos = filteredComponentStatuses.stream()
+//                .map(componentStatus -> {
+//                    ComponentStatusDto dto = new ComponentStatusDto();
+//                    BeanUtils.copyProperties(componentStatus, dto);
+//                    return dto;
+//                })
+//                .collect(Collectors.toList());
+//        return dtos;
+//    }
+    @Override
+    public List<RecordDto> findAllByConfigId(String configId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("configId").is(configId));
+
+        return mongoTemplate.find(query, ComponentStatus.class).stream().
+                map(componentStatus -> {
+                    ComponentStatusDto dto = new ComponentStatusDto();
+                    BeanUtils.copyProperties(componentStatus, dto);
+                    return dto;
+                }).
+                collect(Collectors.toList());
     }
 }

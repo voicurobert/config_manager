@@ -1,13 +1,12 @@
 package ro.dev.ree.cross_config_manager.model.link_status;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
-import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
-import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,10 +15,13 @@ import java.util.stream.Collectors;
 public class LinkStatusService implements ServiceRepository {
 
     private final LinkStatusRepository repository;
+    private final MongoTemplate mongoTemplate;
 
-    public LinkStatusService(LinkStatusRepository repository) {
+    public LinkStatusService(LinkStatusRepository repository, MongoTemplate mongoTemplate) {
         this.repository = repository;
+        this.mongoTemplate = mongoTemplate;
     }
+
 
     @Override
     public String insertOrUpdate(RecordDto recordDto) {
@@ -45,16 +47,16 @@ public class LinkStatusService implements ServiceRepository {
     }
 
 
-    public List<RecordDto> findAllByConfigId(String configId) {
-        return repository.findAll().stream().
-                filter(linkStatus -> linkStatus.getConfigId().equals(configId)).
-                map(linkStatus -> {
-                    LinkStatusDto dto = new LinkStatusDto();
-                    BeanUtils.copyProperties(linkStatus, dto);
-                    return dto;
-                }).
-                collect(Collectors.toList());
-    }
+//    public List<RecordDto> findAllByConfigId(String configId) {
+//        return repository.findAll().stream().
+//                filter(linkStatus -> linkStatus.getConfigId().equals(configId)).
+//                map(linkStatus -> {
+//                    LinkStatusDto dto = new LinkStatusDto();
+//                    BeanUtils.copyProperties(linkStatus, dto);
+//                    return dto;
+//                }).
+//                collect(Collectors.toList());
+//    }
 
     @Override
     public RecordDto findById(String Id) {
@@ -66,5 +68,19 @@ public class LinkStatusService implements ServiceRepository {
                     return dto;
                 }).
                 findFirst().orElse(null);
+    }
+
+    @Override
+    public List<RecordDto> findAllByConfigId(String configId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("configId").is(configId));
+
+        return mongoTemplate.find(query, LinkStatus.class).stream().
+                map(linkStatus -> {
+                    LinkStatusDto dto = new LinkStatusDto();
+                    BeanUtils.copyProperties(linkStatus, dto);
+                    return dto;
+                }).
+                collect(Collectors.toList());
     }
 }

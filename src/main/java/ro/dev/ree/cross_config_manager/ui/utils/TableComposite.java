@@ -14,8 +14,8 @@ import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
 import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 public abstract class TableComposite implements Drawable, XmlWriter {
 
@@ -44,12 +44,12 @@ public abstract class TableComposite implements Drawable, XmlWriter {
         table.setToolTipText(tableName());
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-
-        for (String header : columns()) {
+        for (String key : columnsMap().keySet()) {
             TableColumn column = new TableColumn(table, SWT.NONE);
-            column.setText(header);
+            column.setText(key);
             column.pack();
         }
+
 
         menu = new Menu(table);
         table.setMenu(menu);
@@ -80,10 +80,9 @@ public abstract class TableComposite implements Drawable, XmlWriter {
 
         dialog.setActionPerformed(updatedValues -> {
             updatedValues.set(0, insertOrUpdateRecord(updatedValues, action));
-            if(action.equals("Update")) {
+            if (action.equals("Update")) {
                 table.getSelection()[0].setText(updatedValues.toArray(new String[]{}));
-            }
-            else {
+            } else {
                 TableItem tableItem = new TableItem(table, SWT.NONE);
                 tableItem.setText(updatedValues.toArray(new String[]{}));
                 table.setSelection(tableItem);

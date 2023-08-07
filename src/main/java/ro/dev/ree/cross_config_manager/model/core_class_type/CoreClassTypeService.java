@@ -1,11 +1,12 @@
 package ro.dev.ree.cross_config_manager.model.core_class_type;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,10 +15,18 @@ import java.util.stream.Collectors;
 public class CoreClassTypeService implements ServiceRepository {
 
     private final CoreClassTypeRepository repository;
+    private final MongoTemplate mongoTemplate;
 
-    public CoreClassTypeService(CoreClassTypeRepository repository) {
+    public CoreClassTypeService(CoreClassTypeRepository repository, MongoTemplate mongoTemplate) {
         this.repository = repository;
+        this.mongoTemplate = mongoTemplate;
     }
+
+//    public void save(CoreClassTypeDto classTypeDto) {
+//        CoreClassType classType = new CoreClassType();
+//        BeanUtils.copyProperties(classTypeDto, classType);
+//        repository.save(classType);
+//    }
 
     @Override
     public String insertOrUpdate(RecordDto recordDto) {
@@ -42,17 +51,34 @@ public class CoreClassTypeService implements ServiceRepository {
         repository.delete(coreClassType);
     }
 
-    @Override
-    public List<RecordDto> findAllByConfigId(String configId) {
-        return repository.findAll().stream().
-                filter(coreClassType -> coreClassType.getConfigId().equals(configId)).
-                map(coreClassType -> {
-                    CoreClassTypeDto dto = new CoreClassTypeDto();
-                    BeanUtils.copyProperties(coreClassType, dto);
-                    return dto;
-                }).
-                collect(Collectors.toList());
-    }
+//    @Override
+//    public List<RecordDto> findAll(String[] columns, String[] old_columns) {
+//        return repository.findAll().stream().
+//                filter(classType -> classType.getName().equals(old_columns[0])
+//                        && classType.getPath().equals(old_columns[1])
+//                        && classType.getParentPath().equals(old_columns[2])).
+//                map(classType -> {
+//                    classType.setName(columns[0]);
+//                    classType.setPath(columns[1]);
+//                    classType.setParentPath(columns[2]);
+//                    CoreClassTypeDto dto = new CoreClassTypeDto();
+//                    BeanUtils.copyProperties(classType, dto);
+//                    return dto;
+//                }).
+//                collect(Collectors.toList());
+//    }
+//
+//    @Override
+//    public List<RecordDto> findAllByConfigId(String configId) {
+//        return repository.findAll().stream().
+//                filter(coreClassType -> coreClassType.getConfigId().equals(configId)).
+//                map(coreClassType -> {
+//                    CoreClassTypeDto dto = new CoreClassTypeDto();
+//                    BeanUtils.copyProperties(coreClassType, dto);
+//                    return dto;
+//                }).
+//                collect(Collectors.toList());
+//    }
 
     @Override
     public RecordDto findById(String Id) {
@@ -65,4 +91,30 @@ public class CoreClassTypeService implements ServiceRepository {
                 }).
                 findFirst().orElse(null);
     }
+
+    @Override
+    public List<RecordDto> findAllByConfigId(String configId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("configId").is(configId));
+
+        return mongoTemplate.find(query, CoreClassType.class).stream().
+                map(coreClassType -> {
+                    CoreClassTypeDto dto = new CoreClassTypeDto();
+                    BeanUtils.copyProperties(coreClassType, dto);
+                    return dto;
+                }).
+                collect(Collectors.toList());
+    }
+//    public List<RecordDto> findAllByConfigIdNew(String configId) {
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where("configId").is(configId));
+//
+//        return mongoTemplate.find(query, CoreClassType.class).stream().
+//                map(classType -> {
+//                    CoreClassTypeDto dto = new CoreClassTypeDto();
+//                    BeanUtils.copyProperties(classType, dto);
+//                    return dto;
+//                }).
+//                collect(Collectors.toList());
+//    }
 }

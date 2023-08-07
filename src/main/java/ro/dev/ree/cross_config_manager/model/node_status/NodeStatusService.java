@@ -1,11 +1,12 @@
 package ro.dev.ree.cross_config_manager.model.node_status;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
-import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,10 +15,13 @@ import java.util.stream.Collectors;
 public class NodeStatusService implements ServiceRepository {
 
     private final NodeStatusRepository repository;
+    private final MongoTemplate mongoTemplate;
 
-    public NodeStatusService(NodeStatusRepository repository) {
+    public NodeStatusService(NodeStatusRepository repository, MongoTemplate mongoTemplate) {
         this.repository = repository;
+        this.mongoTemplate = mongoTemplate;
     }
+
 
     @Override
     public String insertOrUpdate(RecordDto recordDto) {
@@ -43,16 +47,16 @@ public class NodeStatusService implements ServiceRepository {
     }
 
 
-    public List<RecordDto> findAllByConfigId(String configId) {
-        return repository.findAll().stream().
-                filter(nodeStatus -> nodeStatus.getConfigId().equals(configId)).
-                map(nodeStatus -> {
-                    NodeStatusDto dto = new NodeStatusDto();
-                    BeanUtils.copyProperties(nodeStatus, dto);
-                    return dto;
-                }).
-                collect(Collectors.toList());
-    }
+//    public List<RecordDto> findAllByConfigId(String configId) {
+//        return repository.findAll().stream().
+//                filter(nodeStatus -> nodeStatus.getConfigId().equals(configId)).
+//                map(nodeStatus -> {
+//                    NodeStatusDto dto = new NodeStatusDto();
+//                    BeanUtils.copyProperties(nodeStatus, dto);
+//                    return dto;
+//                }).
+//                collect(Collectors.toList());
+//    }
 
     @Override
     public RecordDto findById(String Id) {
@@ -64,5 +68,19 @@ public class NodeStatusService implements ServiceRepository {
                     return dto;
                 }).
                 findFirst().orElse(null);
+    }
+
+    @Override
+    public List<RecordDto> findAllByConfigId(String configId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("configId").is(configId));
+
+        return mongoTemplate.find(query, NodeStatus.class).stream().
+                map(nodeStatus -> {
+                    NodeStatusDto dto = new NodeStatusDto();
+                    BeanUtils.copyProperties(nodeStatus, dto);
+                    return dto;
+                }).
+                collect(Collectors.toList());
     }
 }

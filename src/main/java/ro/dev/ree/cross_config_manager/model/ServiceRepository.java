@@ -16,6 +16,7 @@ public interface ServiceRepository {
     String insertOrUpdate(RecordDto recordDto);
 
     void delete(RecordDto recordDto);
+
     default List<CoreClassTypeDto> listOfCoreClassTypeDtos() {
         CoreClassTypeService coreClassTypeService = ConfigManagerContextProvider.getBean(CoreClassTypeService.class);
         return coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
@@ -35,6 +36,7 @@ public interface ServiceRepository {
     }
 
     List<RecordDto> findAllByConfigId(String configId);
+
 
     RecordDto findById(String Id);
 }

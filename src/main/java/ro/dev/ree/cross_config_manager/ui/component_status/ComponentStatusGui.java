@@ -18,8 +18,10 @@ import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ComponentStatusGui extends TableComposite implements ManageableComponent, XmlRead {
 
@@ -35,12 +37,54 @@ public class ComponentStatusGui extends TableComposite implements ManageableComp
 
     @Override
     public Map<String, Widget> columnsMap() {
-        return null;
+        var map = new LinkedHashMap<String, Widget>();
+
+        map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
+        map.put("name", new Text(parent, SWT.BORDER));
+        map.put("discriminator", new Text(parent, SWT.BORDER));
+        map.put("color", new Text(parent, SWT.BORDER));
+
+        return map;
     }
 
     @Override
     public Map<String, Object> values(String action, Map<String, Widget> columns) {
-        return null;
+        var map = new LinkedHashMap<String, Object>();
+
+        AtomicInteger i = new AtomicInteger();
+
+        for (String name : columns.keySet()) {
+            Widget widget = columns.get(name);
+            if (widget instanceof Text) {
+                // Sau sa las fara action.equals("Add") si sa ia totusi componentele de la el selectat
+                if (table.getSelection().length == 0 || action.equals("Add")) {
+                    ((Text) widget).setText("");
+                } else {
+                    ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
+                }
+            } else if (widget instanceof Combo) {
+                ComponentStatusService componentStatusService = ConfigManagerContextProvider.getBean(ComponentStatusService.class);
+                List<ComponentStatusDto> componentStatusDtos = componentStatusService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+                        map(recordDto -> (ComponentStatusDto) recordDto).toList();
+
+                // Add options to the Combo
+                for (ComponentStatusDto componentStatusDto : componentStatusDtos) {
+                    ((Combo) widget).add(componentStatusDto.getName());
+                }
+                if (action.equals("Update") && !(table.getSelection().length == 0)) {
+                    ((Combo) widget).select(((Combo) widget).indexOf(table.getSelection()[0].getText(i.get())));
+                }
+            }
+            if (table.getSelection().length == 0) {
+                map.put(name, "");
+            } else {
+                map.put(name, table.getSelection()[0].getText(i.get()));
+            }
+
+            i.getAndIncrement();
+        }
+
+        return map;
     }
 
     @Override
@@ -115,24 +159,25 @@ public class ComponentStatusGui extends TableComposite implements ManageableComp
                 Node node = nodeList.item(i);
 
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
+
                     Element eElement = (Element) node;
 
-                    for (int idx = 1; idx < columns().length; idx++) {
-
+                    columnsMap().keySet().forEach(name -> {
                         for (Method declaredMethod : componentStatusDto.getClass().getDeclaredMethods()) {
-                            if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
+                            if (declaredMethod.getName().toLowerCase().contains(name.toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
                                 try {
-                                    if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
+                                    if (eElement.getElementsByTagName(name).getLength() == 0) {
                                         break;
                                     }
-                                    declaredMethod.invoke(componentStatusDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
+                                    declaredMethod.invoke(componentStatusDto, eElement.getElementsByTagName(name).item(0).getTextContent());
                                     break;
                                 } catch (IllegalAccessException | InvocationTargetException e) {
                                     throw new RuntimeException(e);
                                 }
                             }
                         }
-                    }
+                    });
+
                     componentStatusService.insertOrUpdate(componentStatusDto);
                 }
             }
