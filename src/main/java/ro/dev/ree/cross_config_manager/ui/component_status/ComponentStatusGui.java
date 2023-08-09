@@ -99,7 +99,7 @@ public class ComponentStatusGui extends TableComposite implements ManageableComp
 
     @Override
     public Composite createContents(Composite parent) {
-        createCheckbox(parent);
+        createTitle(parent);
 
         Table table = (Table) super.createContents(parent);
         List<RecordDto> allByConfigId = componentStatusService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
@@ -181,10 +181,7 @@ public class ComponentStatusGui extends TableComposite implements ManageableComp
                     }
                 }
             }
-
-            componentStatusService.insertOrUpdate(componentStatusDto);
-
+            componentStatusService.insertOrUpdate(null, componentStatusDto);
         }
-
     }
 }

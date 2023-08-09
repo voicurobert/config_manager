@@ -115,7 +115,7 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
     @Override
     public Composite createContents(Composite parent) {
 
-        createCheckbox(parent);
+        createTitle(parent);
 
         Table table = (Table) super.createContents(parent);
 
@@ -205,8 +205,7 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
                     }
                 }
             }
-            nodeTypeService.insertOrUpdate(nodeTypeDto);
+            nodeTypeService.insertOrUpdate(null, nodeTypeDto);
         }
     }
-
 }

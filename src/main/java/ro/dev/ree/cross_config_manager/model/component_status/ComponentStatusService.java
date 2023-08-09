@@ -9,6 +9,7 @@ import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,14 +24,16 @@ public class ComponentStatusService implements ServiceRepository {
     }
 
     @Override
-    public String insertOrUpdate(RecordDto recordDto) {
+    public String insertOrUpdate(Map<String,Object> oldColumnValues, RecordDto recordDto) {
         ComponentStatus componentStatus = new ComponentStatus();
         ComponentStatusDto componentStatusDto = (ComponentStatusDto) recordDto;
 
         BeanUtils.copyProperties(componentStatusDto, componentStatus);
         ComponentStatus insert = repository.save(componentStatus);
 
-        componentStatusDto.setId(insert.getId());
+        if(componentStatusDto.getId() == null){
+            componentStatusDto.setId(insert.getId());
+        }
 
         return componentStatusDto.getId();
     }
@@ -45,18 +48,6 @@ public class ComponentStatusService implements ServiceRepository {
         repository.delete(componentStatus);
     }
 
-
-//    public List<RecordDto> findAllByConfigId(String configId) {
-//        return repository.findAll().stream().
-//                filter(componentStatus -> componentStatus.getConfigId().equals(configId)).
-//                map(componentStatus -> {
-//                    ComponentStatusDto dto = new ComponentStatusDto();
-//                    BeanUtils.copyProperties(componentStatus, dto);
-//                    return dto;
-//                }).
-//                collect(Collectors.toList());
-//    }
-
     @Override
     public RecordDto findById(String Id) {
         return repository.findAll().stream().
@@ -68,23 +59,6 @@ public class ComponentStatusService implements ServiceRepository {
                 }).
                 findFirst().orElse(null);
     }
-
-    //    @Override
-//    public List<RecordDto> findAllByConfigIdNew(String configId) {
-//
-//        Query query = new Query();
-//        query.addCriteria(Criteria.where("configId").is(configId));
-//        List<ComponentStatus> filteredComponentStatuses = mongoTemplate.find(query, ComponentStatus.class);
-//
-//        List<RecordDto> dtos = filteredComponentStatuses.stream()
-//                .map(componentStatus -> {
-//                    ComponentStatusDto dto = new ComponentStatusDto();
-//                    BeanUtils.copyProperties(componentStatus, dto);
-//                    return dto;
-//                })
-//                .collect(Collectors.toList());
-//        return dtos;
-//    }
     @Override
     public List<RecordDto> findAllByConfigId(String configId) {
         Query query = new Query();

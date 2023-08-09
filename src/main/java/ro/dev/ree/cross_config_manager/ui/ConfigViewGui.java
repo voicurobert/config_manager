@@ -8,6 +8,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.ui.utils.Drawable;
+import ro.dev.ree.cross_config_manager.ui.utils.EditorDialogActionPerformed;
+
+import java.util.List;
 
 public class ConfigViewGui {
     private final Shell shell;
@@ -47,5 +50,4 @@ public class ConfigViewGui {
 
         shell.open();
     }
-
 }

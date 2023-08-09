@@ -5,10 +5,18 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.link_type.LinkType;
+import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
+import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeService;
+import ro.dev.ree.cross_config_manager.model.node_type.NodeType;
+import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
+import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,25 +30,43 @@ public class CoreClassTypeService implements ServiceRepository {
         this.mongoTemplate = mongoTemplate;
     }
 
-//    public void save(CoreClassTypeDto classTypeDto) {
-//        CoreClassType classType = new CoreClassType();
-//        BeanUtils.copyProperties(classTypeDto, classType);
-//        repository.save(classType);
-//    }
-
     @Override
-    public String insertOrUpdate(RecordDto recordDto) {
+    public String insertOrUpdate(Map<String,Object> oldColumnValues, RecordDto recordDto) {
         CoreClassType coreClassType = new CoreClassType();
         CoreClassTypeDto coreClassTypeDto = (CoreClassTypeDto) recordDto;
 
         BeanUtils.copyProperties(coreClassTypeDto, coreClassType);
         CoreClassType insert = repository.save(coreClassType);
 
-        coreClassTypeDto.setId(insert.getId());
+        if(coreClassTypeDto.getId() == null) {
+            coreClassTypeDto.setId(insert.getId());
+        }
+        else if(oldColumnValues != null) {
+            // Search for object with this old coreClassType.path and change it with the new coreClassType.path
+            findByName((String) oldColumnValues.get("path"), recordDto);
+        }
 
         return coreClassTypeDto.getId();
     }
 
+    public void findByName(String name, RecordDto recordDto) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("typeClassPath").is(name));
+        for (LinkType linkType: mongoTemplate.find(query, LinkType.class)) {
+            linkType.setTypeClassPath(((CoreClassTypeDto) recordDto).getPath());
+            LinkTypeService linkTypeService = ConfigManagerContextProvider.getBean(LinkTypeService.class);
+            LinkTypeDto linkTypeDto = new LinkTypeDto();
+            BeanUtils.copyProperties(linkType, linkTypeDto);
+            linkTypeService.insertOrUpdate(null, linkTypeDto);
+        }
+        for (NodeType nodeType: mongoTemplate.find(query, NodeType.class)) {
+            nodeType.setTypeClassPath(((CoreClassTypeDto) recordDto).getPath());
+            NodeTypeService nodeTypeService = ConfigManagerContextProvider.getBean(NodeTypeService.class);
+            NodeTypeDto nodeTypeDto = new NodeTypeDto();
+            BeanUtils.copyProperties(nodeType, nodeTypeDto);
+            nodeTypeService.insertOrUpdate(null, nodeTypeDto);
+        }
+    }
 
     @Override
     public void delete(RecordDto recordDto) {
@@ -50,35 +76,6 @@ public class CoreClassTypeService implements ServiceRepository {
 
         repository.delete(coreClassType);
     }
-
-//    @Override
-//    public List<RecordDto> findAll(String[] columns, String[] old_columns) {
-//        return repository.findAll().stream().
-//                filter(classType -> classType.getName().equals(old_columns[0])
-//                        && classType.getPath().equals(old_columns[1])
-//                        && classType.getParentPath().equals(old_columns[2])).
-//                map(classType -> {
-//                    classType.setName(columns[0]);
-//                    classType.setPath(columns[1]);
-//                    classType.setParentPath(columns[2]);
-//                    CoreClassTypeDto dto = new CoreClassTypeDto();
-//                    BeanUtils.copyProperties(classType, dto);
-//                    return dto;
-//                }).
-//                collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public List<RecordDto> findAllByConfigId(String configId) {
-//        return repository.findAll().stream().
-//                filter(coreClassType -> coreClassType.getConfigId().equals(configId)).
-//                map(coreClassType -> {
-//                    CoreClassTypeDto dto = new CoreClassTypeDto();
-//                    BeanUtils.copyProperties(coreClassType, dto);
-//                    return dto;
-//                }).
-//                collect(Collectors.toList());
-//    }
 
     @Override
     public RecordDto findById(String Id) {
@@ -105,16 +102,4 @@ public class CoreClassTypeService implements ServiceRepository {
                 }).
                 collect(Collectors.toList());
     }
-//    public List<RecordDto> findAllByConfigIdNew(String configId) {
-//        Query query = new Query();
-//        query.addCriteria(Criteria.where("configId").is(configId));
-//
-//        return mongoTemplate.find(query, CoreClassType.class).stream().
-//                map(classType -> {
-//                    CoreClassTypeDto dto = new CoreClassTypeDto();
-//                    BeanUtils.copyProperties(classType, dto);
-//                    return dto;
-//                }).
-//                collect(Collectors.toList());
-//    }
 }

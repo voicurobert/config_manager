@@ -9,6 +9,7 @@ import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,16 +23,17 @@ public class NodeStatusService implements ServiceRepository {
         this.mongoTemplate = mongoTemplate;
     }
 
-
     @Override
-    public String insertOrUpdate(RecordDto recordDto) {
+    public String insertOrUpdate(Map<String,Object> oldColumnValues, RecordDto recordDto) {
         NodeStatus nodeStatus = new NodeStatus();
         NodeStatusDto nodeStatusDto = (NodeStatusDto) recordDto;
 
         BeanUtils.copyProperties(nodeStatusDto, nodeStatus);
         NodeStatus insert = repository.save(nodeStatus);
 
-        nodeStatusDto.setId(insert.getId());
+        if(nodeStatusDto.getId() == null){
+            nodeStatusDto.setId(insert.getId());
+        }
 
         return nodeStatusDto.getId();
     }
@@ -45,18 +47,6 @@ public class NodeStatusService implements ServiceRepository {
 
         repository.delete(nodeStatus);
     }
-
-
-//    public List<RecordDto> findAllByConfigId(String configId) {
-//        return repository.findAll().stream().
-//                filter(nodeStatus -> nodeStatus.getConfigId().equals(configId)).
-//                map(nodeStatus -> {
-//                    NodeStatusDto dto = new NodeStatusDto();
-//                    BeanUtils.copyProperties(nodeStatus, dto);
-//                    return dto;
-//                }).
-//                collect(Collectors.toList());
-//    }
 
     @Override
     public RecordDto findById(String Id) {

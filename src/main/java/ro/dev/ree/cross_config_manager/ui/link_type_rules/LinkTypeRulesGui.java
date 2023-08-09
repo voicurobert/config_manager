@@ -96,10 +96,9 @@ public class LinkTypeRulesGui extends TreeComposite implements ManageableCompone
     }
 
     public Composite createContents(Composite parent) {
-        createCheckbox(parent);
+        createTitle(parent);
 
         Tree tree = (Tree) super.createContents(parent);
-
 
         List<RecordDto> allByConfigId = linkTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
         for (RecordDto recordDto : allByConfigId) {
@@ -181,9 +180,7 @@ public class LinkTypeRulesGui extends TreeComposite implements ManageableCompone
                     }
                 }
             }
-            linkTypeRulesService.insertOrUpdate(linkTypeRulesDto);
-
+            linkTypeRulesService.insertOrUpdate(null, linkTypeRulesDto);
         }
-
     }
 }

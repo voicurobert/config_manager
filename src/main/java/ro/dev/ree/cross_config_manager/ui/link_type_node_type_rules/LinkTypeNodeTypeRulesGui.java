@@ -102,10 +102,9 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
 
 
     public Composite createContents(Composite parent) {
-        createCheckbox(parent);
+        createTitle(parent);
 
         Tree tree = (Tree) super.createContents(parent);
-
 
         List<RecordDto> allByConfigId = linkTypeNodeTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
         for (RecordDto recordDto : allByConfigId) {
@@ -184,9 +183,7 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
                     }
                 }
             }
-            linkTypeNodeTypeRulesService.insertOrUpdate(linkTypeNodeTypeRulesDto);
-
+            linkTypeNodeTypeRulesService.insertOrUpdate(null, linkTypeNodeTypeRulesDto);
         }
-
     }
 }

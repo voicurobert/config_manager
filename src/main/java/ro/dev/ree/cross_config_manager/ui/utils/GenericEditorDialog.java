@@ -1,10 +1,12 @@
 package ro.dev.ree.cross_config_manager.ui.utils;
 
+import lombok.Getter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import ro.dev.ree.cross_config_manager.ui.ConfigViewGui;
 
 import java.util.*;
 import java.util.List;
@@ -12,8 +14,11 @@ import java.util.List;
 public class GenericEditorDialog extends Dialog {
 
     private Shell shell;
+
+    @Getter
     private Map<String, Widget> inputData;
 
+    @Getter
     private Map<String, Object> dataValues;
 
     private final String action;
@@ -36,10 +41,6 @@ public class GenericEditorDialog extends Dialog {
             input.put(key, widget);
         }
         this.inputData = input;
-    }
-
-    public Map<String, Widget> getInputData() {
-        return inputData;
     }
 
     public void setDataValues(Map<String, Object> dataValues) {
@@ -112,7 +113,6 @@ public class GenericEditorDialog extends Dialog {
         // get from inputData the widget values and add id based on action
         for (String key : inputData.keySet()) {
             Widget widget = inputData.get(key);
-
             if (widget instanceof Text) {
                 newValues.add(((Text) widget).getText());
             } else if (widget instanceof Combo) {
@@ -124,6 +124,20 @@ public class GenericEditorDialog extends Dialog {
 
         if (actionPerformed != null) {
             actionPerformed.actionPerformed(newValues);
+            // Reopen ConfigViewGui after updates
+            if(action.equals("Update")){
+                ConfigViewGui configViewGui = new ConfigViewGui();
+                // Close Dialog after "Update" action
+                shell.dispose();
+                // Close main shell
+                getParent().dispose();
+                // Open ConfigViewGui
+                configViewGui.open();
+            }
+            else {
+                // Close Dialog after "Add" action
+                shell.dispose();
+            }
         }
     }
 

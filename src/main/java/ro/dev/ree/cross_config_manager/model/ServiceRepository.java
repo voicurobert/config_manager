@@ -10,10 +10,11 @@ import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ServiceRepository {
 
-    String insertOrUpdate(RecordDto recordDto);
+    String insertOrUpdate(Map<String,Object> oldColumnValues, RecordDto recordDto);
 
     void delete(RecordDto recordDto);
 

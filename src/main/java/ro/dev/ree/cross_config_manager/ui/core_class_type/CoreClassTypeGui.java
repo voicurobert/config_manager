@@ -86,7 +86,7 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
 
     @Override
     public Composite createContents(Composite parent) {
-        createCheckbox(parent);
+        createTitle(parent);
 
         Table table = (Table) super.createContents(parent);
         List<RecordDto> allByConfigId = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
@@ -168,10 +168,8 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
                     }
                 }
             }
-            coreClassTypeService.insertOrUpdate(coreClassTypeDto);
-
+            coreClassTypeService.insertOrUpdate(null, coreClassTypeDto);
         }
-
     }
 }
 

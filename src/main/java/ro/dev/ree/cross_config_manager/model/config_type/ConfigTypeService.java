@@ -59,6 +59,7 @@ public class ConfigTypeService {
         mongoTemplate.remove(query, NodeType.class);
         mongoTemplate.remove(query, NodeTypeRules.class);
         mongoTemplate.remove(query, ServiceStatus.class);
+        query = new Query();
         query.addCriteria(Criteria.where("id").is(configDto.getId()));
         mongoTemplate.remove(query, Config.class);
         Config configType = new Config();

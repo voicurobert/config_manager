@@ -54,7 +54,7 @@ public class ServiceStatusGui extends TableComposite implements ManageableCompon
 
     @Override
     public Composite createContents(Composite parent) {
-        createCheckbox(parent);
+        createTitle(parent);
 
         Table table = (Table) super.createContents(parent);
 
@@ -134,9 +134,8 @@ public class ServiceStatusGui extends TableComposite implements ManageableCompon
                         }
                     }
                 }
-
             }
-            serviceStatusService.insertOrUpdate(serviceStatusDto);
+            serviceStatusService.insertOrUpdate(null, serviceStatusDto);
         }
     }
 }

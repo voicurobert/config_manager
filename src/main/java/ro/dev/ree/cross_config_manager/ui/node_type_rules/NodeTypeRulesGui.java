@@ -105,7 +105,7 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
 
     @Override
     public Composite createContents(Composite parent) {
-        createCheckbox(parent);
+        createTitle(parent);
 
         Tree tree = (Tree) super.createContents(parent);
 
@@ -189,7 +189,7 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
                     }
                 }
             }
-            nodeTypeRulesService.insertOrUpdate(nodeTypeRulesDto);
+            nodeTypeRulesService.insertOrUpdate(null, nodeTypeRulesDto);
         }
     }
 }

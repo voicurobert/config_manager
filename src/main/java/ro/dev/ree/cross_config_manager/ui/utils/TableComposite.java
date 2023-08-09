@@ -1,8 +1,6 @@
 package ro.dev.ree.cross_config_manager.ui.utils;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
@@ -64,8 +62,6 @@ public abstract class TableComposite implements Drawable, XmlWriter {
         MenuItem deleteMenu = new MenuItem(fileMenu, SWT.PUSH);
         deleteMenu.setText("Delete " + tableName());
 
-        menu.setEnabled(false);
-        table.setEnabled(false);
         addMenu.addListener(SWT.Selection, event -> openDialogEditor("Add"));
         updateMenu.addListener(SWT.Selection, event -> openDialogEditor("Update"));
         deleteMenu.addListener(SWT.Selection, event -> deleteSelection());
@@ -74,12 +70,12 @@ public abstract class TableComposite implements Drawable, XmlWriter {
     }
 
     private void openDialogEditor(String action) {
-        GenericEditorDialog dialog = new GenericEditorDialog(table.getParent().getShell(), action);
+        GenericEditorDialog dialog = new GenericEditorDialog(parent.getShell(), action);
         dialog.setInputData(columnsMap());
         dialog.setDataValues(values(action, dialog.getInputData()));
 
         dialog.setActionPerformed(updatedValues -> {
-            updatedValues.set(0, insertOrUpdateRecord(updatedValues, action));
+            updatedValues.set(0, insertOrUpdateRecord(dialog.getDataValues(), updatedValues, action));
             if (action.equals("Update")) {
                 table.getSelection()[0].setText(updatedValues.toArray(new String[]{}));
             } else {
@@ -95,14 +91,14 @@ public abstract class TableComposite implements Drawable, XmlWriter {
         dialog.open();
     }
 
-    private String insertOrUpdateRecord(List<String> columnValues, String action) {
+    private String insertOrUpdateRecord(Map<String,Object> oldColumnValues, List<String> columnValues, String action) {
         return switch (table.getToolTipText()) {
             case CoreClassTypeGui.TABLE_NAME ->
-                    getServiceRepository().insertOrUpdate(CoreClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
+                    getServiceRepository().insertOrUpdate(oldColumnValues, CoreClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
             case NodeTypeGui.TABLE_NAME ->
-                    getServiceRepository().insertOrUpdate(NodeTypeDto.InsertOrUpdateFromItems(columnValues, action));
+                    getServiceRepository().insertOrUpdate(oldColumnValues, NodeTypeDto.InsertOrUpdateFromItems(columnValues, action));
             case LinkTypeGui.TABLE_NAME ->
-                    getServiceRepository().insertOrUpdate(LinkTypeDto.InsertOrUpdateFromItems(columnValues, action));
+                    getServiceRepository().insertOrUpdate(oldColumnValues, LinkTypeDto.InsertOrUpdateFromItems(columnValues, action));
             default -> "";
         };
     }
@@ -112,18 +108,10 @@ public abstract class TableComposite implements Drawable, XmlWriter {
         delete(table.getSelection()[0].getText(0));
     }
 
-    protected void createCheckbox(Composite parent) {
-        Button button = new Button(parent, SWT.CHECK);
-        button.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
-        button.setText(tableName());
-        button.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent event) {
-                table.setEnabled(button.getSelection());
-                menu.setEnabled(button.getSelection());
-            }
-        });
-        button.setSelection(false);
+    protected void createTitle(Composite parent) {
+        Text tableTitle = new Text(parent,SWT.CENTER);
+        tableTitle.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
+        tableTitle.setText(tableName());
     }
 
     public void delete(String id) {

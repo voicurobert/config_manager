@@ -112,7 +112,7 @@ public class LinkTypeGui extends TableComposite implements ManageableComponent, 
 
     @Override
     public Composite createContents(Composite parent) {
-        createCheckbox(parent);
+        createTitle(parent);
 
         Table table = (Table) super.createContents(parent);
 
@@ -199,9 +199,7 @@ public class LinkTypeGui extends TableComposite implements ManageableComponent, 
                     }
                 }
             }
-            linkTypeService.insertOrUpdate(linkTypeDto);
-
+            linkTypeService.insertOrUpdate(null, linkTypeDto);
         }
-
     }
 }

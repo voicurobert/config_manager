@@ -55,7 +55,7 @@ public class LinkStatusGui extends TableComposite implements ManageableComponent
 
     @Override
     public Composite createContents(Composite parent) {
-        createCheckbox(parent);
+        createTitle(parent);
 
         Table table = (Table) super.createContents(parent);
 
@@ -140,9 +140,7 @@ public class LinkStatusGui extends TableComposite implements ManageableComponent
                     }
                 }
             }
-            linkStatusService.insertOrUpdate(linkStatusDto);
-
+            linkStatusService.insertOrUpdate(null, linkStatusDto);
         }
-
     }
 }

@@ -9,6 +9,7 @@ import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,16 +23,17 @@ public class LinkStatusService implements ServiceRepository {
         this.mongoTemplate = mongoTemplate;
     }
 
-
     @Override
-    public String insertOrUpdate(RecordDto recordDto) {
+    public String insertOrUpdate(Map<String,Object> oldColumnValues, RecordDto recordDto) {
         LinkStatus linkStatus = new LinkStatus();
         LinkStatusDto linkStatusDto = (LinkStatusDto) recordDto;
 
         BeanUtils.copyProperties(linkStatusDto, linkStatus);
         LinkStatus insert = repository.save(linkStatus);
 
-        linkStatusDto.setId(insert.getId());
+        if(linkStatusDto.getId() == null){
+            linkStatusDto.setId(insert.getId());
+        }
 
         return linkStatusDto.getId();
     }
@@ -45,18 +47,6 @@ public class LinkStatusService implements ServiceRepository {
 
         repository.delete(linkStatus);
     }
-
-
-//    public List<RecordDto> findAllByConfigId(String configId) {
-//        return repository.findAll().stream().
-//                filter(linkStatus -> linkStatus.getConfigId().equals(configId)).
-//                map(linkStatus -> {
-//                    LinkStatusDto dto = new LinkStatusDto();
-//                    BeanUtils.copyProperties(linkStatus, dto);
-//                    return dto;
-//                }).
-//                collect(Collectors.toList());
-//    }
 
     @Override
     public RecordDto findById(String Id) {
