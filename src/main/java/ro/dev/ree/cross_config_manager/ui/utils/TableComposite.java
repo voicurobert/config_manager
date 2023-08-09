@@ -44,9 +44,9 @@ public abstract class TableComposite implements Drawable, XmlWriter {
         table.setToolTipText(tableName());
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        for (String key : columnsMap().keySet()) {
+        for (String header : columns()) {
             TableColumn column = new TableColumn(table, SWT.NONE);
-            column.setText(key);
+            column.setText(header);
             column.pack();
         }
 

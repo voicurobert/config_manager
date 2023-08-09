@@ -105,37 +105,40 @@ public class ServiceStatusGui extends TableComposite implements ManageableCompon
     public void readElement(Element element) {
 
         Node header = element.getElementsByTagName("serviceStatuses").item(0);
-        if (header != null) {
-            NodeList nodeList = ((Element) header).getElementsByTagName("serviceStatus");
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                ServiceStatusDto serviceStatusDto = new ServiceStatusDto();
-                serviceStatusDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-                Node node = nodeList.item(i);
+        if (header == null) {
+            return;
+        }
+        NodeList nodeList = ((Element) header).getElementsByTagName("serviceStatus");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            ServiceStatusDto serviceStatusDto = new ServiceStatusDto();
+            serviceStatusDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+            Node node = nodeList.item(i);
 
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) node;
-
-                    for (int idx = 1; idx < columns().length; idx++) {
-
-                        for (Method declaredMethod : serviceStatusDto.getClass().getDeclaredMethods()) {
-                            if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
-                                try {
-                                    if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
-                                        break;
-                                    }
-                                    declaredMethod.invoke(serviceStatusDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
-                                    break;
-                                } catch (IllegalAccessException | InvocationTargetException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        }
-
-                    }
-                    serviceStatusService.insertOrUpdate(serviceStatusDto);
-                }
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
             }
+            Element eElement = (Element) node;
+
+            for (int idx = 1; idx < columns().length; idx++) {
+
+                for (Method declaredMethod : serviceStatusDto.getClass().getDeclaredMethods()) {
+                    if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
+                        try {
+                            if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
+                                break;
+                            }
+                            declaredMethod.invoke(serviceStatusDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
+                            break;
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+
+            }
+            serviceStatusService.insertOrUpdate(serviceStatusDto);
         }
     }
 }
+
 

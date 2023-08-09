@@ -18,8 +18,9 @@ import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CoreClassTypeGui extends TableComposite implements ManageableComponent, XmlRead {
@@ -55,17 +56,15 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
             if (widget instanceof Text) {
-                if(table.getSelection().length == 0 || action.equals("Add")){
-                    ((Text)widget).setText("");
-                }
-                else{
-                    ((Text)widget).setText(table.getSelection()[0].getText(i.get()));
+                if (table.getSelection().length == 0 || action.equals("Add")) {
+                    ((Text) widget).setText("");
+                } else {
+                    ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
                 }
             }
-            if(table.getSelection().length == 0 || action.equals("Add")){
+            if (table.getSelection().length == 0 || action.equals("Add")) {
                 map.put(name, "");
-            }
-            else {
+            } else {
                 map.put(name, table.getSelection()[0].getText(i.get()));
             }
 
@@ -138,37 +137,41 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
     public void readElement(Element element) {
 
         Node header = element.getElementsByTagName("coreTypeClasses").item(0);
-        if (header != null) {
-            NodeList nodeList = ((Element) header).getElementsByTagName("coreTypeClass");
+        if (header == null) {
+            return;
+        }
+        NodeList nodeList = ((Element) header).getElementsByTagName("coreTypeClass");
 
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                CoreClassTypeDto coreClassTypeDto = new CoreClassTypeDto();
-                coreClassTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-                Node node = nodeList.item(i);
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            CoreClassTypeDto coreClassTypeDto = new CoreClassTypeDto();
+            coreClassTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+            Node node = nodeList.item(i);
 
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) node;
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+            Element eElement = (Element) node;
 
-                    for (int idx = 1; idx < columns().length; idx++) {
+            for (int idx = 1; idx < columns().length; idx++) {
 
-                        for (Method declaredMethod : coreClassTypeDto.getClass().getDeclaredMethods()) {
-                            if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
-                                try {
-                                    if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
-                                        break;
-                                    }
-                                    declaredMethod.invoke(coreClassTypeDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
-                                    break;
-                                } catch (IllegalAccessException | InvocationTargetException e) {
-                                    throw new RuntimeException(e);
-                                }
+                for (Method declaredMethod : coreClassTypeDto.getClass().getDeclaredMethods()) {
+                    if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
+                        try {
+                            if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
+                                break;
                             }
+                            declaredMethod.invoke(coreClassTypeDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
+                            break;
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
                         }
                     }
-                    coreClassTypeService.insertOrUpdate(coreClassTypeDto);
                 }
             }
+            coreClassTypeService.insertOrUpdate(coreClassTypeDto);
+
         }
+
     }
 }
 

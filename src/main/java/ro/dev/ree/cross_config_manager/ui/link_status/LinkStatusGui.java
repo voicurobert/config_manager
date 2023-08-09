@@ -110,35 +110,39 @@ public class LinkStatusGui extends TableComposite implements ManageableComponent
     public void readElement(Element element) {
 
         Node header = element.getElementsByTagName("linkStatuses").item(0);
-        if (header != null) {
-            NodeList nodeList = ((Element) header).getElementsByTagName("linkStatus");
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                LinkStatusDto linkStatusDto = new LinkStatusDto();
-                linkStatusDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-                Node node = nodeList.item(i);
+        if (header == null) {
+            return;
+        }
+        NodeList nodeList = ((Element) header).getElementsByTagName("linkStatus");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            LinkStatusDto linkStatusDto = new LinkStatusDto();
+            linkStatusDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+            Node node = nodeList.item(i);
 
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) node;
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+            Element eElement = (Element) node;
 
-                    for (int idx = 1; idx < columns().length; idx++) {
+            for (int idx = 1; idx < columns().length; idx++) {
 
-                        for (Method declaredMethod : linkStatusDto.getClass().getDeclaredMethods()) {
-                            if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
-                                try {
-                                    if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
-                                        break;
-                                    }
-                                    declaredMethod.invoke(linkStatusDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
-                                    break;
-                                } catch (IllegalAccessException | InvocationTargetException e) {
-                                    throw new RuntimeException(e);
-                                }
+                for (Method declaredMethod : linkStatusDto.getClass().getDeclaredMethods()) {
+                    if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
+                        try {
+                            if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
+                                break;
                             }
+                            declaredMethod.invoke(linkStatusDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
+                            break;
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
                         }
                     }
-                    linkStatusService.insertOrUpdate(linkStatusDto);
                 }
             }
+            linkStatusService.insertOrUpdate(linkStatusDto);
+
         }
+
     }
 }

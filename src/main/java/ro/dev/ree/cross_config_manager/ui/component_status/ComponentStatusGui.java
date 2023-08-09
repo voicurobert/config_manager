@@ -150,37 +150,41 @@ public class ComponentStatusGui extends TableComposite implements ManageableComp
     public void readElement(Element element) {
 
         Node header = element.getElementsByTagName("serviceComponentStatuses").item(0);
-        if (header != null) {
-            NodeList nodeList = ((Element) header).getElementsByTagName("componentStatus");
+        if (header == null) {
+            return;
+        }
 
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                ComponentStatusDto componentStatusDto = new ComponentStatusDto();
-                componentStatusDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-                Node node = nodeList.item(i);
+        NodeList nodeList = ((Element) header).getElementsByTagName("componentStatus");
 
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            ComponentStatusDto componentStatusDto = new ComponentStatusDto();
+            componentStatusDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+            Node node = nodeList.item(i);
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
 
-                    Element eElement = (Element) node;
+            Element eElement = (Element) node;
 
-                    columnsMap().keySet().forEach(name -> {
-                        for (Method declaredMethod : componentStatusDto.getClass().getDeclaredMethods()) {
-                            if (declaredMethod.getName().toLowerCase().contains(name.toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
-                                try {
-                                    if (eElement.getElementsByTagName(name).getLength() == 0) {
-                                        break;
-                                    }
-                                    declaredMethod.invoke(componentStatusDto, eElement.getElementsByTagName(name).item(0).getTextContent());
-                                    break;
-                                } catch (IllegalAccessException | InvocationTargetException e) {
-                                    throw new RuntimeException(e);
-                                }
+            for (int idx = 1; idx < columns().length; idx++) {
+                for (Method declaredMethod : componentStatusDto.getClass().getDeclaredMethods()) {
+                    if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
+                        try {
+                            if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
+                                break;
                             }
+                            declaredMethod.invoke(componentStatusDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
+                            break;
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
                         }
-                    });
-
-                    componentStatusService.insertOrUpdate(componentStatusDto);
+                    }
                 }
             }
+
+            componentStatusService.insertOrUpdate(componentStatusDto);
+
         }
+
     }
 }

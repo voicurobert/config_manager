@@ -19,8 +19,9 @@ import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class NodeTypeGui extends TableComposite implements ManageableComponent, XmlRead {
@@ -65,35 +66,32 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
             if (widget instanceof Text) {
-                if(table.getSelection().length == 0 || action.equals("Add")){
-                    ((Text)widget).setText("");
-                }
-                else{
-                    ((Text)widget).setText(table.getSelection()[0].getText(i.get()));
+                if (table.getSelection().length == 0 || action.equals("Add")) {
+                    ((Text) widget).setText("");
+                } else {
+                    ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
                 // Add options to the Combo
                 for (CoreClassTypeDto coreClassTypeDto : nodeTypeService.listOfCoreClassTypeDtos()) {
-                        ((Combo)widget).add(coreClassTypeDto.getPath());
+                    ((Combo) widget).add(coreClassTypeDto.getPath());
                 }
                 if (action.equals("Update") && !(table.getSelection().length == 0)) {
-                    ((Combo)widget).select(((Combo)widget).indexOf(table.getSelection()[0].getText(i.get())));
+                    ((Combo) widget).select(((Combo) widget).indexOf(table.getSelection()[0].getText(i.get())));
                 }
             } else if (widget instanceof Button) {
-                if(table.getSelection().length == 0 || action.equals("Add")){
-                    ((Button)widget).setText("");
-                }
-                else {
-                    ((Button)widget).setText(table.getSelection()[0].getText(i.get()));
-                    if(table.getSelection()[0].getText(i.get()).equals("true")){
-                        ((Button)widget).setSelection(true);
+                if (table.getSelection().length == 0 || action.equals("Add")) {
+                    ((Button) widget).setText("");
+                } else {
+                    ((Button) widget).setText(table.getSelection()[0].getText(i.get()));
+                    if (table.getSelection()[0].getText(i.get()).equals("true")) {
+                        ((Button) widget).setSelection(true);
                     }
                 }
             }
-            if(table.getSelection().length == 0 || action.equals("Add")){
+            if (table.getSelection().length == 0 || action.equals("Add")) {
                 map.put(name, "");
-            }
-            else {
+            } else {
                 map.put(name, table.getSelection()[0].getText(i.get()));
             }
 
@@ -177,35 +175,38 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
     public void readElement(Element element) {
 
         Node header = element.getElementsByTagName("nodeTypes").item(0);
-        if (header != null) {
-            NodeList nodeList = ((Element) header).getElementsByTagName("nodeType");
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                NodeTypeDto nodeTypeDto = new NodeTypeDto();
-                nodeTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-                Node node = nodeList.item(i);
+        if (header == null) {
+            return;
+        }
+        NodeList nodeList = ((Element) header).getElementsByTagName("nodeType");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            NodeTypeDto nodeTypeDto = new NodeTypeDto();
+            nodeTypeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+            Node node = nodeList.item(i);
 
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) node;
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+            Element eElement = (Element) node;
 
-                    for (int idx = 1; idx < columns().length; idx++) {
+            for (int idx = 1; idx < columns().length; idx++) {
 
-                        for (Method declaredMethod : nodeTypeDto.getClass().getDeclaredMethods()) {
-                            if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
-                                try {
-                                    if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
-                                        break;
-                                    }
-                                    declaredMethod.invoke(nodeTypeDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
-                                    break;
-                                } catch (IllegalAccessException | InvocationTargetException e) {
-                                    throw new RuntimeException(e);
-                                }
+                for (Method declaredMethod : nodeTypeDto.getClass().getDeclaredMethods()) {
+                    if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
+                        try {
+                            if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
+                                break;
                             }
+                            declaredMethod.invoke(nodeTypeDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
+                            break;
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
                         }
                     }
-                    nodeTypeService.insertOrUpdate(nodeTypeDto);
                 }
             }
+            nodeTypeService.insertOrUpdate(nodeTypeDto);
         }
     }
+
 }

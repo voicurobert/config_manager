@@ -20,8 +20,9 @@ import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class LinkTypeNodeTypeRulesGui extends TreeComposite implements ManageableComponent, XmlRead {
@@ -57,31 +58,29 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
             if (widget instanceof Text) {
-                if(tree.getSelection().length == 0 || action.equals("Add")){
-                    ((Text)widget).setText("");
-                }
-                else{
-                    ((Text)widget).setText(tree.getSelection()[0].getText(i.get()));
+                if (tree.getSelection().length == 0 || action.equals("Add")) {
+                    ((Text) widget).setText("");
+                } else {
+                    ((Text) widget).setText(tree.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
                 // Add options to the Combo
-                if(name.equals("nodeType")){
+                if (name.equals("nodeType")) {
                     for (NodeTypeDto nodeTypeDto : linkTypeNodeTypeRulesService.listOfNodeTypeDtos()) {
-                        ((Combo)widget).add(nodeTypeDto.getDiscriminator());
+                        ((Combo) widget).add(nodeTypeDto.getDiscriminator());
                     }
                 } else if (name.equals("linkType")) {
                     for (LinkTypeDto linkTypeDto : linkTypeNodeTypeRulesService.listOfLinkTypeDtos()) {
-                        ((Combo)widget).add(linkTypeDto.getDiscriminator());
+                        ((Combo) widget).add(linkTypeDto.getDiscriminator());
                     }
                 }
                 if (action.equals("Update") && !(tree.getSelection().length == 0)) {
-                    ((Combo)widget).select(((Combo)widget).indexOf(tree.getSelection()[0].getText(i.get())));
+                    ((Combo) widget).select(((Combo) widget).indexOf(tree.getSelection()[0].getText(i.get())));
                 }
             }
-            if(tree.getSelection().length == 0 || action.equals("Add")){
+            if (tree.getSelection().length == 0 || action.equals("Add")) {
                 map.put(name, "");
-            }
-            else {
+            } else {
                 map.put(name, tree.getSelection()[0].getText(i.get()));
             }
 
@@ -155,35 +154,39 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
     public void readElement(Element element) {
 
         Node header = element.getElementsByTagName("linkTypeNodeTypeRules").item(0);
-        if (header != null) {
-            NodeList nodeList = ((Element) header).getElementsByTagName("linkTypeNodeTypeRule");
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                LinkTypeNodeTypeRulesDto linkTypeNodeTypeRulesDto = new LinkTypeNodeTypeRulesDto();
-                linkTypeNodeTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-                Node node = nodeList.item(i);
+        if (header == null) {
+            return;
+        }
+        NodeList nodeList = ((Element) header).getElementsByTagName("linkTypeNodeTypeRule");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            LinkTypeNodeTypeRulesDto linkTypeNodeTypeRulesDto = new LinkTypeNodeTypeRulesDto();
+            linkTypeNodeTypeRulesDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+            Node node = nodeList.item(i);
 
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) node;
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+            Element eElement = (Element) node;
 
-                    for (int idx = 1; idx < columns().length; idx++) {
+            for (int idx = 1; idx < columns().length; idx++) {
 
-                        for (Method declaredMethod : linkTypeNodeTypeRulesDto.getClass().getDeclaredMethods()) {
-                            if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
-                                try {
-                                    if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
-                                        break;
-                                    }
-                                    declaredMethod.invoke(linkTypeNodeTypeRulesDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
-                                    break;
-                                } catch (IllegalAccessException | InvocationTargetException e) {
-                                    throw new RuntimeException(e);
-                                }
+                for (Method declaredMethod : linkTypeNodeTypeRulesDto.getClass().getDeclaredMethods()) {
+                    if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
+                        try {
+                            if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
+                                break;
                             }
+                            declaredMethod.invoke(linkTypeNodeTypeRulesDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
+                            break;
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
                         }
                     }
-                    linkTypeNodeTypeRulesService.insertOrUpdate(linkTypeNodeTypeRulesDto);
                 }
             }
+            linkTypeNodeTypeRulesService.insertOrUpdate(linkTypeNodeTypeRulesDto);
+
         }
+
     }
 }
