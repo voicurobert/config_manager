@@ -20,16 +20,16 @@ public class ConfigManagerComposites {
     private final List<ManageableComponent> composites = new ArrayList<>();
 
     public ConfigManagerComposites() {
-//        composites.add(new CoreClassTypeGui());
+        composites.add(new CoreClassTypeGui());
         composites.add(new NodeTypeGui());
-//        composites.add(new NodeStatusGui());
-//        composites.add(new LinkTypeGui());
-//        composites.add(new LinkStatusGui());
+        composites.add(new NodeStatusGui());
+        composites.add(new LinkTypeGui());
+        composites.add(new LinkStatusGui());
         composites.add(new NodeTypeRulesGui());
-//        composites.add(new LinkTypeRulesGui());
-//        composites.add(new LinkTypeNodeTypeRulesGui());
-//        composites.add(new ComponentStatusGui());
-//        composites.add(new ServiceStatusGui());
+        composites.add(new LinkTypeRulesGui());
+        composites.add(new LinkTypeNodeTypeRulesGui());
+        composites.add(new ComponentStatusGui());
+        composites.add(new ServiceStatusGui());
 
 
     }

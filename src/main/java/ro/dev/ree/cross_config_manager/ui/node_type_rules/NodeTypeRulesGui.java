@@ -67,11 +67,14 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
                     if(name.equals("parent")){
                         // Get Text from child root
                         ((Text) widget).setText(child);
+                        map.put(name, child);
                     } else {
                         ((Text) widget).setText("");
+                        map.put(name, "");
                     }
                 } else if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Text) widget).setText(tree.getSelection()[0].getText(i.get()));
+                    map.put(name, tree.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
                 // Add options to the Combo
@@ -81,23 +84,23 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
                         ((Combo) widget).add(nodeTypeDto.getDiscriminator());
                     }
                 }
-                if (action.equals("Update") && !(tree.getSelection().length == 0)) {
+                if (action.equals("Add")) {
+                    map.put(name, "");
+                } else if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Combo) widget).select(((Combo) widget).indexOf(tree.getSelection()[0].getText(i.get())));
+                    map.put(name, tree.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Button) {
                 if (action.equals("Add")) {
                     ((Button) widget).setText("false");
-                } else {
+                    map.put(name, "false");
+                } else if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Button) widget).setText(tree.getSelection()[0].getText(i.get()));
+                    map.put(name, tree.getSelection()[0].getText(i.get()));
                     if (tree.getSelection()[0].getText(i.get()).equals("true")) {
                         ((Button) widget).setSelection(true);
                     }
                 }
-            }
-            if (action.equals("Add")) {
-                map.put(name, "");
-            } else {
-                map.put(name, tree.getSelection()[0].getText(i.get()));
             }
             i.getAndIncrement();
         }
@@ -131,6 +134,7 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
         for(String nodeTypeRoot : nodeTypeRoots){
             TreeItem root = new TreeItem(tree, SWT.NONE);
             // Set parent and child the same for root
+            root.setText(0, "parentNode");
             root.setText(1, nodeTypeRoot);
             addChildrenRecursively(root, allByConfigId);
         }
@@ -153,7 +157,7 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
     private void addChildrenRecursively(TreeItem root, List<RecordDto> allByConfigId) {
         for (RecordDto recordDto : allByConfigId) {
 
-            if(root.getText(1).equals(((NodeTypeRulesDto) recordDto).getParent()) && checkParentChain(root,  ((NodeTypeRulesDto) recordDto).getParent(), ((NodeTypeRulesDto) recordDto).getChild()) == false){
+            if(root.getText(1).equals(((NodeTypeRulesDto) recordDto).getParent()) && !checkParentChain(root, ((NodeTypeRulesDto) recordDto).getParent(), ((NodeTypeRulesDto) recordDto).getChild())){
                 NodeTypeRulesDto nodeTypeRulesDto = (NodeTypeRulesDto) recordDto;
                 String[] vec = new String[columns().length];
 

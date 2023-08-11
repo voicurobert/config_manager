@@ -36,7 +36,7 @@ public abstract class TableComposite implements Drawable, XmlWriter {
     public Composite createContents(Composite parent) {
         this.parent = parent;
         table = new Table(parent, SWT.BORDER | SWT.CENTER);
-        GridData gd_table = new GridData(1000, 150);
+        GridData gd_table = new GridData(1000, 300);
         gd_table.horizontalAlignment = SWT.CENTER;
         table.setLayoutData(gd_table);
         table.setToolTipText(tableName());

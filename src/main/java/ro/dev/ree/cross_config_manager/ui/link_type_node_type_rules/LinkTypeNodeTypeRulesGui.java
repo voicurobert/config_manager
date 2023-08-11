@@ -14,12 +14,14 @@ import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesService;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
+import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TreeComposite;
 import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +44,7 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
         var map = new LinkedHashMap<String, Widget>();
 
         map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
-        map.put("linkType", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
+        map.put("linkType", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
         map.put("nodeType", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
         map.put("quality", new Text(parent, SWT.BORDER));
 
@@ -54,34 +56,45 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
         var map = new LinkedHashMap<String, Object>();
 
         AtomicInteger i = new AtomicInteger();
-
+        // Am scos sa se poata adauga in tree fara selectarea unui root
+        // tree.getSelection().length == 0 ||
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
             if (widget instanceof Text) {
-                if (tree.getSelection().length == 0 || action.equals("Add")) {
-                    ((Text) widget).setText("");
-                } else {
+                if (action.equals("Add")) {
+                    //TODO de vazut daca se iau asa rooturile aici
+                    if(name.equals("linkType")){
+                        // Get Text from child root
+                        ((Text) widget).setText(tree.getSelection()[0].getText(i.get()));
+                        map.put(name, tree.getSelection()[0].getText(i.get()));
+                    } else {
+                        ((Text) widget).setText("");
+                        map.put(name, "");
+                    }
+                } else if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Text) widget).setText(tree.getSelection()[0].getText(i.get()));
+                    map.put(name, tree.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
                 // Add options to the Combo
+                //TODO de vazut daca se iau asa variantele aici
                 if (name.equals("nodeType")) {
+                    // Aici nu sunt sigura daca ar trebui luate toate sau doar cele cu rootType = false
                     for (NodeTypeDto nodeTypeDto : linkTypeNodeTypeRulesService.listOfNodeTypeDtos()) {
                         ((Combo) widget).add(nodeTypeDto.getDiscriminator());
                     }
-                } else if (name.equals("linkType")) {
-                    for (LinkTypeDto linkTypeDto : linkTypeNodeTypeRulesService.listOfLinkTypeDtos()) {
-                        ((Combo) widget).add(linkTypeDto.getDiscriminator());
-                    }
                 }
-                if (action.equals("Update") && !(tree.getSelection().length == 0)) {
+//                else if (name.equals("linkType")) {
+//                    for (LinkTypeDto linkTypeDto : linkTypeNodeTypeRulesService.listOfLinkTypeDtos()) {
+//                        ((Combo) widget).add(linkTypeDto.getDiscriminator());
+//                    }
+//                }
+                if(action.equals("Add")){
+                    map.put(name, "");
+                } else if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Combo) widget).select(((Combo) widget).indexOf(tree.getSelection()[0].getText(i.get())));
+                    map.put(name, tree.getSelection()[0].getText(i.get()));
                 }
-            }
-            if (tree.getSelection().length == 0 || action.equals("Add")) {
-                map.put(name, "");
-            } else {
-                map.put(name, tree.getSelection()[0].getText(i.get()));
             }
 
             i.getAndIncrement();
@@ -100,24 +113,37 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
         return linkTypeNodeTypeRulesService;
     }
 
-
     public Composite createContents(Composite parent) {
         createTitle(parent);
 
         Tree tree = (Tree) super.createContents(parent);
 
         List<RecordDto> allByConfigId = linkTypeNodeTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        for (RecordDto recordDto : allByConfigId) {
-            LinkTypeNodeTypeRulesDto linkTypeNodeTypeRulesDto = (LinkTypeNodeTypeRulesDto) recordDto;
-            String[] vec = new String[columns().length];
+        //TODO de vazut daca se iau asa rooturile aici
+        List<String> linkTypeRoots = new ArrayList<>();
+        for (LinkTypeDto linkTypeDto: linkTypeNodeTypeRulesService.listOfLinkTypeDtos()) {
+            linkTypeRoots.add(linkTypeDto.getDiscriminator());
+        }
+        // Adding in tree roots
+        for(String linkTypeRoot : linkTypeRoots){
+            TreeItem root = new TreeItem(tree, SWT.NONE);
+            // Set parent and child the same for root
+            root.setText(0, "parentNode");
+            root.setText(1, linkTypeRoot);
+            for (RecordDto recordDto : allByConfigId) {
+                if(root.getText(1).equals(((LinkTypeNodeTypeRulesDto) recordDto).getLinkType())){
+                    LinkTypeNodeTypeRulesDto linkTypeNodeTypeRulesDto = (LinkTypeNodeTypeRulesDto) recordDto;
+                    String[] vec = new String[columns().length];
 
-            vec[0] = linkTypeNodeTypeRulesDto.getId();
-            vec[1] = linkTypeNodeTypeRulesDto.getLinkType();
-            vec[2] = linkTypeNodeTypeRulesDto.getNodeType();
-            vec[3] = linkTypeNodeTypeRulesDto.getQuality();
+                    vec[0] = linkTypeNodeTypeRulesDto.getId();
+                    vec[1] = linkTypeNodeTypeRulesDto.getLinkType();
+                    vec[2] = linkTypeNodeTypeRulesDto.getNodeType();
+                    vec[3] = linkTypeNodeTypeRulesDto.getQuality();
 
-            TreeItem item = new TreeItem(tree, SWT.NONE);
-            item.setText(vec);
+                    TreeItem childItem = new TreeItem(root, SWT.NONE);
+                    childItem.setText(vec);
+                }
+            }
         }
 
         for (TreeColumn column : tree.getColumns()) {

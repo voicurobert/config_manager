@@ -13,12 +13,15 @@ import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesService;
+import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
+import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TreeComposite;
 import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +45,7 @@ public class LinkTypeRulesGui extends TreeComposite implements ManageableCompone
 
         map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
         map.put("consumer", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
-        map.put("provider", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
+        map.put("provider", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
         map.put("routingPolicy", new Text(parent, SWT.BORDER));
         map.put("capacityCalculatorName", new Text(parent, SWT.BORDER));
         map.put("numberOfChannels", new Text(parent, SWT.BORDER));
@@ -55,28 +58,37 @@ public class LinkTypeRulesGui extends TreeComposite implements ManageableCompone
         var map = new LinkedHashMap<String, Object>();
 
         AtomicInteger i = new AtomicInteger();
-
+        // Am scos sa se poata adauga in tree fara selectarea unui root
+        // tree.getSelection().length == 0 ||
+        String consumer = "";
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
+            consumer = name.equals("consumer") ? tree.getSelection()[0].getText(i.get()) : consumer;
             if (widget instanceof Text) {
-                if (tree.getSelection().length == 0 || action.equals("Add")) {
-                    ((Text) widget).setText("");
-                } else {
+                if (action.equals("Add")) {
+                    if(name.equals("provider")){
+                        // Get Text from child root
+                        ((Text) widget).setText(consumer);
+                        map.put(name, consumer);
+                    } else {
+                        ((Text) widget).setText("");
+                        map.put(name, "");
+                    }
+                } else if (action.equals("Update") && !(tree.getSelection().length == 0)){
                     ((Text) widget).setText(tree.getSelection()[0].getText(i.get()));
+                    map.put(name, tree.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
                 // Add options to the Combo
                 for (LinkTypeDto linkTypeDto : linkTypeRulesService.listOfLinkTypeDtos()) {
                     ((Combo) widget).add(linkTypeDto.getDiscriminator());
                 }
-                if (action.equals("Update") && !(tree.getSelection().length == 0)) {
+                if(action.equals("Add")){
+                    map.put(name, "");
+                } else if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Combo) widget).select(((Combo) widget).indexOf(tree.getSelection()[0].getText(i.get())));
+                    map.put(name, tree.getSelection()[0].getText(i.get()));
                 }
-            }
-            if (tree.getSelection().length == 0 || action.equals("Add")) {
-                map.put(name, "");
-            } else {
-                map.put(name, tree.getSelection()[0].getText(i.get()));
             }
 
             i.getAndIncrement();
@@ -101,19 +113,17 @@ public class LinkTypeRulesGui extends TreeComposite implements ManageableCompone
         Tree tree = (Tree) super.createContents(parent);
 
         List<RecordDto> allByConfigId = linkTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        for (RecordDto recordDto : allByConfigId) {
-            LinkTypeRulesDto linkTypeRulesDto = (LinkTypeRulesDto) recordDto;
-            String[] vec = new String[columns().length];
-
-            vec[0] = linkTypeRulesDto.getId();
-            vec[1] = linkTypeRulesDto.getConsumer();
-            vec[2] = linkTypeRulesDto.getProvider();
-            vec[3] = linkTypeRulesDto.getRoutingPolicy();
-            vec[4] = linkTypeRulesDto.getCapacityCalculatorName();
-            vec[5] = linkTypeRulesDto.getNumberOfChannels();
-
-            TreeItem item = new TreeItem(tree, SWT.NONE);
-            item.setText(vec);
+        List<String> linkTypeRoots = new ArrayList<>();
+        for (LinkTypeDto linkTypeDto: linkTypeRulesService.listOfLinkTypeDtos()) {
+            linkTypeRoots.add(linkTypeDto.getDiscriminator());
+        }
+        // Adding in tree roots
+        for(String linkTypeRoot : linkTypeRoots){
+            TreeItem root = new TreeItem(tree, SWT.NONE);
+            // Set parent and child the same for root
+            root.setText(0, "parentNode");
+            root.setText(1, linkTypeRoot);
+            addChildrenRecursively(root, allByConfigId);
         }
 
         for (TreeColumn column : tree.getColumns()) {
@@ -121,6 +131,37 @@ public class LinkTypeRulesGui extends TreeComposite implements ManageableCompone
         }
 
         return tree;
+    }
+
+    private boolean checkParentChain(TreeItem root, String parentNode, String childNode) {
+        if (root == null)
+            return false;
+        if (root.getText(1).equals(childNode) && root.getText(2).equals(parentNode))
+            return true;
+        return checkParentChain(root.getParentItem(), parentNode, childNode);
+    }
+
+    private void addChildrenRecursively(TreeItem root, List<RecordDto> allByConfigId) {
+        for (RecordDto recordDto : allByConfigId) {
+
+            if(root.getText(1).equals(((LinkTypeRulesDto) recordDto).getProvider()) && !checkParentChain(root, ((LinkTypeRulesDto) recordDto).getProvider(), ((LinkTypeRulesDto) recordDto).getConsumer())){
+                LinkTypeRulesDto linkTypeRulesDto = (LinkTypeRulesDto) recordDto;
+                String[] vec = new String[columns().length];
+
+                vec[0] = linkTypeRulesDto.getId();
+                vec[1] = linkTypeRulesDto.getConsumer();
+                vec[2] = linkTypeRulesDto.getProvider();
+                vec[3] = linkTypeRulesDto.getRoutingPolicy();
+                vec[4] = linkTypeRulesDto.getCapacityCalculatorName();
+                vec[5] = linkTypeRulesDto.getNumberOfChannels();
+
+                TreeItem childItem = new TreeItem(root, SWT.NONE);
+                childItem.setText(vec);
+
+                // Recursively add children for this childItem
+                addChildrenRecursively(childItem, allByConfigId);
+            }
+        }
     }
 
     @Override
