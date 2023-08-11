@@ -142,9 +142,18 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
         return tree;
     }
 
+    private boolean checkParentChain(TreeItem root, String parentNode, String childNode) {
+        if (root == null)
+            return false;
+        if (root.getText(1).equals(childNode) && root.getText(2).equals(parentNode))
+            return true;
+        return checkParentChain(root.getParentItem(), parentNode, childNode);
+    }
+
     private void addChildrenRecursively(TreeItem root, List<RecordDto> allByConfigId) {
         for (RecordDto recordDto : allByConfigId) {
-            if(root.getText(1).equals(((NodeTypeRulesDto) recordDto).getParent())){
+
+            if(root.getText(1).equals(((NodeTypeRulesDto) recordDto).getParent()) && checkParentChain(root,  ((NodeTypeRulesDto) recordDto).getParent(), ((NodeTypeRulesDto) recordDto).getChild()) == false){
                 NodeTypeRulesDto nodeTypeRulesDto = (NodeTypeRulesDto) recordDto;
                 String[] vec = new String[columns().length];
 
