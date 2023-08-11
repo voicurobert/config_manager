@@ -1,8 +1,10 @@
 package ro.dev.ree.cross_config_manager.ui.utils;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
@@ -37,7 +39,7 @@ public abstract class TreeComposite implements Drawable, XmlWriter {
     @Override
     public Composite createContents(Composite parent) {
         this.parent = parent;
-        tree = new Tree(parent, SWT.BORDER | SWT.CENTER);
+        tree = new Tree(parent, SWT.BORDER | SWT.CENTER | SWT.FULL_SELECTION);
         GridData gd_tree = new GridData(1000, 150);
         gd_tree.horizontalAlignment = SWT.CENTER;
         tree.setLayoutData(gd_tree);
@@ -72,12 +74,11 @@ public abstract class TreeComposite implements Drawable, XmlWriter {
     }
 
     private void deleteSelection() {
-        TreeItem[] treeItems = tree.getSelection();
-        delete(treeItems[0].getText(0));
-        for (TreeItem treeitem : treeItems) {
-            treeitem.removeAll(); // Remove all childrens
-            treeitem.dispose();   // Remove actual parent
-        }
+        TreeItem treeItem = tree.getSelection()[0];
+        delete(treeItem.getText(0));
+        // Aici se face stergerea tuturor copiilor dar in db nu
+        treeItem.removeAll(); // Remove all childrens
+        treeItem.dispose();   // Remove actual parent
     }
 
     private void openDialogEditor(String action) {
@@ -91,7 +92,7 @@ public abstract class TreeComposite implements Drawable, XmlWriter {
                 tree.getSelection()[0].setText(updatedValues.toArray(new String[]{}));
             }
             else {
-                TreeItem treeItem = new TreeItem(tree, SWT.NONE);
+                TreeItem treeItem = new TreeItem(tree.getSelection()[0], SWT.NONE);
                 treeItem.setText(updatedValues.toArray(new String[]{}));
                 tree.setSelection(treeItem);
             }
@@ -116,9 +117,11 @@ public abstract class TreeComposite implements Drawable, XmlWriter {
     }
 
     protected void createTitle(Composite parent) {
-        Text tableTitle = new Text(parent,SWT.CENTER);
-        tableTitle.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
-        tableTitle.setText(treeName());
+        Label treeTitle = new Label(parent, SWT.TITLE);
+        GridData gridData = new GridData(GridData.CENTER, GridData.CENTER, true, false);
+        gridData.verticalSpan = 10;
+        treeTitle.setLayoutData(gridData);
+        treeTitle.setText(treeName());
     }
 
     public void delete(String id) {

@@ -19,6 +19,7 @@ import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
 
         map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
         map.put("child", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
-        map.put("parent", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
+        map.put("parent", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
         map.put("capacityCalculatorName", new Text(parent, SWT.BORDER));
         map.put("mandatoryParent", new Button(parent, SWT.CHECK));
 
@@ -55,25 +56,37 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
 
         AtomicInteger i = new AtomicInteger();
 
+        // Am scos sa se poata adauga in tree fara selectarea unui root
+        // tree.getSelection().length == 0 ||
+        String child = "";
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
+            child = name.equals("child") ? tree.getSelection()[0].getText(i.get()) : child;
             if (widget instanceof Text) {
-                if (tree.getSelection().length == 0 || action.equals("Add")) {
-                    ((Text) widget).setText("");
-                } else {
+                if (action.equals("Add")) {
+                    if(name.equals("parent")){
+                        // Get Text from child root
+                        ((Text) widget).setText(child);
+                    } else {
+                        ((Text) widget).setText("");
+                    }
+                } else if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Text) widget).setText(tree.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
                 // Add options to the Combo
                 for (NodeTypeDto nodeTypeDto : nodeTypeRulesService.listOfNodeTypeDtos()) {
-                    ((Combo) widget).add(nodeTypeDto.getDiscriminator());
+                    // Child options
+                    if(nodeTypeDto.getRootType().equals("false")){
+                        ((Combo) widget).add(nodeTypeDto.getDiscriminator());
+                    }
                 }
                 if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Combo) widget).select(((Combo) widget).indexOf(tree.getSelection()[0].getText(i.get())));
                 }
             } else if (widget instanceof Button) {
-                if (tree.getSelection().length == 0 || action.equals("Add")) {
-                    ((Button) widget).setText("");
+                if (action.equals("Add")) {
+                    ((Button) widget).setText("false");
                 } else {
                     ((Button) widget).setText(tree.getSelection()[0].getText(i.get()));
                     if (tree.getSelection()[0].getText(i.get()).equals("true")) {
@@ -81,15 +94,13 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
                     }
                 }
             }
-            if (tree.getSelection().length == 0 || action.equals("Add")) {
+            if (action.equals("Add")) {
                 map.put(name, "");
             } else {
                 map.put(name, tree.getSelection()[0].getText(i.get()));
             }
-
             i.getAndIncrement();
         }
-
         return map;
     }
 
@@ -110,19 +121,18 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
         Tree tree = (Tree) super.createContents(parent);
 
         List<RecordDto> allByConfigId = nodeTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-
-        for (RecordDto recordDto : allByConfigId) {
-            NodeTypeRulesDto nodeTypeRulesDto = (NodeTypeRulesDto) recordDto;
-            String[] vec = new String[columns().length];
-
-            vec[0] = nodeTypeRulesDto.getId();
-            vec[1] = nodeTypeRulesDto.getChild();
-            vec[2] = nodeTypeRulesDto.getParent();
-            vec[3] = nodeTypeRulesDto.getCapacityCalculatorName();
-            vec[4] = nodeTypeRulesDto.getMandatoryParent();
-
-            TreeItem item = new TreeItem(tree, SWT.NONE);
-            item.setText(vec);
+        List<String> nodeTypeRoots = new ArrayList<>();
+        for (NodeTypeDto nodeTypeDto: nodeTypeRulesService.listOfNodeTypeDtos()) {
+            if(nodeTypeDto.getRootType().equals("true")){
+                nodeTypeRoots.add(nodeTypeDto.getDiscriminator());
+            }
+        }
+        // Adding in tree roots
+        for(String nodeTypeRoot : nodeTypeRoots){
+            TreeItem root = new TreeItem(tree, SWT.NONE);
+            // Set parent and child the same for root
+            root.setText(1, nodeTypeRoot);
+            addChildrenRecursively(root, allByConfigId);
         }
 
         for (TreeColumn column : tree.getColumns()) {
@@ -132,10 +142,31 @@ public class NodeTypeRulesGui extends TreeComposite implements ManageableCompone
         return tree;
     }
 
+    private void addChildrenRecursively(TreeItem root, List<RecordDto> allByConfigId) {
+        for (RecordDto recordDto : allByConfigId) {
+            if(root.getText(1).equals(((NodeTypeRulesDto) recordDto).getParent())){
+                NodeTypeRulesDto nodeTypeRulesDto = (NodeTypeRulesDto) recordDto;
+                String[] vec = new String[columns().length];
+
+                vec[0] = nodeTypeRulesDto.getId();
+                vec[1] = nodeTypeRulesDto.getChild();
+                vec[2] = nodeTypeRulesDto.getParent();
+                vec[3] = nodeTypeRulesDto.getCapacityCalculatorName();
+                vec[4] = nodeTypeRulesDto.getMandatoryParent();
+
+                TreeItem childItem = new TreeItem(root, SWT.NONE);
+                childItem.setText(vec);
+
+                // Recursively add children for this childItem
+                addChildrenRecursively(childItem, allByConfigId);
+            }
+        }
+    }
+
     @Override
     public void delete(String id) {
-
         RecordDto recordDto = nodeTypeRulesService.findById(id);
+        // Trebuie facut un delete care sa stearga recursiv toti copii
         nodeTypeRulesService.delete(recordDto);
         super.delete(id);
     }

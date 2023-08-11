@@ -29,9 +29,11 @@ public class ConfigViewGui {
         composite.setLayout(new GridLayout(1, true));
         composite.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
 
-        Label title = new Label(composite, SWT.CENTER);
+        Label title = new Label(composite, SWT.TITLE);
+        GridData gridData = new GridData(GridData.CENTER, GridData.CENTER, true, false);
+        gridData.verticalSpan = 10;
+        title.setLayoutData(gridData);
         title.setText("CROSS Config - " + ConfigSingleton.getSingleton().getConfigDto().getName());
-        title.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
 
         ConfigManagerComposites composites = new ConfigManagerComposites();
         for (Drawable comp : composites.getComposites()) {

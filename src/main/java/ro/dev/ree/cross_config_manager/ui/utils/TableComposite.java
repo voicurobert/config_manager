@@ -109,8 +109,10 @@ public abstract class TableComposite implements Drawable, XmlWriter {
     }
 
     protected void createTitle(Composite parent) {
-        Text tableTitle = new Text(parent,SWT.CENTER);
-        tableTitle.setLayoutData(new GridData(GridData.CENTER, GridData.CENTER, true, false));
+        Label tableTitle = new Label(parent, SWT.TITLE);
+        GridData gridData = new GridData(GridData.CENTER, GridData.CENTER, true, false);
+        gridData.verticalSpan = 10;
+        tableTitle.setLayoutData(gridData);
         tableTitle.setText(tableName());
     }
 

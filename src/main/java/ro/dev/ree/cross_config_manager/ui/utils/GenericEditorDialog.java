@@ -82,9 +82,7 @@ public class GenericEditorDialog extends Dialog {
             } else if (widget instanceof Button) {
                 ((Button)widget).setParent(composite);
                 ((Button)widget).setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-                ((Button)widget).addListener(SWT.Selection, event ->  {
-                    checkBoxSelected(((Button) widget));
-                });
+                ((Button)widget).addListener(SWT.Selection, event -> checkBoxSelected(((Button) widget)));
             }
         }
 
@@ -125,19 +123,13 @@ public class GenericEditorDialog extends Dialog {
         if (actionPerformed != null) {
             actionPerformed.actionPerformed(newValues);
             // Reopen ConfigViewGui after updates
-            if(action.equals("Update")){
-                ConfigViewGui configViewGui = new ConfigViewGui();
-                // Close Dialog after "Update" action
-                shell.dispose();
-                // Close main shell
-                getParent().dispose();
-                // Open ConfigViewGui
-                configViewGui.open();
-            }
-            else {
-                // Close Dialog after "Add" action
-                shell.dispose();
-            }
+            ConfigViewGui configViewGui = new ConfigViewGui();
+            // Close Dialog
+            shell.dispose();
+            // Close main shell
+            getParent().dispose();
+            // Open ConfigViewGui
+            configViewGui.open();
         }
     }
 
