@@ -10,6 +10,7 @@ import ro.dev.ree.cross_config_manager.ui.node_status.NodeStatusGui;
 import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.service_status.ServiceStatusGui;
+import ro.dev.ree.cross_config_manager.ui.technology_tree.TechnologyTreeGui;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class ConfigManagerComposites {
         composites.add(new LinkTypeNodeTypeRulesGui());
         composites.add(new ComponentStatusGui());
         composites.add(new ServiceStatusGui());
-
+        composites.add(new TechnologyTreeGui());
 
     }
 

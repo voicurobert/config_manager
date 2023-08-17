@@ -8,13 +8,15 @@ import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeService;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
+import ro.dev.ree.cross_config_manager.model.technology_tree.TechnologyTreeDto;
+import ro.dev.ree.cross_config_manager.model.technology_tree.TechnologyTreeService;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ServiceRepository {
 
-    String insertOrUpdate(Map<String,Object> oldColumnValues, RecordDto recordDto);
+    String insertOrUpdate(Map<String, Object> oldColumnValues, RecordDto recordDto);
 
     void delete(RecordDto recordDto);
 
@@ -34,6 +36,12 @@ public interface ServiceRepository {
         LinkTypeService linkTypeService = ConfigManagerContextProvider.getBean(LinkTypeService.class);
         return linkTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
                 map(recordDto -> (LinkTypeDto) recordDto).toList();
+    }
+
+    default List<TechnologyTreeDto> listOfTechnologyType() {
+        TechnologyTreeService technologyTreeService = ConfigManagerContextProvider.getBean(TechnologyTreeService.class);
+        return technologyTreeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+                map(recordDto -> (TechnologyTreeDto) recordDto).toList();
     }
 
     List<RecordDto> findAllByConfigId(String configId);

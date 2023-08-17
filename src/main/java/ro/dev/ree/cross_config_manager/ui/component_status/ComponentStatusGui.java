@@ -41,7 +41,7 @@ public class ComponentStatusGui extends TableComposite implements ManageableComp
 
         map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
         map.put("name", new Text(parent, SWT.BORDER));
-        map.put("discriminator", new Text(parent, SWT.BORDER));
+        map.put("description", new Text(parent, SWT.BORDER));
         map.put("color", new Text(parent, SWT.BORDER));
 
         return map;
@@ -62,19 +62,8 @@ public class ComponentStatusGui extends TableComposite implements ManageableComp
                 } else {
                     ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
                 }
-            } else if (widget instanceof Combo) {
-                ComponentStatusService componentStatusService = ConfigManagerContextProvider.getBean(ComponentStatusService.class);
-                List<ComponentStatusDto> componentStatusDtos = componentStatusService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
-                        map(recordDto -> (ComponentStatusDto) recordDto).toList();
-
-                // Add options to the Combo
-                for (ComponentStatusDto componentStatusDto : componentStatusDtos) {
-                    ((Combo) widget).add(componentStatusDto.getName());
-                }
-                if (action.equals("Update") && !(table.getSelection().length == 0)) {
-                    ((Combo) widget).select(((Combo) widget).indexOf(table.getSelection()[0].getText(i.get())));
-                }
             }
+
             if (table.getSelection().length == 0) {
                 map.put(name, "");
             } else {
@@ -83,7 +72,6 @@ public class ComponentStatusGui extends TableComposite implements ManageableComp
 
             i.getAndIncrement();
         }
-
         return map;
     }
 

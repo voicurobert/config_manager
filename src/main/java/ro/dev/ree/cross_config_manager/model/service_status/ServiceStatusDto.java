@@ -10,25 +10,26 @@ import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServiceStatusDto extends RecordDto implements XmlElement {
     private String configId;
-    private String description;
     private String name;
+    private String description;
     private String color;
 
-    public static ServiceStatusDto InsertOrUpdateFromItems(String[] columnValues, String action) {
+    public static ServiceStatusDto InsertOrUpdateFromItems(List<String> columnValues, String action) {
         var serviceStatusDto = new ServiceStatusDto();
         if (action.equals("Update")) {
-            serviceStatusDto.setId(columnValues[0]);
+            serviceStatusDto.setId(columnValues.get(0));
         }
         serviceStatusDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        serviceStatusDto.setName(columnValues[1]);
-        serviceStatusDto.setDescription(columnValues[2]);
-        serviceStatusDto.setColor(columnValues[3]);
+        serviceStatusDto.setName(columnValues.get(1));
+        serviceStatusDto.setDescription(columnValues.get(2));
+        serviceStatusDto.setColor(columnValues.get(3));
 
         return serviceStatusDto;
     }

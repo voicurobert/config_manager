@@ -1,4 +1,4 @@
-package ro.dev.ree.cross_config_manager.model.component_status;
+package ro.dev.ree.cross_config_manager.model.technology_tree;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,46 +15,44 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ComponentStatusDto extends RecordDto implements XmlElement {
+public class TechnologyTreeDto extends RecordDto implements XmlElement {
     private String configId;
     private String name;
-    private String description;
-    private String color;
+    private String nodeType;
+    private String linkType;
 
-    public static ComponentStatusDto InsertOrUpdateFromItems(List<String> columnValues, String action) {
-        var componentStatusDto = new ComponentStatusDto();
+    public static TechnologyTreeDto InsertOrUpdateFromItems(List<String> columnValues, String action) {
+        var technologyTreeDto = new TechnologyTreeDto();
         if (action.equals("Update")) {
-            componentStatusDto.setId(columnValues.get(0));
+            technologyTreeDto.setId(columnValues.get(0));
         }
-        componentStatusDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        componentStatusDto.setName(columnValues.get(1));
-        componentStatusDto.setDescription(columnValues.get(2));
-        componentStatusDto.setColor(columnValues.get(3));
+        technologyTreeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        technologyTreeDto.setName(columnValues.get(1));
+        technologyTreeDto.setNodeType(columnValues.get(2));
+        technologyTreeDto.setLinkType(columnValues.get(3));
 
-
-        return componentStatusDto;
+        return technologyTreeDto;
     }
 
     @Override
     public void asXml(Document document, Element rootElement) {
 
         // add xml elements
-        Element componentStatus = document.createElement("componentStatus");
+        Element technologyTree = document.createElement("technologyTree");
         // add classType to root
-        rootElement.appendChild(componentStatus);
+        rootElement.appendChild(technologyTree);
 
         Field[] fields = getClass().getDeclaredFields();
         for (int i = 1; i < fields.length; i++) {
             Element name = document.createElement(fields[i].getName());
             switch (fields[i].getName()) {
                 case "name" -> name.setTextContent(this.name);
-                case "description" -> name.setTextContent(this.description);
-                case "color" -> name.setTextContent(this.color);
-
+                case "nodeType" -> name.setTextContent(this.nodeType);
+                case "linkType" -> name.setTextContent(this.linkType);
                 default -> {
                 }
             }
-            componentStatus.appendChild(name);
+            technologyTree.appendChild(name);
         }
     }
 }

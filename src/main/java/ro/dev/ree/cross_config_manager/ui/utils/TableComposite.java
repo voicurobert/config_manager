@@ -4,12 +4,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.component_status.ComponentStatusDto;
 import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
+import ro.dev.ree.cross_config_manager.model.node_status.NodeStatusDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
+import ro.dev.ree.cross_config_manager.model.service_status.ServiceStatusDto;
+import ro.dev.ree.cross_config_manager.ui.component_status.ComponentStatusGui;
 import ro.dev.ree.cross_config_manager.ui.core_class_type.CoreClassTypeGui;
 import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
+import ro.dev.ree.cross_config_manager.ui.node_status.NodeStatusGui;
 import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
+import ro.dev.ree.cross_config_manager.ui.service_status.ServiceStatusGui;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import java.util.List;
@@ -91,7 +97,7 @@ public abstract class TableComposite implements Drawable, XmlWriter {
         dialog.open();
     }
 
-    private String insertOrUpdateRecord(Map<String,Object> oldColumnValues, List<String> columnValues, String action) {
+    private String insertOrUpdateRecord(Map<String, Object> oldColumnValues, List<String> columnValues, String action) {
         return switch (table.getToolTipText()) {
             case CoreClassTypeGui.TABLE_NAME ->
                     getServiceRepository().insertOrUpdate(oldColumnValues, CoreClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
@@ -99,6 +105,12 @@ public abstract class TableComposite implements Drawable, XmlWriter {
                     getServiceRepository().insertOrUpdate(oldColumnValues, NodeTypeDto.InsertOrUpdateFromItems(columnValues, action));
             case LinkTypeGui.TABLE_NAME ->
                     getServiceRepository().insertOrUpdate(oldColumnValues, LinkTypeDto.InsertOrUpdateFromItems(columnValues, action));
+            case ServiceStatusGui.TABLE_NAME ->
+                    getServiceRepository().insertOrUpdate(oldColumnValues, ServiceStatusDto.InsertOrUpdateFromItems(columnValues, action));
+            case NodeStatusGui.TABLE_NAME ->
+                    getServiceRepository().insertOrUpdate(oldColumnValues, NodeStatusDto.InsertOrUpdateFromItems(columnValues, action));
+            case ComponentStatusGui.TABLE_NAME ->
+                    getServiceRepository().insertOrUpdate(oldColumnValues, ComponentStatusDto.InsertOrUpdateFromItems(columnValues, action));
             default -> "";
         };
     }

@@ -18,8 +18,10 @@ import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ServiceStatusGui extends TableComposite implements ManageableComponent, XmlRead {
 
@@ -34,12 +36,41 @@ public class ServiceStatusGui extends TableComposite implements ManageableCompon
 
     @Override
     public Map<String, Widget> columnsMap() {
-        return null;
+        var map = new LinkedHashMap<String, Widget>();
+
+        map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
+        map.put("name", new Text(parent, SWT.BORDER));
+        map.put("description", new Text(parent, SWT.BORDER));
+        map.put("color", new Text(parent, SWT.BORDER));
+
+        return map;
     }
 
     @Override
     public Map<String, Object> values(String action, Map<String, Widget> columns) {
-        return null;
+        var map = new LinkedHashMap<String, Object>();
+
+        AtomicInteger i = new AtomicInteger();
+
+        for (String name : columns.keySet()) {
+            Widget widget = columns.get(name);
+            if (widget instanceof Text) {
+                if (table.getSelection().length == 0 || action.equals("Add")) {
+                    ((Text) widget).setText("");
+                } else {
+                    ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
+                }
+            }
+            if (table.getSelection().length == 0 || action.equals("Add")) {
+                map.put(name, "");
+            } else {
+                map.put(name, table.getSelection()[0].getText(i.get()));
+            }
+
+            i.getAndIncrement();
+        }
+
+        return map;
     }
 
     @Override
@@ -92,12 +123,12 @@ public class ServiceStatusGui extends TableComposite implements ManageableCompon
         List<RecordDto> allByConfigId = serviceStatusService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
         // root element
-        Element nodeStatus = document.createElement("nodeStatuses");
-        rootElement.appendChild(nodeStatus);
+        Element serviceStatuses = document.createElement("serviceStatuses");
+        rootElement.appendChild(serviceStatuses);
 
         for (RecordDto recordDto : allByConfigId) {
             ServiceStatusDto serviceStatusDto = (ServiceStatusDto) recordDto;
-            serviceStatusDto.asXml(document, nodeStatus);
+            serviceStatusDto.asXml(document, serviceStatuses);
         }
     }
 

@@ -18,8 +18,10 @@ import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LinkStatusGui extends TableComposite implements ManageableComponent, XmlRead {
 
@@ -35,12 +37,54 @@ public class LinkStatusGui extends TableComposite implements ManageableComponent
 
     @Override
     public Map<String, Widget> columnsMap() {
-        return null;
+        var map = new LinkedHashMap<String, Widget>();
+
+        map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
+        map.put("discriminator", new Text(parent, SWT.BORDER));
+        map.put("name", new Text(parent, SWT.BORDER));
+        map.put("colorCode", new Text(parent, SWT.BORDER));
+        map.put("capacityConsumer", new Button(parent, SWT.CHECK));
+        map.put("consumerCandidate", new Button(parent, SWT.CHECK));
+        map.put("providerCandidate", new Button(parent, SWT.CHECK));
+
+        return map;
     }
 
     @Override
     public Map<String, Object> values(String action, Map<String, Widget> columns) {
-        return null;
+        var map = new LinkedHashMap<String, Object>();
+
+        AtomicInteger i = new AtomicInteger();
+
+        for (String name : columns.keySet()) {
+            Widget widget = columns.get(name);
+            if (widget instanceof Text) {
+                // Sau sa las fara action.equals("Add") si sa ia totusi componentele de la el selectat
+                if (table.getSelection().length == 0 || action.equals("Add")) {
+                    ((Text) widget).setText("");
+                } else {
+                    ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
+                }
+
+            } else if (widget instanceof Button) {
+                if (table.getSelection().length == 0 || action.equals("Add")) {
+                    ((Button) widget).setText("");
+                } else {
+                    ((Button) widget).setText(table.getSelection()[0].getText(i.get()));
+                    if (table.getSelection()[0].getText(i.get()).equals("true")) {
+                        ((Button) widget).setSelection(true);
+                    }
+                }
+            }
+            if (table.getSelection().length == 0 || action.equals("Add")) {
+                map.put(name, "");
+            } else {
+                map.put(name, table.getSelection()[0].getText(i.get()));
+            }
+
+            i.getAndIncrement();
+        }
+        return map;
     }
 
     @Override

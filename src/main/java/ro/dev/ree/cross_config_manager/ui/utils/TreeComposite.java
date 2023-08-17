@@ -1,17 +1,17 @@
 package ro.dev.ree.cross_config_manager.ui.utils;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
-import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
+import ro.dev.ree.cross_config_manager.model.technology_tree.TechnologyTreeDto;
 import ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules.LinkTypeNodeTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.link_type_rules.LinkTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
+import ro.dev.ree.cross_config_manager.ui.technology_tree.TechnologyTreeGui;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import java.util.List;
@@ -88,11 +88,10 @@ public abstract class TreeComposite implements Drawable, XmlWriter {
 
         dialog.setActionPerformed(updatedValues -> {
             updatedValues.set(0, insertOrUpdateRecord(dialog.getDataValues(), updatedValues, action));
-            if(action.equals("Update")) {
+            if (action.equals("Update")) {
                 tree.getSelection()[0].setText(updatedValues.toArray(new String[]{}));
-            }
-            else {
-                TreeItem treeItem = new TreeItem(tree.getSelection()[0], SWT.NONE);
+            } else {
+                TreeItem treeItem = new TreeItem(tree, SWT.NONE);
                 treeItem.setText(updatedValues.toArray(new String[]{}));
                 tree.setSelection(treeItem);
             }
@@ -104,7 +103,7 @@ public abstract class TreeComposite implements Drawable, XmlWriter {
         dialog.open();
     }
 
-    private String insertOrUpdateRecord(Map<String,Object> oldColumnValues, List<String> columnValues, String action) {
+    private String insertOrUpdateRecord(Map<String, Object> oldColumnValues, List<String> columnValues, String action) {
         return switch (tree.getToolTipText()) {
             case NodeTypeRulesGui.TREE_NAME ->
                     getServiceRepository().insertOrUpdate(oldColumnValues, NodeTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
@@ -112,6 +111,8 @@ public abstract class TreeComposite implements Drawable, XmlWriter {
                     getServiceRepository().insertOrUpdate(oldColumnValues, LinkTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
             case LinkTypeNodeTypeRulesGui.TREE_NAME ->
                     getServiceRepository().insertOrUpdate(oldColumnValues, LinkTypeNodeTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
+            case TechnologyTreeGui.TREE_NAME ->
+                    getServiceRepository().insertOrUpdate(oldColumnValues, TechnologyTreeDto.InsertOrUpdateFromItems(columnValues, action));
             default -> "";
         };
     }

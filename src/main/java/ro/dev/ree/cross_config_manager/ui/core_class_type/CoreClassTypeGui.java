@@ -62,7 +62,9 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
                     ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
                 }
             }
-            if (table.getSelection().length == 0 || action.equals("Add")) {
+
+
+            if (table.getSelection().length == 0) {
                 map.put(name, "");
             } else {
                 map.put(name, table.getSelection()[0].getText(i.get()));
@@ -70,7 +72,6 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
 
             i.getAndIncrement();
         }
-
         return map;
     }
 

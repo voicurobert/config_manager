@@ -10,6 +10,7 @@ import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,16 +22,16 @@ public class NodeStatusDto extends RecordDto implements XmlElement {
     private String colorCode;
     private String capacityConsumer;
 
-    public static NodeStatusDto InsertOrUpdateFromItems(String[] columnValues, String action) {
+    public static NodeStatusDto InsertOrUpdateFromItems(List<String> columnValues, String action) {
         var nodeStatusDto = new NodeStatusDto();
         if (action.equals("Update")) {
-            nodeStatusDto.setId(columnValues[0]);
+            nodeStatusDto.setId(columnValues.get(0));
         }
         nodeStatusDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        nodeStatusDto.setDiscriminator(columnValues[1]);
-        nodeStatusDto.setName(columnValues[2]);
-        nodeStatusDto.setColorCode(columnValues[3]);
-        nodeStatusDto.setCapacityConsumer(columnValues[4]);
+        nodeStatusDto.setDiscriminator(columnValues.get(1));
+        nodeStatusDto.setName(columnValues.get(2));
+        nodeStatusDto.setColorCode(columnValues.get(3));
+        nodeStatusDto.setCapacityConsumer(columnValues.get(4));
 
 
         return nodeStatusDto;
