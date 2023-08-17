@@ -91,14 +91,51 @@ public class TechnologyTreeService implements ServiceRepository {
                 collect(Collectors.toList());
     }
 
+
+
     public List<RecordDto> findAllByNameAndConfigId(String name, String configId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("configId").is(configId));
+
 //        query.addCriteria((Criteria.where("linkType").exists(true).andOperator(Criteria.where("nodeType").exists(false)).
 //                orOperator(Criteria.where("linkType").exists(true).andOperator(Criteria.where("nodeType").exists(true)))));
-        query.addCriteria(Criteria.where("linkType").exists(true).andOperator(Criteria.where("nodeType").exists(true)));
+        //query.addCriteria(Criteria.where("linkType").exists(true).andOperator(Criteria.where("nodeType").exists(true)));
         //query.addCriteria(Criteria.where("nodeType").is(true));
 
+        query.addCriteria(Criteria.where("name").is(name));
+
+
+        return mongoTemplate.find(query, TechnologyTree.class).stream().
+                map(technologyTree -> {
+                    TechnologyTreeDto dto = new TechnologyTreeDto();
+                    BeanUtils.copyProperties(technologyTree, dto);
+                    return dto;
+                }).
+                collect(Collectors.toList());
+    }
+
+    public List<RecordDto> findLinkTypesByNameAndConfigIdNew(String name, String configId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("configId").is(configId));
+        query.addCriteria(Criteria.where("nodeType").exists(false));
+        query.addCriteria(Criteria.where("linkType").exists(true));
+        query.addCriteria(Criteria.where("name").is(name));
+
+
+        return mongoTemplate.find(query, TechnologyTree.class).stream().
+                map(technologyTree -> {
+                    TechnologyTreeDto dto = new TechnologyTreeDto();
+                    BeanUtils.copyProperties(technologyTree, dto);
+                    return dto;
+                }).
+                collect(Collectors.toList());
+    }
+
+    public List<RecordDto> findNodeTypesByNameAndConfigIdNew(String name, String configId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("configId").is(configId));
+        query.addCriteria(Criteria.where("nodeType").exists(true));
+        query.addCriteria(Criteria.where("linkType").exists(false));
         query.addCriteria(Criteria.where("name").is(name));
 
 

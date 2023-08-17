@@ -110,26 +110,16 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
         for (RecordDto root : allByConfigId) {
             TechnologyTreeDto tt = (TechnologyTreeDto) root;
             // List<RecordDto> records = technologyTreeService.findAllByNameAndConfigId(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
-            List<RecordDto> linkTypes = technologyTreeService.findLinkTypesByNameAndConfigId(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
+            List<RecordDto> linkTypes = technologyTreeService.findLinkTypesByNameAndConfigIdNew(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
+            List<RecordDto> nodeTypes = technologyTreeService.findNodeTypesByNameAndConfigIdNew(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
+
 
             TreeItem treeItem = new TreeItem(tree, SWT.NONE);
             treeItem.setText(0, tt.getId());
             treeItem.setText(1, tt.getName());
-//
-//            for (RecordDto record : records) {
-//                TechnologyTreeDto technologyTreeDto = (TechnologyTreeDto) record;
-//                String[] vec = new String[columns().length];
-//
-//                vec[0] = technologyTreeDto.getId();
-//                vec[1] = technologyTreeDto.getName();
-//                vec[2] = technologyTreeDto.getNodeType();
-//                vec[3] = technologyTreeDto.getLinkType();
-//                TreeItem childItem = new TreeItem(treeItem, SWT.NONE);
-//                childItem.setText(vec);
-//
-//            }
-            for (RecordDto nodeType : linkTypes) {
-                TechnologyTreeDto technologyTreeDto = (TechnologyTreeDto) nodeType;
+
+            for (RecordDto node :  nodeTypes) {
+                TechnologyTreeDto technologyTreeDto = (TechnologyTreeDto) node;
                 String[] vec = new String[columns().length];
 
                 vec[0] = technologyTreeDto.getId();
@@ -140,6 +130,21 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
                 childItem.setText(vec);
 
             }
+
+            for (RecordDto link : linkTypes) {
+                TechnologyTreeDto technologyTreeDto = (TechnologyTreeDto) link;
+                String[] vec = new String[columns().length];
+
+                vec[0] = technologyTreeDto.getId();
+                vec[1] = technologyTreeDto.getName();
+                vec[2] = technologyTreeDto.getNodeType();
+                vec[3] = technologyTreeDto.getLinkType();
+                TreeItem childItem = new TreeItem(treeItem, SWT.NONE);
+                childItem.setText(vec);
+
+            }
+
+
 
 
         }
@@ -191,6 +196,12 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
         }
         NodeList nodeList = ((Element) header).getElementsByTagName("technologyTree");
 
+        // 1. for all nodeList:
+        // 1.1 get name of technologyTree
+        // 1.2 get all nodeTypes for technologyTree; create a technology dto and insert it in database
+        // 1.3 get all LinkTypes for technologyTree; create a technology dto and insert it in database
+
+
         for (int i = 0; i < nodeList.getLength(); i++) {
             List<String> listWithLinks = new ArrayList<>();
             List<String> listWithNodes = new ArrayList<>();
@@ -198,7 +209,6 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
             technologyTreeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
             Node node = nodeList.item(i);
-
 
             if (node.getNodeType() != Node.ELEMENT_NODE) {
                 continue;

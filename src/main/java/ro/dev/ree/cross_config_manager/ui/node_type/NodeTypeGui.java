@@ -48,7 +48,7 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
         map.put("mapIcon", new Text(parent, SWT.BORDER));
         map.put("capacityFull", new Text(parent, SWT.BORDER));
         map.put("capacityUnitName", new Text(parent, SWT.BORDER));
-        map.put("typeClassPath", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
+        map.put("typeClassPath", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.CHECK));
         map.put("rootType", new Button(parent, SWT.CHECK));
         map.put("system", new Button(parent, SWT.CHECK));
         map.put("multiparentAllowed", new Button(parent, SWT.CHECK));
