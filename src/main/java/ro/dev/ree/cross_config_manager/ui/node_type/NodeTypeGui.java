@@ -48,7 +48,7 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
         map.put("mapIcon", new Text(parent, SWT.BORDER));
         map.put("capacityFull", new Text(parent, SWT.BORDER));
         map.put("capacityUnitName", new Text(parent, SWT.BORDER));
-        map.put("typeClassPath", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.CHECK));
+        map.put("typeClassPath", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
         map.put("rootType", new Button(parent, SWT.CHECK));
         map.put("system", new Button(parent, SWT.CHECK));
         map.put("multiparentAllowed", new Button(parent, SWT.CHECK));
@@ -68,8 +68,10 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
             if (widget instanceof Text) {
                 if (table.getSelection().length == 0 || action.equals("Add")) {
                     ((Text) widget).setText("");
-                } else {
+                    map.put(name, "");
+                } else if (action.equals("Update") && !(table.getSelection().length == 0)) {
                     ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
+                    map.put(name, table.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
                 // Add options to the Combo
@@ -78,29 +80,27 @@ public class NodeTypeGui extends TableComposite implements ManageableComponent, 
                 }
                 if (action.equals("Update") && !(table.getSelection().length == 0)) {
                     ((Combo) widget).select(((Combo) widget).indexOf(table.getSelection()[0].getText(i.get())));
+                    map.put(name, table.getSelection()[0].getText(i.get()));
+                }
+                else if(table.getSelection().length == 0 || action.equals("Add")){
+                    map.put(name, "");
                 }
             } else if (widget instanceof Button) {
                 if (table.getSelection().length == 0 || action.equals("Add")) {
-                    ((Button) widget).setText("");
-                } else {
+                    ((Button) widget).setText("false");
+                    map.put(name, "false");
+                } else if (action.equals("Update") && !(table.getSelection().length == 0)) {
                     ((Button) widget).setText(table.getSelection()[0].getText(i.get()));
+                    map.put(name, table.getSelection()[0].getText(i.get()));
                     if (table.getSelection()[0].getText(i.get()).equals("true")) {
                         ((Button) widget).setSelection(true);
                     }
                 }
             }
-            if (table.getSelection().length == 0 || action.equals("Add")) {
-                map.put(name, "");
-            } else {
-                map.put(name, table.getSelection()[0].getText(i.get()));
-            }
-
             i.getAndIncrement();
         }
-
         return map;
     }
-
 
     @Override
     public String tableName() {

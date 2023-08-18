@@ -64,11 +64,12 @@ public class LinkTypeGui extends TableComposite implements ManageableComponent, 
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
             if (widget instanceof Text) {
-                // Sau sa las fara action.equals("Add") si sa ia totusi componentele de la el selectat
                 if (table.getSelection().length == 0 || action.equals("Add")) {
                     ((Text) widget).setText("");
-                } else {
+                    map.put(name, "");
+                } else if (action.equals("Update") && !(table.getSelection().length == 0)){
                     ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
+                    map.put(name, table.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
                 // Add options to the Combo
@@ -77,21 +78,22 @@ public class LinkTypeGui extends TableComposite implements ManageableComponent, 
                 }
                 if (action.equals("Update") && !(table.getSelection().length == 0)) {
                     ((Combo) widget).select(((Combo) widget).indexOf(table.getSelection()[0].getText(i.get())));
+                    map.put(name, table.getSelection()[0].getText(i.get()));
+                }
+                else if(table.getSelection().length == 0 || action.equals("Add")){
+                    map.put(name, "");
                 }
             } else if (widget instanceof Button) {
                 if (table.getSelection().length == 0 || action.equals("Add")) {
-                    ((Button) widget).setText("");
+                    ((Button) widget).setText("false");
+                    map.put(name, "false");
                 } else {
                     ((Button) widget).setText(table.getSelection()[0].getText(i.get()));
+                    map.put(name, table.getSelection()[0].getText(i.get()));
                     if (table.getSelection()[0].getText(i.get()).equals("true")) {
                         ((Button) widget).setSelection(true);
                     }
                 }
-            }
-            if (table.getSelection().length == 0 || action.equals("Add")) {
-                map.put(name, "");
-            } else {
-                map.put(name, table.getSelection()[0].getText(i.get()));
             }
 
             i.getAndIncrement();

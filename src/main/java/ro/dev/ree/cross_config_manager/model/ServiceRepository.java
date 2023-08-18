@@ -1,6 +1,9 @@
 package ro.dev.ree.cross_config_manager.model;
 
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
+import ro.dev.ree.cross_config_manager.model.ca_definition.CaDefinition;
+import ro.dev.ree.cross_config_manager.model.ca_definition.CaDefinitionDto;
+import ro.dev.ree.cross_config_manager.model.ca_definition.CaDefinitionService;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
 import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
@@ -42,6 +45,12 @@ public interface ServiceRepository {
         TechnologyTreeService technologyTreeService = ConfigManagerContextProvider.getBean(TechnologyTreeService.class);
         return technologyTreeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
                 map(recordDto -> (TechnologyTreeDto) recordDto).toList();
+    }
+
+        default List<CaDefinitionDto> listOfCaDefinitionDtos() {
+        CaDefinitionService caDefinitionService = ConfigManagerContextProvider.getBean(CaDefinitionService.class);
+        return caDefinitionService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+                map(recordDto -> (CaDefinitionDto) recordDto).toList();
     }
 
     List<RecordDto> findAllByConfigId(String configId);

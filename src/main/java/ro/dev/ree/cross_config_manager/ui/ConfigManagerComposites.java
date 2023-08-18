@@ -1,5 +1,8 @@
 package ro.dev.ree.cross_config_manager.ui;
 
+import lombok.Getter;
+import ro.dev.ree.cross_config_manager.ui.ca_definition_and_message.CaDefinitionAndMessageGui;
+import ro.dev.ree.cross_config_manager.ui.ca_definition_set.CaDefinitionSetGui;
 import ro.dev.ree.cross_config_manager.ui.component_status.ComponentStatusGui;
 import ro.dev.ree.cross_config_manager.ui.core_class_type.CoreClassTypeGui;
 import ro.dev.ree.cross_config_manager.ui.link_status.LinkStatusGui;
@@ -16,6 +19,7 @@ import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class ConfigManagerComposites {
 
     private final List<ManageableComponent> composites = new ArrayList<>();
@@ -32,10 +36,9 @@ public class ConfigManagerComposites {
         composites.add(new ComponentStatusGui());
         composites.add(new ServiceStatusGui());
         composites.add(new TechnologyTreeGui());
+        composites.add(new CaDefinitionAndMessageGui());
+        composites.add(new CaDefinitionSetGui());
 
     }
 
-    public List<ManageableComponent> getComposites() {
-        return composites;
-    }
 }

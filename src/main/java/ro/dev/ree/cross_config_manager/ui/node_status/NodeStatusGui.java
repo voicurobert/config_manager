@@ -58,23 +58,22 @@ public class NodeStatusGui extends TableComposite implements ManageableComponent
             if (widget instanceof Text) {
                 if (table.getSelection().length == 0 || action.equals("Add")) {
                     ((Text) widget).setText("");
-                } else {
+                    map.put(name, "");
+                } else if (action.equals("Update") && !(table.getSelection().length == 0)){
                     ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
+                    map.put(name, table.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Button) {
                 if (table.getSelection().length == 0 || action.equals("Add")) {
-                    ((Button) widget).setText("");
-                } else {
+                    ((Button) widget).setText("false");
+                    map.put(name, "false");
+                } else if (action.equals("Update") && !(table.getSelection().length == 0)){
                     ((Button) widget).setText(table.getSelection()[0].getText(i.get()));
+                    map.put(name, table.getSelection()[0].getText(i.get()));
                     if (table.getSelection()[0].getText(i.get()).equals("true")) {
                         ((Button) widget).setSelection(true);
                     }
                 }
-            }
-            if (table.getSelection().length == 0 || action.equals("Add")) {
-                map.put(name, "");
-            } else {
-                map.put(name, table.getSelection()[0].getText(i.get()));
             }
 
             i.getAndIncrement();

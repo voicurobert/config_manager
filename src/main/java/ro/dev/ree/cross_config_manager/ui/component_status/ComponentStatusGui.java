@@ -59,15 +59,11 @@ public class ComponentStatusGui extends TableComposite implements ManageableComp
                 // Sau sa las fara action.equals("Add") si sa ia totusi componentele de la el selectat
                 if (table.getSelection().length == 0 || action.equals("Add")) {
                     ((Text) widget).setText("");
-                } else {
+                    map.put(name, "");
+                } else if (action.equals("Update") && !(table.getSelection().length == 0)){
                     ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
+                    map.put(name, table.getSelection()[0].getText(i.get()));
                 }
-            }
-
-            if (table.getSelection().length == 0) {
-                map.put(name, "");
-            } else {
-                map.put(name, table.getSelection()[0].getText(i.get()));
             }
 
             i.getAndIncrement();

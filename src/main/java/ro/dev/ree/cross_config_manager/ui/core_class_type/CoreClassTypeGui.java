@@ -58,16 +58,11 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
             if (widget instanceof Text) {
                 if (table.getSelection().length == 0 || action.equals("Add")) {
                     ((Text) widget).setText("");
-                } else {
+                    map.put(name, "");
+                } else if (action.equals("Update") && !(table.getSelection().length == 0)){
                     ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
+                    map.put(name, table.getSelection()[0].getText(i.get()));
                 }
-            }
-
-
-            if (table.getSelection().length == 0) {
-                map.put(name, "");
-            } else {
-                map.put(name, table.getSelection()[0].getText(i.get()));
             }
 
             i.getAndIncrement();

@@ -14,7 +14,6 @@ import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesService;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
-import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TreeComposite;
 import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
@@ -62,7 +61,6 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
             Widget widget = columns.get(name);
             if (widget instanceof Text) {
                 if (action.equals("Add")) {
-                    //TODO de vazut daca se iau asa rooturile aici
                     if(name.equals("linkType")){
                         // Get Text from child root
                         ((Text) widget).setText(tree.getSelection()[0].getText(i.get()));
@@ -77,18 +75,11 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
                 }
             } else if (widget instanceof Combo) {
                 // Add options to the Combo
-                //TODO de vazut daca se iau asa variantele aici
                 if (name.equals("nodeType")) {
-                    // Aici nu sunt sigura daca ar trebui luate toate sau doar cele cu rootType = false
                     for (NodeTypeDto nodeTypeDto : linkTypeNodeTypeRulesService.listOfNodeTypeDtos()) {
                         ((Combo) widget).add(nodeTypeDto.getDiscriminator());
                     }
                 }
-//                else if (name.equals("linkType")) {
-//                    for (LinkTypeDto linkTypeDto : linkTypeNodeTypeRulesService.listOfLinkTypeDtos()) {
-//                        ((Combo) widget).add(linkTypeDto.getDiscriminator());
-//                    }
-//                }
                 if(action.equals("Add")){
                     map.put(name, "");
                 } else if (action.equals("Update") && !(tree.getSelection().length == 0)) {
@@ -119,7 +110,6 @@ public class LinkTypeNodeTypeRulesGui extends TreeComposite implements Manageabl
         Tree tree = (Tree) super.createContents(parent);
 
         List<RecordDto> allByConfigId = linkTypeNodeTypeRulesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-        //TODO de vazut daca se iau asa rooturile aici
         List<String> linkTypeRoots = new ArrayList<>();
         for (LinkTypeDto linkTypeDto: linkTypeNodeTypeRulesService.listOfLinkTypeDtos()) {
             linkTypeRoots.add(linkTypeDto.getDiscriminator());
