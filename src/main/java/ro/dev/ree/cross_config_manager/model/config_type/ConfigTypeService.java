@@ -19,6 +19,7 @@ import ro.dev.ree.cross_config_manager.model.node_status.NodeStatus;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeType;
 import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRules;
 import ro.dev.ree.cross_config_manager.model.service_status.ServiceStatus;
+import ro.dev.ree.cross_config_manager.model.technologies.Technologies;
 import ro.dev.ree.cross_config_manager.model.technology_tree.TechnologyTree;
 
 import java.util.List;
@@ -67,6 +68,8 @@ public class ConfigTypeService {
         mongoTemplate.remove(query, CaDefinition.class);
         mongoTemplate.remove(query, CaDefinitionSet.class);
         mongoTemplate.remove(query, Message.class);
+        mongoTemplate.remove(query, Technologies.class);
+        mongoTemplate.remove(query, TechnologyTree.class);
         query = new Query();
         query.addCriteria(Criteria.where("id").is(configDto.getId()));
         mongoTemplate.remove(query, Config.class);

@@ -13,6 +13,7 @@ import ro.dev.ree.cross_config_manager.ui.node_status.NodeStatusGui;
 import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.service_status.ServiceStatusGui;
+import ro.dev.ree.cross_config_manager.ui.technologies.TechnologiesGui;
 import ro.dev.ree.cross_config_manager.ui.technology_tree.TechnologyTreeGui;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 
@@ -35,6 +36,7 @@ public class ConfigManagerComposites {
         composites.add(new LinkTypeNodeTypeRulesGui());
         composites.add(new ComponentStatusGui());
         composites.add(new ServiceStatusGui());
+        composites.add(new TechnologiesGui());
         composites.add(new TechnologyTreeGui());
         composites.add(new CaDefinitionAndMessageGui());
         composites.add(new CaDefinitionSetGui());

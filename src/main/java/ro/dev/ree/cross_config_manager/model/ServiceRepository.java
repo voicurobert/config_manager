@@ -11,8 +11,8 @@ import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeDto;
 import ro.dev.ree.cross_config_manager.model.link_type.LinkTypeService;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
-import ro.dev.ree.cross_config_manager.model.technology_tree.TechnologyTreeDto;
-import ro.dev.ree.cross_config_manager.model.technology_tree.TechnologyTreeService;
+import ro.dev.ree.cross_config_manager.model.technologies.TechnologiesDto;
+import ro.dev.ree.cross_config_manager.model.technologies.TechnologiesService;
 
 import java.util.List;
 import java.util.Map;
@@ -41,10 +41,10 @@ public interface ServiceRepository {
                 map(recordDto -> (LinkTypeDto) recordDto).toList();
     }
 
-    default List<TechnologyTreeDto> listOfTechnologyType() {
-        TechnologyTreeService technologyTreeService = ConfigManagerContextProvider.getBean(TechnologyTreeService.class);
-        return technologyTreeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
-                map(recordDto -> (TechnologyTreeDto) recordDto).toList();
+    default List<TechnologiesDto> listOfTechnologyType() {
+        TechnologiesService technologiesService = ConfigManagerContextProvider.getBean(TechnologiesService.class);
+        return technologiesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+                map(recordDto -> (TechnologiesDto) recordDto).toList();
     }
 
         default List<CaDefinitionDto> listOfCaDefinitionDtos() {

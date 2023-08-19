@@ -13,6 +13,7 @@ import ro.dev.ree.cross_config_manager.model.message.MessageDto;
 import ro.dev.ree.cross_config_manager.model.node_status.NodeStatusDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.service_status.ServiceStatusDto;
+import ro.dev.ree.cross_config_manager.model.technologies.TechnologiesDto;
 import ro.dev.ree.cross_config_manager.ui.ca_definition_and_message.CaDefinitionAndMessageGui;
 import ro.dev.ree.cross_config_manager.ui.ca_definition_set.CaDefinitionSetGui;
 import ro.dev.ree.cross_config_manager.ui.component_status.ComponentStatusGui;
@@ -21,6 +22,7 @@ import ro.dev.ree.cross_config_manager.ui.link_type.LinkTypeGui;
 import ro.dev.ree.cross_config_manager.ui.node_status.NodeStatusGui;
 import ro.dev.ree.cross_config_manager.ui.node_type.NodeTypeGui;
 import ro.dev.ree.cross_config_manager.ui.service_status.ServiceStatusGui;
+import ro.dev.ree.cross_config_manager.ui.technologies.TechnologiesGui;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlWriter;
 
 import java.lang.reflect.InvocationTargetException;
@@ -105,21 +107,25 @@ public abstract class TableComposite implements Drawable, XmlWriter {
     }
 
     private String insertOrUpdateRecord(Map<String, Object> oldColumnValues, List<String> columnValues, String action) {
-         switch (table.getToolTipText()) {
-            case CoreClassTypeGui.TABLE_NAME :
+        switch (table.getToolTipText()) {
+            case CoreClassTypeGui.TABLE_NAME:
                 return getServiceRepository().insertOrUpdate(oldColumnValues, CoreClassTypeDto.InsertOrUpdateFromItems(columnValues, action));
-            case NodeTypeGui.TABLE_NAME :
+            case NodeTypeGui.TABLE_NAME:
                 return getServiceRepository().insertOrUpdate(oldColumnValues, NodeTypeDto.InsertOrUpdateFromItems(columnValues, action));
-            case LinkTypeGui.TABLE_NAME :
+            case LinkTypeGui.TABLE_NAME:
                 return getServiceRepository().insertOrUpdate(oldColumnValues, LinkTypeDto.InsertOrUpdateFromItems(columnValues, action));
-            case ServiceStatusGui.TABLE_NAME :
+            case ServiceStatusGui.TABLE_NAME:
                 return getServiceRepository().insertOrUpdate(oldColumnValues, ServiceStatusDto.InsertOrUpdateFromItems(columnValues, action));
-            case NodeStatusGui.TABLE_NAME :
+            case NodeStatusGui.TABLE_NAME:
                 return getServiceRepository().insertOrUpdate(oldColumnValues, NodeStatusDto.InsertOrUpdateFromItems(columnValues, action));
-            case ComponentStatusGui.TABLE_NAME :
+            case ComponentStatusGui.TABLE_NAME:
                 return getServiceRepository().insertOrUpdate(oldColumnValues, ComponentStatusDto.InsertOrUpdateFromItems(columnValues, action));
-            case CaDefinitionSetGui.TABLE_NAME :
+            case CaDefinitionSetGui.TABLE_NAME:
                 return getServiceRepository().insertOrUpdate(oldColumnValues, CaDefinitionSetDto.InsertOrUpdateFromItems(columnValues, action));
+            case TechnologiesGui.TABLE_NAME:
+                return getServiceRepository().insertOrUpdate(oldColumnValues, TechnologiesDto.InsertOrUpdateFromItems(columnValues, action));
+
+
             case CaDefinitionAndMessageGui.TABLE_NAME: {
                 Class<?> targetClass = CaDefinitionAndMessageGui.class;
                 String methodName = "getAnotherServiceRepository";
@@ -148,8 +154,10 @@ public abstract class TableComposite implements Drawable, XmlWriter {
                     return id;
                 }
             }
-            default: return "";
+            default:
+                return "";
         }
+
     }
 
 

@@ -18,9 +18,6 @@ import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TreeComposite;
 import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,7 +115,7 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
             treeItem.setText(0, tt.getId());
             treeItem.setText(1, tt.getName());
 
-            for (RecordDto node :  nodeTypes) {
+            for (RecordDto node : nodeTypes) {
                 TechnologyTreeDto technologyTreeDto = (TechnologyTreeDto) node;
                 String[] vec = new String[columns().length];
 
@@ -143,8 +140,6 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
                 childItem.setText(vec);
 
             }
-
-
 
 
         }
@@ -196,55 +191,41 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
         }
         NodeList nodeList = ((Element) header).getElementsByTagName("technologyTree");
 
-        // 1. for all nodeList:
-        // 1.1 get name of technologyTree
-        // 1.2 get all nodeTypes for technologyTree; create a technology dto and insert it in database
-        // 1.3 get all LinkTypes for technologyTree; create a technology dto and insert it in database
-
-
         for (int i = 0; i < nodeList.getLength(); i++) {
-            List<String> listWithLinks = new ArrayList<>();
-            List<String> listWithNodes = new ArrayList<>();
-            TechnologyTreeDto technologyTreeDto = new TechnologyTreeDto();
-            technologyTreeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-
             Node node = nodeList.item(i);
-
             if (node.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
             Element eElement = (Element) node;
-            int x = 0;
+            String name = eElement.getElementsByTagName("name").item(0).getTextContent();
+            TechnologyTreeDto technologyTreeDto = new TechnologyTreeDto();
+            technologyTreeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+            technologyTreeDto.setName(name);
 
-            for (int i1 = 1; i1 < columns().length; i1++) {
-                x = eElement.getElementsByTagName(columns()[i1]).getLength();
-
-                for (int j = 0; j < x; j++) {
-                    for (Method declaredMethod : technologyTreeDto.getClass().getDeclaredMethods()) {
-                        if (declaredMethod.getName().toLowerCase().contains(columns()[i1].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
-                            try {
-                                if (eElement.getElementsByTagName(columns()[i1]).getLength() == 0) {
-                                    break;
-                                }
-                                declaredMethod.invoke(technologyTreeDto, eElement.getElementsByTagName(columns()[i1]).item(j).getTextContent());
-                                technologyTreeService.insertOrUpdate(null, technologyTreeDto);
-                                break;
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                throw new RuntimeException(e);
-                            }
-
-                        }
-
-
-                    }
-
-                }
-                //technologyTreeService.insertOrUpdate(null, technologyTreeDto);
-            }
             technologyTreeService.insertOrUpdate(null, technologyTreeDto);
+            createTechnologyTree(eElement, name, "nodeType");
+            createTechnologyTree(eElement, name, "linkType");
+
+
         }
 
 
+    }
+
+    private void createTechnologyTree(Element element, String name, String tagName) {
+        NodeList nodes = element.getElementsByTagName(tagName);
+        for (int j = 0; j < nodes.getLength(); j++) {
+            String content = nodes.item(j).getTextContent();
+            TechnologyTreeDto technologyTreeDto = new TechnologyTreeDto();
+            technologyTreeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+            technologyTreeDto.setName(name);
+            if (tagName.equals("linkType")) {
+                technologyTreeDto.setLinkType(content);
+            } else {
+                technologyTreeDto.setNodeType(content);
+            }
+            technologyTreeService.insertOrUpdate(null, technologyTreeDto);
+        }
     }
 }
 
