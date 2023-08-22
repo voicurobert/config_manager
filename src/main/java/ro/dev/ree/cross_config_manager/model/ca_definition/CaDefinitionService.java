@@ -5,8 +5,19 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.ca_definition_set.CaDefinitionSet;
+import ro.dev.ree.cross_config_manager.model.ca_definition_set.CaDefinitionSetDto;
+import ro.dev.ree.cross_config_manager.model.ca_definition_set.CaDefinitionSetService;
+import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRules;
+import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
+import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesService;
+import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
+import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRules;
+import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
+import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesService;
 
 import java.util.List;
 import java.util.Map;
@@ -33,9 +44,24 @@ public class CaDefinitionService implements ServiceRepository {
         if(caDefinitionDto.getId() == null) {
             caDefinitionDto.setId(insert.getId());
         }
-        //TODO de adaugat aici update pentru CaDefinitionSet
+        else if(oldColumnValues != null){
+            // Search for object with this old caDefinition.attributeName and change it with the new caDefinition.attributeName
+            findByName((String) oldColumnValues.get("attributeName"), recordDto);
+        }
 
         return caDefinitionDto.getId();
+    }
+
+    public void findByName(String name, RecordDto recordDto) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("caDefinitionName").is(name));
+        for (CaDefinitionSet caDefinitionSet: mongoTemplate.find(query, CaDefinitionSet.class)) {
+            caDefinitionSet.setCaDefinitionName(((CaDefinitionDto) recordDto).getAttributeName());
+            CaDefinitionSetService caDefinitionSetService = ConfigManagerContextProvider.getBean(CaDefinitionSetService.class);
+            CaDefinitionSetDto caDefinitionSetDto = new CaDefinitionSetDto();
+            BeanUtils.copyProperties(caDefinitionSet, caDefinitionSetDto);
+            caDefinitionSetService.insertOrUpdate(null, caDefinitionSetDto);
+        }
     }
 
     @Override

@@ -4,10 +4,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.ca_definition_set.CaDefinitionSetDto;
 import ro.dev.ree.cross_config_manager.model.link_type_node_type_rules.LinkTypeNodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.link_type_rules.LinkTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.node_type_rules.NodeTypeRulesDto;
 import ro.dev.ree.cross_config_manager.model.technology_tree.TechnologyTreeDto;
+import ro.dev.ree.cross_config_manager.ui.ca_definition_set.CaDefinitionSetGui;
 import ro.dev.ree.cross_config_manager.ui.link_type_node_type_rules.LinkTypeNodeTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.link_type_rules.LinkTypeRulesGui;
 import ro.dev.ree.cross_config_manager.ui.node_type_rules.NodeTypeRulesGui;
@@ -75,10 +77,19 @@ public abstract class TreeComposite implements Drawable, XmlWriter {
 
     private void deleteSelection() {
         TreeItem treeItem = tree.getSelection()[0];
+        // Remove all childrens from db
+        int itemCount = treeItem.getItemCount();
+        for(int i = itemCount - 1; i >= 0; --i) {
+            if (treeItem.getItems()[i] != null) {
+                delete(treeItem.getItems()[i].getText(0));
+            } else {
+                --itemCount;
+            }
+        }
+        // Remove actual parent from db
         delete(treeItem.getText(0));
-        // Aici se face stergerea tuturor copiilor dar in db nu
-        treeItem.removeAll(); // Remove all childrens
-        treeItem.dispose();   // Remove actual parent
+        treeItem.removeAll(); // Remove all childrens from tree
+        treeItem.dispose();   // Remove actual parent from tree
     }
 
     private void openDialogEditor(String action) {
@@ -113,6 +124,8 @@ public abstract class TreeComposite implements Drawable, XmlWriter {
                     getServiceRepository().insertOrUpdate(oldColumnValues, LinkTypeNodeTypeRulesDto.InsertOrUpdateFromItems(columnValues, action));
             case TechnologyTreeGui.TREE_NAME ->
                     getServiceRepository().insertOrUpdate(oldColumnValues, TechnologyTreeDto.InsertOrUpdateFromItems(columnValues, action));
+            case CaDefinitionSetGui.TREE_NAME ->
+                    getServiceRepository().insertOrUpdate(oldColumnValues, CaDefinitionSetDto.InsertOrUpdateFromItems(columnValues, action));
             default -> "";
         };
     }
@@ -126,6 +139,5 @@ public abstract class TreeComposite implements Drawable, XmlWriter {
     }
 
     public void delete(String id) {
-
     }
 }

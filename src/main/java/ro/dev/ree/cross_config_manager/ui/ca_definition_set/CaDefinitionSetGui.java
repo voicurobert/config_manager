@@ -14,22 +14,20 @@ import ro.dev.ree.cross_config_manager.model.ca_definition_set.CaDefinitionSetDt
 import ro.dev.ree.cross_config_manager.model.ca_definition_set.CaDefinitionSetService;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
-import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
+import ro.dev.ree.cross_config_manager.ui.utils.TreeComposite;
 import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CaDefinitionSetGui extends TableComposite implements ManageableComponent, XmlRead {
+public class CaDefinitionSetGui extends TreeComposite implements ManageableComponent, XmlRead {
 
-    public static final String TABLE_NAME = "Ca Definition Set";
+    public static final String TREE_NAME = "Ca Definition Set";
 
     private final CaDefinitionSetService caDefinitionSetService = ConfigManagerContextProvider.getBean(CaDefinitionSetService.class);
-
 
     @Override
     public String[] columns() {
@@ -56,23 +54,23 @@ public class CaDefinitionSetGui extends TableComposite implements ManageableComp
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
             if (widget instanceof Text) {
-                if (table.getSelection().length == 0 || action.equals("Add")) {
+                if (tree.getSelection().length == 0 || action.equals("Add")) {
                     ((Text) widget).setText("");
                     map.put(name, "");
-                } else if (action.equals("Update") && !(table.getSelection().length == 0)) {
-                    ((Text) widget).setText(table.getSelection()[0].getText(i.get()));
-                    map.put(name, table.getSelection()[0].getText(i.get()));
+                } else if (action.equals("Update") && !(tree.getSelection().length == 0)) {
+                    ((Text) widget).setText(tree.getSelection()[0].getText(i.get()));
+                    map.put(name, tree.getSelection()[0].getText(i.get()));
                 }
             } else if (widget instanceof Combo) {
                 // Add options to the Combo
                 for (CaDefinitionDto caDefinitionDto : caDefinitionSetService.listOfCaDefinitionDtos()) {
                     ((Combo) widget).add(caDefinitionDto.getAttributeName());
                 }
-                if (action.equals("Update") && !(table.getSelection().length == 0)) {
-                    ((Combo) widget).select(((Combo) widget).indexOf(table.getSelection()[0].getText(i.get())));
-                    map.put(name, table.getSelection()[0].getText(i.get()));
+                if (action.equals("Update") && !(tree.getSelection().length == 0)) {
+                    ((Combo) widget).select(((Combo) widget).indexOf(tree.getSelection()[0].getText(i.get())));
+                    map.put(name, tree.getSelection()[0].getText(i.get()));
                 }
-                else if(table.getSelection().length == 0 || action.equals("Add")){
+                else if(tree.getSelection().length == 0 || action.equals("Add")){
                     map.put(name, "");
                 }
             }
@@ -82,8 +80,8 @@ public class CaDefinitionSetGui extends TableComposite implements ManageableComp
     }
 
     @Override
-    public String tableName() {
-        return TABLE_NAME;
+    public String treeName() {
+        return TREE_NAME;
     }
 
     @Override
@@ -96,28 +94,51 @@ public class CaDefinitionSetGui extends TableComposite implements ManageableComp
 
         createTitle(parent);
 
-        Table table = (Table) super.createContents(parent);
+        Tree tree = (Tree) super.createContents(parent);
 
         List<RecordDto> allByConfigId = caDefinitionSetService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+        List<CaDefinitionSetDto> added = new ArrayList<>(0);
+        for (RecordDto root : allByConfigId) {
+            CaDefinitionSetDto caDefinitionSetDto = (CaDefinitionSetDto) root;
+            // A method which verify if the parent node exists already
+            boolean exists = false;
+            if(!added.isEmpty()){
+                for (CaDefinitionSetDto add: added) {
+                    if (add.getName().equals(caDefinitionSetDto.getName()) && add.getType().equals(caDefinitionSetDto.getType())) {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+            if(!exists){
+                added.add(caDefinitionSetDto);
+                List<RecordDto> caDefinitionNames = caDefinitionSetService.findCaDefinitionNamesByNameTypeAndConfigId(caDefinitionSetDto.getName(), caDefinitionSetDto.getType(), ConfigSingleton.getSingleton().getConfigDto().getId());
 
-        for (RecordDto recordDto : allByConfigId) {
-            CaDefinitionSetDto caDefinitionSetDto = (CaDefinitionSetDto) recordDto;
-            String[] vec = new String[columns().length];
+                TreeItem treeItem = new TreeItem(tree, SWT.NONE);
+                treeItem.setText(0, caDefinitionSetDto.getId());
+                treeItem.setText(1, caDefinitionSetDto.getType());
+                treeItem.setText(2, caDefinitionSetDto.getName());
 
-            vec[0] = caDefinitionSetDto.getId();
-            vec[1] = caDefinitionSetDto.getType();
-            vec[2] = caDefinitionSetDto.getName();
-            vec[3] = caDefinitionSetDto.getCaDefinitionName();
+                for (RecordDto node : caDefinitionNames) {
+                    CaDefinitionSetDto caDefinitionSetDto1 = (CaDefinitionSetDto) node;
+                    String[] vec = new String[columns().length];
 
-            TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(vec);
+                    vec[0] = caDefinitionSetDto1.getId();
+                    vec[1] = caDefinitionSetDto1.getType();
+                    vec[2] = caDefinitionSetDto1.getName();
+                    vec[3] = caDefinitionSetDto1.getCaDefinitionName();
+
+                    TreeItem childItem = new TreeItem(treeItem, SWT.NONE);
+                    childItem.setText(vec);
+                }
+            }
         }
 
-        for (TableColumn column : table.getColumns()) {
+        for (TreeColumn column : tree.getColumns()) {
             column.pack();
         }
 
-        return table;
+        return tree;
     }
 
     @Override
@@ -127,7 +148,6 @@ public class CaDefinitionSetGui extends TableComposite implements ManageableComp
         super.delete(id);
     }
 
-    //TODO de modificat citirea din XML sa-mi ia mai multe atribute sub acelasi nume
     @Override
     public void readElement(Element element) {
         Node header = element.getElementsByTagName("caDefinitionSets").item(0);
@@ -135,32 +155,35 @@ public class CaDefinitionSetGui extends TableComposite implements ManageableComp
             return;
         }
         NodeList nodeList = ((Element) header).getElementsByTagName("caDefinitionSet");
+        
         for (int i = 0; i < nodeList.getLength(); i++) {
-            CaDefinitionSetDto caDefinitionSetDto = new CaDefinitionSetDto();
-            caDefinitionSetDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
             Node node = nodeList.item(i);
-
             if (node.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
             Element eElement = (Element) node;
+            String name = eElement.getElementsByTagName("name").item(0).getTextContent();
+            String type = eElement.getElementsByTagName("type").item(0).getTextContent();
+            CaDefinitionSetDto caDefinitionSetDto = new CaDefinitionSetDto();
+            caDefinitionSetDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+            caDefinitionSetDto.setName(name);
+            caDefinitionSetDto.setType(type);
 
-            for (int idx = 1; idx < columns().length; idx++) {
+            caDefinitionSetService.insertOrUpdate(null, caDefinitionSetDto);
+            createCaDefinitionSet(eElement, name, type);
+        }
+    }
 
-                for (Method declaredMethod : caDefinitionSetDto.getClass().getDeclaredMethods()) {
-                    if (declaredMethod.getName().toLowerCase().contains(columns()[idx].toLowerCase()) && declaredMethod.getName().toLowerCase().contains("set")) {
-                        try {
-                            if (eElement.getElementsByTagName(columns()[idx]).getLength() == 0) {
-                                break;
-                            }
-                            declaredMethod.invoke(caDefinitionSetDto, eElement.getElementsByTagName(columns()[idx]).item(0).getTextContent());
-                            break;
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-            }
+    private void createCaDefinitionSet(Element element, String name, String type) {
+        NodeList nodes = element.getElementsByTagName("caDefinitionName");
+        for (int j = 0; j < nodes.getLength(); j++) {
+            String content = nodes.item(j).getTextContent();
+            CaDefinitionSetDto caDefinitionSetDto = new CaDefinitionSetDto();
+            caDefinitionSetDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+            caDefinitionSetDto.setName(name);
+            caDefinitionSetDto.setType(type);
+            caDefinitionSetDto.setCaDefinitionName(content);
+
             caDefinitionSetService.insertOrUpdate(null, caDefinitionSetDto);
         }
     }
@@ -168,16 +191,29 @@ public class CaDefinitionSetGui extends TableComposite implements ManageableComp
 
     @Override
     public void xmlElements(Document document, Element rootElement) {
-        List<RecordDto> allByConfigId = caDefinitionSetService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-
         // root element
         Element caDefinitionSets = document.createElement("caDefinitionSets");
         rootElement.appendChild(caDefinitionSets);
+        List<CaDefinitionSetDto> added = new ArrayList<>(0);
+
+        List<RecordDto> allByConfigId = caDefinitionSetService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
         for (RecordDto recordDto : allByConfigId) {
             CaDefinitionSetDto caDefinitionSetDto = (CaDefinitionSetDto) recordDto;
-            //TODO de modificat in asXml sa am mai multe atribute in acelasi caDefinitionSet
-            caDefinitionSetDto.asXml(document, caDefinitionSets);
+            // A method which verify if the parent node exists already
+            boolean exists = false;
+            if(!added.isEmpty()){
+                for (CaDefinitionSetDto add : added) {
+                    if (add.getName().equals(caDefinitionSetDto.getName()) && add.getType().equals(caDefinitionSetDto.getType())) {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+            if(!exists){
+                added.add(caDefinitionSetDto);
+                caDefinitionSetDto.asXml(document, caDefinitionSets);
+            }
         }
     }
 }

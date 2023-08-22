@@ -120,29 +120,25 @@ public abstract class TableComposite implements Drawable, XmlWriter {
                 return getServiceRepository().insertOrUpdate(oldColumnValues, NodeStatusDto.InsertOrUpdateFromItems(columnValues, action));
             case ComponentStatusGui.TABLE_NAME:
                 return getServiceRepository().insertOrUpdate(oldColumnValues, ComponentStatusDto.InsertOrUpdateFromItems(columnValues, action));
-            case CaDefinitionSetGui.TABLE_NAME:
-                return getServiceRepository().insertOrUpdate(oldColumnValues, CaDefinitionSetDto.InsertOrUpdateFromItems(columnValues, action));
             case TechnologiesGui.TABLE_NAME:
                 return getServiceRepository().insertOrUpdate(oldColumnValues, TechnologiesDto.InsertOrUpdateFromItems(columnValues, action));
-
-
             case CaDefinitionAndMessageGui.TABLE_NAME: {
                 Class<?> targetClass = CaDefinitionAndMessageGui.class;
                 String methodName = "getAnotherServiceRepository";
-                Method method = null;
+                Method method;
                 try {
                     method = targetClass.getMethod(methodName);
                 } catch (NoSuchMethodException e) {
                     throw new RuntimeException(e);
                 }
-                Object instance = null;
+                Object instance;
                 try {
                     instance = targetClass.getDeclaredConstructor().newInstance();
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                          NoSuchMethodException e) {
                     throw new RuntimeException(e);
                 }
-                Object result = null;
+                Object result;
                 try {
                     result = method.invoke(instance);
                 } catch (IllegalAccessException | InvocationTargetException e) {

@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.technology_tree.TechnologyTree;
+import ro.dev.ree.cross_config_manager.model.technology_tree.TechnologyTreeDto;
 
 import java.util.List;
 import java.util.Map;
@@ -72,5 +74,21 @@ public class CaDefinitionSetService implements ServiceRepository {
                     return dto;
                 }).
                 findFirst().orElse(null);
+    }
+
+    public List<RecordDto> findCaDefinitionNamesByNameTypeAndConfigId(String name, String type, String configId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("configId").is(configId));
+        query.addCriteria(Criteria.where("caDefinitionName").exists(true));
+        query.addCriteria(Criteria.where("name").is(name));
+        query.addCriteria(Criteria.where("type").is(type));
+
+        return mongoTemplate.find(query, CaDefinitionSet.class).stream().
+                map(caDefinitionSet -> {
+                    CaDefinitionSetDto dto = new CaDefinitionSetDto();
+                    BeanUtils.copyProperties(caDefinitionSet, dto);
+                    return dto;
+                }).
+                collect(Collectors.toList());
     }
 }
