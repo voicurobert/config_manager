@@ -72,15 +72,17 @@ public abstract class TableComposite implements Drawable, XmlWriter {
         menuHeadline.setMenu(fileMenu);
         MenuItem addMenu = new MenuItem(fileMenu, SWT.PUSH);
         addMenu.setText("Add new " + tableName());
-        MenuItem updateMenu = new MenuItem(fileMenu, SWT.PUSH);
-        updateMenu.setText("Update " + tableName());
+        if (tableName() != "Technologies") {
+            MenuItem updateMenu = new MenuItem(fileMenu, SWT.PUSH);
+            updateMenu.setText("Update " + tableName());
+            updateMenu.addListener(SWT.Selection, event -> openDialogEditor("Update"));
+        }
         MenuItem deleteMenu = new MenuItem(fileMenu, SWT.PUSH);
         deleteMenu.setText("Delete " + tableName());
 
         addMenu.addListener(SWT.Selection, event -> openDialogEditor("Add"));
-        updateMenu.addListener(SWT.Selection, event -> openDialogEditor("Update"));
-        deleteMenu.addListener(SWT.Selection, event -> deleteSelection());
 
+        deleteMenu.addListener(SWT.Selection, event -> deleteSelection());
         return table;
     }
 

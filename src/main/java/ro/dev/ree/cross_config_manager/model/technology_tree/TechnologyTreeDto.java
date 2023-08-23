@@ -5,11 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.xml.writer.XmlElement;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 @Data
@@ -36,23 +36,37 @@ public class TechnologyTreeDto extends RecordDto implements XmlElement {
 
     @Override
     public void asXml(Document document, Element rootElement) {
-
-        // add xml elements
         Element technologyTree = document.createElement("technologyTree");
         // add classType to root
         rootElement.appendChild(technologyTree);
 
-        Field[] fields = getClass().getDeclaredFields();
-        for (int i = 1; i < fields.length; i++) {
-            Element name = document.createElement(fields[i].getName());
-            switch (fields[i].getName()) {
-                case "name" -> name.setTextContent(this.name);
-                case "nodeType" -> name.setTextContent(this.nodeType);
-                case "linkType" -> name.setTextContent(this.linkType);
-                default -> {
-                }
-            }
-            technologyTree.appendChild(name);
+        Element name = document.createElement("name");
+        name.setTextContent(this.name);
+        technologyTree.appendChild(name);
+
+        TechnologyTreeService technologyTreeService = ConfigManagerContextProvider.getBean(TechnologyTreeService.class);
+        List<RecordDto> linkTypes = technologyTreeService.findLinkTypesByNameAndConfigIdNew(this.name, ConfigSingleton.getSingleton().getConfigDto().getId());
+        List<RecordDto> nodeTypes = technologyTreeService.findNodeTypesByNameAndConfigIdNew(this.name, ConfigSingleton.getSingleton().getConfigDto().getId());
+
+        for (RecordDto node : nodeTypes) {
+            TechnologyTreeDto technologyTreeDto = (TechnologyTreeDto) node;
+            Element nodeType = document.createElement("nodeType");
+            nodeType.setTextContent(technologyTreeDto.getNodeType());
+
+            technologyTree.appendChild(nodeType);
+
+
         }
+
+        for (RecordDto link : linkTypes) {
+            TechnologyTreeDto technologyTreeDto = (TechnologyTreeDto) link;
+            Element linkType = document.createElement("linkType");
+            linkType.setTextContent(technologyTreeDto.getLinkType());
+
+            technologyTree.appendChild(linkType);
+
+        }
+
+
     }
 }

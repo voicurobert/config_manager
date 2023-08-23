@@ -18,6 +18,7 @@ import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TreeComposite;
 import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,43 +105,55 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
         Tree tree = (Tree) super.createContents(parent);
 
         List<RecordDto> allByConfigId = technologyTreeService.findAllRoots(ConfigSingleton.getSingleton().getConfigDto().getId());
+        List<TechnologyTreeDto> added = new ArrayList<>(0);
         for (RecordDto root : allByConfigId) {
             TechnologyTreeDto tt = (TechnologyTreeDto) root;
-            // List<RecordDto> records = technologyTreeService.findAllByNameAndConfigId(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
-            List<RecordDto> linkTypes = technologyTreeService.findLinkTypesByNameAndConfigIdNew(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
-            List<RecordDto> nodeTypes = technologyTreeService.findNodeTypesByNameAndConfigIdNew(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
-
-
-            TreeItem treeItem = new TreeItem(tree, SWT.NONE);
-            treeItem.setText(0, tt.getId());
-            treeItem.setText(1, tt.getName());
-
-            for (RecordDto node : nodeTypes) {
-                TechnologyTreeDto technologyTreeDto = (TechnologyTreeDto) node;
-                String[] vec = new String[columns().length];
-
-                vec[0] = technologyTreeDto.getId();
-                vec[1] = technologyTreeDto.getName();
-                vec[2] = technologyTreeDto.getNodeType();
-                vec[3] = technologyTreeDto.getLinkType();
-                TreeItem childItem = new TreeItem(treeItem, SWT.NONE);
-                childItem.setText(vec);
-
+            boolean exists = false;
+            if (!added.isEmpty()) {
+                for (TechnologyTreeDto add : added) {
+                    if (add.getName().equals(tt.getName())) {
+                        exists = true;
+                        break;
+                    }
+                }
             }
+            if (!exists) {
+                added.add(tt);
+                // List<RecordDto> records = technologyTreeService.findAllByNameAndConfigId(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
+                List<RecordDto> linkTypes = technologyTreeService.findLinkTypesByNameAndConfigIdNew(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
+                List<RecordDto> nodeTypes = technologyTreeService.findNodeTypesByNameAndConfigIdNew(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
 
-            for (RecordDto link : linkTypes) {
-                TechnologyTreeDto technologyTreeDto = (TechnologyTreeDto) link;
-                String[] vec = new String[columns().length];
 
-                vec[0] = technologyTreeDto.getId();
-                vec[1] = technologyTreeDto.getName();
-                vec[2] = technologyTreeDto.getNodeType();
-                vec[3] = technologyTreeDto.getLinkType();
-                TreeItem childItem = new TreeItem(treeItem, SWT.NONE);
-                childItem.setText(vec);
+                TreeItem treeItem = new TreeItem(tree, SWT.NONE);
+                treeItem.setText(0, tt.getId());
+                treeItem.setText(1, tt.getName());
 
+                for (RecordDto node : nodeTypes) {
+                    TechnologyTreeDto technologyTreeDto = (TechnologyTreeDto) node;
+                    String[] vec = new String[columns().length];
+
+                    vec[0] = technologyTreeDto.getId();
+                    vec[1] = technologyTreeDto.getName();
+                    vec[2] = technologyTreeDto.getNodeType();
+                    vec[3] = technologyTreeDto.getLinkType();
+                    TreeItem childItem = new TreeItem(treeItem, SWT.NONE);
+                    childItem.setText(vec);
+
+                }
+
+                for (RecordDto link : linkTypes) {
+                    TechnologyTreeDto technologyTreeDto = (TechnologyTreeDto) link;
+                    String[] vec = new String[columns().length];
+
+                    vec[0] = technologyTreeDto.getId();
+                    vec[1] = technologyTreeDto.getName();
+                    vec[2] = technologyTreeDto.getNodeType();
+                    vec[3] = technologyTreeDto.getLinkType();
+                    TreeItem childItem = new TreeItem(treeItem, SWT.NONE);
+                    childItem.setText(vec);
+
+                }
             }
-
 
         }
 
@@ -150,14 +163,6 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
         }
 
         return tree;
-    }
-
-    private boolean checkParentChain(TreeItem root, String parentNode, String childNode) {
-        if (root == null)
-            return false;
-        if (root.getText(1).equals(childNode) && root.getText(2).equals(parentNode))
-            return true;
-        return checkParentChain(root.getParentItem(), parentNode, childNode);
     }
 
 
@@ -170,15 +175,33 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
 
     @Override
     public void xmlElements(Document document, Element rootElement) {
-        List<RecordDto> allByConfigId = technologyTreeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
-
         // root element
         Element technologyTree = document.createElement("technologyTrees");
         rootElement.appendChild(technologyTree);
 
+        List<TechnologyTreeDto> added = new ArrayList<>(0);
+
+        List<RecordDto> allByConfigId = technologyTreeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
+
+
         for (RecordDto recordDto : allByConfigId) {
-            TechnologyTreeDto serviceStatusDto = (TechnologyTreeDto) recordDto;
-            serviceStatusDto.asXml(document, technologyTree);
+            TechnologyTreeDto technologyTreeDto = (TechnologyTreeDto) recordDto;
+
+            boolean exists = false;
+            if (!added.isEmpty()) {
+                for (TechnologyTreeDto add : added) {
+                    if (add.getName().equals(technologyTreeDto.getName())) {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+            if (!exists) {
+                added.add(technologyTreeDto);
+                technologyTreeDto.asXml(document, technologyTree);
+            }
+
+            technologyTreeDto.asXml(document, technologyTree);
         }
     }
 

@@ -40,7 +40,7 @@ public class TechnologiesDto extends RecordDto implements XmlElement {
     public void asXml(Document document, Element rootElement) {
 
         // add xml elements
-        Element technologies = document.createElement("technologies");
+        Element technologies = document.createElement("technology");
         // add classType to root
         rootElement.appendChild(technologies);
 
