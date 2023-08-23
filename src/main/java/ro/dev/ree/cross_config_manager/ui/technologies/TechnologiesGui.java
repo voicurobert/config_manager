@@ -12,6 +12,7 @@ import ro.dev.ree.cross_config_manager.model.ServiceRepository;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.technologies.TechnologiesDto;
 import ro.dev.ree.cross_config_manager.model.technologies.TechnologiesService;
+import ro.dev.ree.cross_config_manager.model.technology_tree.TechnologyTreeDto;
 import ro.dev.ree.cross_config_manager.ui.utils.ManageableComponent;
 import ro.dev.ree.cross_config_manager.ui.utils.TableComposite;
 import ro.dev.ree.cross_config_manager.xml.reader.XmlRead;
@@ -40,7 +41,7 @@ public class TechnologiesGui extends TableComposite implements ManageableCompone
 
         map.put("id", new Text(parent, SWT.READ_ONLY | SWT.BORDER));
         map.put("name", new Text(parent, SWT.BORDER));
-        map.put("technologyTree", new Text(parent, SWT.BORDER));
+        map.put("technologyTree", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
         map.put("parentTechnology", new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY));
 
         return map;
@@ -63,14 +64,13 @@ public class TechnologiesGui extends TableComposite implements ManageableCompone
                 }
             } else if (widget instanceof Combo) {
                 // Add options to the Combo
-                String TechnologyTree = "";
-                for (TechnologiesDto technologiesDto : technologiesService.listOfTechnologyType()) {
-
-                    if (TechnologyTree.equals(technologiesDto.getTechnologyTree())) {
-                        continue;
+                for (RecordDto recordDtos : technologiesService.listOfTechnologyType()) {
+                    if(recordDtos instanceof TechnologiesDto){
+                        ((Combo) widget).add(((TechnologiesDto)recordDtos).getTechnologyTree());
                     }
-                    ((Combo) widget).add(technologiesDto.getTechnologyTree());
-                    TechnologyTree = technologiesDto.getTechnologyTree();
+                    else if(recordDtos instanceof TechnologyTreeDto){
+                        ((Combo) widget).add(((TechnologyTreeDto)recordDtos).getName());
+                    }
                 }
                 if (action.equals("Update") && !(table.getSelection().length == 0)) {
                     ((Combo) widget).select(((Combo) widget).indexOf(table.getSelection()[0].getText(i.get())));

@@ -28,9 +28,18 @@ public class TechnologyTreeDto extends RecordDto implements XmlElement {
         }
         technologyTreeDto.setConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
         technologyTreeDto.setName(columnValues.get(1));
-        technologyTreeDto.setNodeType(columnValues.get(2));
-        technologyTreeDto.setLinkType(columnValues.get(3));
-
+        if(columnValues.get(2).isEmpty()){
+            technologyTreeDto.setNodeType(null);
+        }
+        else {
+            technologyTreeDto.setNodeType(columnValues.get(2));
+        }
+        if(columnValues.get(3).isEmpty()){
+            technologyTreeDto.setLinkType(null);
+        }
+        else {
+            technologyTreeDto.setLinkType(columnValues.get(3));
+        }
         return technologyTreeDto;
     }
 
@@ -66,7 +75,5 @@ public class TechnologyTreeDto extends RecordDto implements XmlElement {
             technologyTree.appendChild(linkType);
 
         }
-
-
     }
 }

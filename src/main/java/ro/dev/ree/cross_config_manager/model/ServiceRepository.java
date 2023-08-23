@@ -1,9 +1,12 @@
 package ro.dev.ree.cross_config_manager.model;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.TreeItem;
 import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.ca_definition.CaDefinition;
 import ro.dev.ree.cross_config_manager.model.ca_definition.CaDefinitionDto;
 import ro.dev.ree.cross_config_manager.model.ca_definition.CaDefinitionService;
+import ro.dev.ree.cross_config_manager.model.ca_definition_set.CaDefinitionSetDto;
 import ro.dev.ree.cross_config_manager.model.config_type.ConfigSingleton;
 import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeDto;
 import ro.dev.ree.cross_config_manager.model.core_class_type.CoreClassTypeService;
@@ -13,7 +16,10 @@ import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeDto;
 import ro.dev.ree.cross_config_manager.model.node_type.NodeTypeService;
 import ro.dev.ree.cross_config_manager.model.technologies.TechnologiesDto;
 import ro.dev.ree.cross_config_manager.model.technologies.TechnologiesService;
+import ro.dev.ree.cross_config_manager.model.technology_tree.TechnologyTreeDto;
+import ro.dev.ree.cross_config_manager.model.technology_tree.TechnologyTreeService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,10 +47,49 @@ public interface ServiceRepository {
                 map(recordDto -> (LinkTypeDto) recordDto).toList();
     }
 
-    default List<TechnologiesDto> listOfTechnologyType() {
+    default List<RecordDto> listOfTechnologyType() {
         TechnologiesService technologiesService = ConfigManagerContextProvider.getBean(TechnologiesService.class);
-        return technologiesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+        TechnologyTreeService technologyTreeService = ConfigManagerContextProvider.getBean(TechnologyTreeService.class);
+
+        List<TechnologiesDto> technologiesDtoList = technologiesService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
                 map(recordDto -> (TechnologiesDto) recordDto).toList();
+        List<TechnologyTreeDto> technologyTreeDtoList = technologyTreeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId()).stream().
+                map(recordDto -> (TechnologyTreeDto) recordDto).toList();
+
+        List<RecordDto> added = new ArrayList<>(0);
+        for (TechnologyTreeDto technologyTreeDto : technologyTreeDtoList) {
+            boolean exists = false;
+            if(!added.isEmpty()){
+                for (RecordDto add : added) {
+                    if(add instanceof TechnologyTreeDto ?
+                            ((TechnologyTreeDto)add).getName().equals(technologyTreeDto.getName())
+                            : ((TechnologiesDto)add).getTechnologyTree().equals(technologyTreeDto.getName())){
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+            if(!exists){
+                added.add(technologyTreeDto);
+            }
+        }
+        for (TechnologiesDto technologyDto : technologiesDtoList) {
+            boolean exists = false;
+            if(!added.isEmpty()){
+                for (RecordDto add : added) {
+                    if(add instanceof TechnologiesDto ?
+                            ((TechnologiesDto)add).getTechnologyTree().equals(technologyDto.getTechnologyTree())
+                            : ((TechnologyTreeDto)add).getName().equals(technologyDto.getTechnologyTree())){
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+            if(!exists){
+                added.add(technologyDto);
+            }
+        }
+        return added;
     }
 
         default List<CaDefinitionDto> listOfCaDefinitionDtos() {

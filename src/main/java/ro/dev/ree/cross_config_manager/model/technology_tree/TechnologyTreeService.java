@@ -5,8 +5,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import ro.dev.ree.cross_config_manager.ConfigManagerContextProvider;
 import ro.dev.ree.cross_config_manager.model.RecordDto;
 import ro.dev.ree.cross_config_manager.model.ServiceRepository;
+import ro.dev.ree.cross_config_manager.model.technologies.Technologies;
+import ro.dev.ree.cross_config_manager.model.technologies.TechnologiesDto;
+import ro.dev.ree.cross_config_manager.model.technologies.TechnologiesService;
 
 import java.util.List;
 import java.util.Map;
@@ -36,8 +40,42 @@ public class TechnologyTreeService implements ServiceRepository {
         if (technologyTree.getId() == null) {
             technologyTreeDto.setId(insert.getId());
         }
+        else if(oldColumnValues != null) {
+            // Search for object with this old nodeType.discriminator and change it with the new nodeType.discriminator
+            findByName((String) oldColumnValues.get("name"), recordDto);
+        }
 
         return technologyTreeDto.getId();
+    }
+
+    private void findByName(String name, RecordDto recordDto) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("technologyTree").is(name));
+        for (Technologies technologies: mongoTemplate.find(query, Technologies.class)) {
+            technologies.setTechnologyTree(((TechnologyTreeDto) recordDto).getName());
+            TechnologiesService technologiesService = ConfigManagerContextProvider.getBean(TechnologiesService.class);
+            TechnologiesDto technologiesDto = new TechnologiesDto();
+            BeanUtils.copyProperties(technologies, technologiesDto);
+            technologiesService.insertOrUpdate(null, technologiesDto);
+        }
+        query = new Query();
+        query.addCriteria(Criteria.where("parentTechnology").is(name));
+        for (Technologies technologies: mongoTemplate.find(query, Technologies.class)) {
+            technologies.setParentTechnology(((TechnologyTreeDto) recordDto).getName());
+            TechnologiesService technologiesService = ConfigManagerContextProvider.getBean(TechnologiesService.class);
+            TechnologiesDto technologiesDto = new TechnologiesDto();
+            BeanUtils.copyProperties(technologies, technologiesDto);
+            technologiesService.insertOrUpdate(null, technologiesDto);
+        }
+        query = new Query();
+        query.addCriteria(Criteria.where("name").is(name));
+        for (TechnologyTree technologyTree: mongoTemplate.find(query, TechnologyTree.class)) {
+            technologyTree.setName(((TechnologyTreeDto) recordDto).getName());
+            TechnologyTreeService technologyTreeService = ConfigManagerContextProvider.getBean(TechnologyTreeService.class);
+            TechnologyTreeDto technologyTreeDto = new TechnologyTreeDto();
+            BeanUtils.copyProperties(technologyTree, technologyTreeDto);
+            technologyTreeService.insertOrUpdate(null, technologyTreeDto);
+        }
     }
 
     @Override
@@ -91,29 +129,6 @@ public class TechnologyTreeService implements ServiceRepository {
                 collect(Collectors.toList());
     }
 
-
-
-    public List<RecordDto> findAllByNameAndConfigId(String name, String configId) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("configId").is(configId));
-
-//        query.addCriteria((Criteria.where("linkType").exists(true).andOperator(Criteria.where("nodeType").exists(false)).
-//                orOperator(Criteria.where("linkType").exists(true).andOperator(Criteria.where("nodeType").exists(true)))));
-        //query.addCriteria(Criteria.where("linkType").exists(true).andOperator(Criteria.where("nodeType").exists(true)));
-        //query.addCriteria(Criteria.where("nodeType").is(true));
-
-        query.addCriteria(Criteria.where("name").is(name));
-
-
-        return mongoTemplate.find(query, TechnologyTree.class).stream().
-                map(technologyTree -> {
-                    TechnologyTreeDto dto = new TechnologyTreeDto();
-                    BeanUtils.copyProperties(technologyTree, dto);
-                    return dto;
-                }).
-                collect(Collectors.toList());
-    }
-
     public List<RecordDto> findLinkTypesByNameAndConfigIdNew(String name, String configId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("configId").is(configId));
@@ -136,22 +151,6 @@ public class TechnologyTreeService implements ServiceRepository {
         query.addCriteria(Criteria.where("configId").is(configId));
         query.addCriteria(Criteria.where("nodeType").exists(true));
         query.addCriteria(Criteria.where("linkType").exists(false));
-        query.addCriteria(Criteria.where("name").is(name));
-
-
-        return mongoTemplate.find(query, TechnologyTree.class).stream().
-                map(technologyTree -> {
-                    TechnologyTreeDto dto = new TechnologyTreeDto();
-                    BeanUtils.copyProperties(technologyTree, dto);
-                    return dto;
-                }).
-                collect(Collectors.toList());
-    }
-
-    public List<RecordDto> findLinkTypesByNameAndConfigId(String name, String configId) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("configId").is(configId));
-        query.addCriteria(Criteria.where("linkType").exists(false).andOperator(Criteria.where("nodeType").exists(true)));
         query.addCriteria(Criteria.where("name").is(name));
 
 

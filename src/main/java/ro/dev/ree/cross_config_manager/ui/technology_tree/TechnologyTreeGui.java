@@ -119,10 +119,8 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
             }
             if (!exists) {
                 added.add(tt);
-                // List<RecordDto> records = technologyTreeService.findAllByNameAndConfigId(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
-                List<RecordDto> linkTypes = technologyTreeService.findLinkTypesByNameAndConfigIdNew(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
+                 List<RecordDto> linkTypes = technologyTreeService.findLinkTypesByNameAndConfigIdNew(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
                 List<RecordDto> nodeTypes = technologyTreeService.findNodeTypesByNameAndConfigIdNew(tt.getName(), ConfigSingleton.getSingleton().getConfigDto().getId());
-
 
                 TreeItem treeItem = new TreeItem(tree, SWT.NONE);
                 treeItem.setText(0, tt.getId());
@@ -228,11 +226,7 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
             technologyTreeService.insertOrUpdate(null, technologyTreeDto);
             createTechnologyTree(eElement, name, "nodeType");
             createTechnologyTree(eElement, name, "linkType");
-
-
         }
-
-
     }
 
     private void createTechnologyTree(Element element, String name, String tagName) {
