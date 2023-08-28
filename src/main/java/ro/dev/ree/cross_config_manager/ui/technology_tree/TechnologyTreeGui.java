@@ -52,13 +52,25 @@ public class TechnologyTreeGui extends TreeComposite implements ManageableCompon
         var map = new LinkedHashMap<String, Object>();
 
         AtomicInteger i = new AtomicInteger();
+        String treeName="";
 
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
+            if(tree.getSelection().length != 0) {
+                treeName = name.equals("name") ? tree.getSelection()[0].getText(i.get()) : treeName;
+            }
+            
             if (widget instanceof Text) {
-                if (tree.getSelection().length == 0 || action.equals("Add")) {
-                    ((Text) widget).setText("");
-                    map.put(name, "");
+                if (action.equals("Add")||tree.getSelection().length == 0) {
+                    if(name.equals("name")){
+                        // Get Text from child root
+                        ((Text) widget).setText(treeName);
+                        map.put(name, treeName);
+                    } else {
+                        ((Text) widget).setText("");
+                        map.put(name, "");
+                    }
+
                 } else if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Text) widget).setText(tree.getSelection()[0].getText(i.get()));
                     map.put(name, tree.getSelection()[0].getText(i.get()));

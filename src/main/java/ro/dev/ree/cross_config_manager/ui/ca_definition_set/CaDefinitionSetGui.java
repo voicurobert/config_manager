@@ -50,13 +50,30 @@ public class CaDefinitionSetGui extends TreeComposite implements ManageableCompo
         var map = new LinkedHashMap<String, Object>();
 
         AtomicInteger i = new AtomicInteger();
+        String type="";
+        String nameCaDefinition="";
 
         for (String name : columns.keySet()) {
             Widget widget = columns.get(name);
+            if(tree.getSelection().length != 0) {
+                type = name.equals("type") ? tree.getSelection()[0].getText(i.get()) : type;
+                nameCaDefinition = name.equals("name") ? tree.getSelection()[0].getText(i.get()) : nameCaDefinition;
+            }
+
             if (widget instanceof Text) {
                 if (tree.getSelection().length == 0 || action.equals("Add")) {
-                    ((Text) widget).setText("");
-                    map.put(name, "");
+                    if(name.equals("name")){
+                        // Get Text from child root
+                        ((Text) widget).setText(nameCaDefinition);
+                        map.put(name, nameCaDefinition);
+                    } else if(name.equals("type")){
+                        ((Text) widget).setText(type);
+                        map.put(name, type);
+                    }
+                    else{
+                            ((Text) widget).setText("");
+                            map.put(name, "");
+                        }
                 } else if (action.equals("Update") && !(tree.getSelection().length == 0)) {
                     ((Text) widget).setText(tree.getSelection()[0].getText(i.get()));
                     map.put(name, tree.getSelection()[0].getText(i.get()));
