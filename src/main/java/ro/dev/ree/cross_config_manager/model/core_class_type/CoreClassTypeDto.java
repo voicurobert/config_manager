@@ -42,7 +42,7 @@ public class CoreClassTypeDto extends RecordDto implements XmlElement {
     public void asXml(Document document, Element rootElement) {
 
         // add xml elements
-        Element classType = document.createElement("classType");
+        Element classType = document.createElement("coreTypeClass");
         // add classType to root
         rootElement.appendChild(classType);
 

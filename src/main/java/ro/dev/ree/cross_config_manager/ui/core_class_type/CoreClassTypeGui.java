@@ -120,7 +120,7 @@ public class CoreClassTypeGui extends TableComposite implements ManageableCompon
         List<RecordDto> allByConfigId = coreClassTypeService.findAllByConfigId(ConfigSingleton.getSingleton().getConfigDto().getId());
 
         // root element
-        Element classTypes = document.createElement("classTypes");
+        Element classTypes = document.createElement("coreTypeClasses");
         rootElement.appendChild(classTypes);
 
         for (RecordDto recordDto : allByConfigId) {
